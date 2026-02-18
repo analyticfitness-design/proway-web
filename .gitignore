@@ -1,0 +1,13 @@
+api/config/database.php
+.env
+*.env
+test/
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini
+*.bak
+*.backup
+*~
+.vscode/
+.idea/

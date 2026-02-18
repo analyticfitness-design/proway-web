@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="geometricPrecision" text-rendering="geometricPrecision">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#161618;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0C0C0F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D9FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00A8CC;stop-opacity:1" />
+    </linearGradient>
+    <clipPath id="roundClip">
+      <rect width="32" height="32" rx="6" ry="6" />
+    </clipPath>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="32" height="32" rx="6" ry="6" fill="url(#bgGrad)" />
+
+  <!-- Subtle red accent line at bottom -->
+  <rect x="0" y="29" width="32" height="3" rx="0" fill="#E31E24" clip-path="url(#roundClip)" />
+
+  <!-- Top cyan accent line -->
+  <rect x="0" y="0" width="32" height="2.5" rx="0" fill="url(#accentGrad)" clip-path="url(#roundClip)" />
+
+  <!-- "P" letter - geometric bold sans-serif -->
+  <!-- Vertical stem of P -->
+  <rect x="5" y="8" width="3" height="17" rx="1" fill="url(#accentGrad)" />
+  <!-- Bowl top of P -->
+  <rect x="8" y="8" width="5" height="2.5" rx="1" fill="url(#accentGrad)" />
+  <!-- Bowl right curve of P (right side bar) -->
+  <rect x="13" y="8" width="2.5" height="2.5" rx="1" fill="url(#accentGrad)" />
+  <!-- Bowl middle connector -->
+  <rect x="13" y="10.5" width="2.5" height="4" rx="0" fill="url(#accentGrad)" />
+  <!-- Bowl bottom right -->
+  <rect x="13" y="14.5" width="2.5" height="2.5" rx="1" fill="url(#accentGrad)" />
+  <!-- Bowl bottom bar of P -->
+  <rect x="8" y="15" width="5" height="2" rx="1" fill="url(#accentGrad)" />
+
+  <!-- "W" letter - geometric bold sans-serif -->
+  <!-- Left outer leg -->
+  <polygon points="17,8 19.5,8 20.5,20 18.5,20" fill="url(#accentGrad)" />
+  <!-- Left inner leg -->
+  <polygon points="19.5,8 21.5,8 22,14 20.5,14" fill="url(#accentGrad)" />
+  <!-- Center V bottom -->
+  <polygon points="21.5,8 22.5,8 22.5,20 21,20" fill="url(#accentGrad)" />
+  <!-- Right inner leg -->
+  <polygon points="22.5,8 24,8 23.5,14 22,14" fill="url(#accentGrad)" />
+  <!-- Right outer leg -->
+  <polygon points="24,8 26.5,8 25.5,20 23.5,20" fill="url(#accentGrad)" />
+</svg>

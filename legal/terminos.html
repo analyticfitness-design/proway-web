@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Términos y Condiciones — ProWay Lab</title>
+<meta name="description" content="Términos y condiciones de uso de los servicios de ProWay Lab — producción de contenido y arquitectura de marca fitness.">
+<meta name="robots" content="noindex, follow">
+<link rel="icon" type="image/png" href="../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0C0C0F;
+    --surface: #111114;
+    --surface-2: #191920;
+    --border: #252528;
+    --blue: #00D9FF;
+    --blue-dim: rgba(0,217,255,0.08);
+    --red: #E31E24;
+    --green: #00FF87;
+    --white: #FFFFFF;
+    --gray: #A1A1AA;
+    --dark: #52525B;
+    --font-h: 'Montserrat', sans-serif;
+    --font-b: 'Inter', sans-serif;
+    --font-m: 'Roboto Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--bg);
+    color: var(--gray);
+    font-family: var(--font-b);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--blue); text-decoration: none; transition: opacity .2s; }
+a:hover { opacity: .75; }
+
+/* ──────────────────────────────────────────────
+   NAV
+────────────────────────────────────────────── */
+#nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: transparent;
+    transition: background .3s, border-color .3s;
+    border-bottom: 1px solid transparent;
+}
+#nav.scrolled {
+    background: rgba(12,12,15,.96);
+    border-color: var(--border);
+    backdrop-filter: blur(12px);
+}
+.nav-wrap {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+.nav-logo { display: flex; align-items: center; text-decoration: none; }
+.nav-wordmark {
+    font-family: var(--font-h);
+    font-weight: 900;
+    font-size: 17px;
+    letter-spacing: .04em;
+    color: var(--white);
+    text-transform: uppercase;
+}
+.nav-wordmark b { color: var(--red); font-weight: 900; }
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 32px;
+    margin-left: auto;
+}
+.nav-links a {
+    font-family: var(--font-b);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    text-decoration: none;
+    transition: color .2s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-btn {
+    font-family: var(--font-b);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--white);
+    background: var(--red);
+    padding: 9px 20px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: opacity .2s;
+    flex-shrink: 0;
+}
+.nav-btn:hover { opacity: .85; }
+.nav-ham {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: auto;
+}
+.nav-ham span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--white);
+    border-radius: 2px;
+    transition: .3s;
+}
+.nav-mob {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--surface);
+    z-index: 200;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+}
+.nav-mob.open { display: flex; }
+.nav-mob a {
+    font-family: var(--font-h);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    text-decoration: none;
+}
+.nav-mob-close {
+    position: absolute;
+    top: 20px; right: 24px;
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 32px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* ──────────────────────────────────────────────
+   PAGE HEADER
+────────────────────────────────────────────── */
+.page-header {
+    padding: 120px 24px 48px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+}
+.page-header .badge {
+    display: inline-block;
+    font-family: var(--font-m);
+    font-size: 11px;
+    color: var(--blue);
+    background: var(--blue-dim);
+    border: 1px solid rgba(0,217,255,.18);
+    padding: 4px 12px;
+    border-radius: 2px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+.page-header h1 {
+    font-family: var(--font-h);
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: 12px;
+}
+.page-header .updated {
+    font-family: var(--font-m);
+    font-size: 12px;
+    color: var(--dark);
+    letter-spacing: .06em;
+}
+
+/* ──────────────────────────────────────────────
+   LAYOUT
+────────────────────────────────────────────── */
+.legal-layout {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 60px;
+    align-items: start;
+}
+
+/* ──────────────────────────────────────────────
+   SIDEBAR
+────────────────────────────────────────────── */
+.sidebar {
+    position: sticky;
+    top: 80px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.sidebar-label {
+    font-family: var(--font-m);
+    font-size: 10px;
+    color: var(--dark);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+.sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+.sidebar-nav a {
+    font-family: var(--font-b);
+    font-size: 13px;
+    color: var(--dark);
+    text-decoration: none;
+    padding: 7px 10px;
+    border-radius: 4px;
+    border-left: 2px solid transparent;
+    transition: color .2s, border-color .2s, background .2s;
+    line-height: 1.4;
+}
+.sidebar-nav a:hover { color: var(--gray); background: rgba(255,255,255,.03); }
+.sidebar-nav a.active {
+    color: var(--white);
+    border-left-color: var(--red);
+    background: rgba(227,30,36,.06);
+}
+
+/* ──────────────────────────────────────────────
+   CONTENT
+────────────────────────────────────────────── */
+.legal-content { min-width: 0; }
+.legal-section {
+    margin-bottom: 56px;
+    padding-bottom: 56px;
+    border-bottom: 1px solid var(--border);
+}
+.legal-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.legal-section h2 {
+    font-family: var(--font-h);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.section-num {
+    font-family: var(--font-m);
+    font-size: 11px;
+    color: var(--red);
+    background: rgba(227,30,36,.08);
+    border: 1px solid rgba(227,30,36,.2);
+    padding: 2px 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+.legal-section h3 {
+    font-family: var(--font-b);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin: 24px 0 10px;
+}
+.legal-section p {
+    font-family: var(--font-b);
+    font-size: 15px;
+    color: var(--gray);
+    line-height: 1.75;
+    margin-bottom: 14px;
+}
+.legal-section p:last-child { margin-bottom: 0; }
+.legal-section strong { color: var(--white); font-weight: 600; }
+.legal-section ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+.legal-section ul li {
+    font-family: var(--font-b);
+    font-size: 15px;
+    color: var(--gray);
+    line-height: 1.6;
+    padding-left: 16px;
+    position: relative;
+}
+.legal-section ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 5px;
+    height: 1px;
+    background: var(--red);
+}
+
+/* ──────────────────────────────────────────────
+   TABLA DE PRECIOS
+────────────────────────────────────────────── */
+.price-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: var(--font-b);
+    font-size: 13px;
+}
+.price-table th {
+    font-family: var(--font-m);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--dark);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    text-align: left;
+}
+.price-table td {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    color: var(--gray);
+    vertical-align: top;
+    line-height: 1.5;
+}
+.price-table tr:nth-child(even) td { background: rgba(255,255,255,.02); }
+.price-table .td-price {
+    font-family: var(--font-m);
+    color: var(--green);
+    white-space: nowrap;
+}
+.price-table .td-name { color: var(--white); font-weight: 600; }
+
+/* ──────────────────────────────────────────────
+   HIGHLIGHT BOX
+────────────────────────────────────────────── */
+.info-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blue);
+    padding: 16px 20px;
+    border-radius: 0 4px 4px 0;
+    margin: 20px 0;
+}
+.info-box p { font-size: 14px; margin: 0; }
+
+.warn-box {
+    background: rgba(227,30,36,.05);
+    border: 1px solid rgba(227,30,36,.2);
+    border-left: 3px solid var(--red);
+    padding: 16px 20px;
+    border-radius: 0 4px 4px 0;
+    margin: 20px 0;
+}
+.warn-box p { font-size: 14px; margin: 0; }
+
+/* ──────────────────────────────────────────────
+   FOOTER
+────────────────────────────────────────────── */
+#footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 60px 24px 32px;
+}
+.wrap { max-width: 1100px; margin: 0 auto; }
+.ft-grid {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 48px;
+}
+.ft-wm {
+    font-family: var(--font-h);
+    font-weight: 900;
+    font-size: 20px;
+    color: var(--white);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+.ft-wm b { color: var(--red); }
+.ft-brand p {
+    font-size: 13px;
+    color: var(--dark);
+    line-height: 1.6;
+    margin-bottom: 16px;
+    max-width: 280px;
+}
+.ft-loc {
+    font-family: var(--font-m);
+    font-size: 11px;
+    color: var(--dark);
+    letter-spacing: .06em;
+}
+.ft-loc b { color: var(--red); margin-right: 4px; }
+.ft-col-t {
+    font-family: var(--font-m);
+    font-size: 10px;
+    color: var(--dark);
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+.ft-lnks { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.ft-lnks a {
+    font-size: 13px;
+    color: var(--dark);
+    text-decoration: none;
+    transition: color .2s;
+}
+.ft-lnks a:hover { color: var(--gray); }
+.ft-bot {
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ft-copy {
+    font-family: var(--font-m);
+    font-size: 11px;
+    color: var(--dark);
+    letter-spacing: .04em;
+}
+
+/* ──────────────────────────────────────────────
+   RESPONSIVE
+────────────────────────────────────────────── */
+@media (max-width: 768px) {
+    .nav-links, .nav-btn { display: none; }
+    .nav-ham { display: flex; }
+    .legal-layout {
+        grid-template-columns: 1fr;
+        padding: 40px 20px 80px;
+        gap: 0;
+    }
+    .sidebar { display: none; }
+    .page-header { padding: 100px 20px 36px; }
+    .ft-grid { grid-template-columns: 1fr; gap: 32px; }
+    .price-table { font-size: 12px; }
+    .price-table th, .price-table td { padding: 8px 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+    <div class="nav-wrap">
+        <a href="../index.html" class="nav-logo"><span class="nav-wordmark">PROWAY<b>.LAB</b></span></a>
+        <ul class="nav-links">
+            <li><a href="../metodo.html">Método</a></li>
+            <li><a href="../servicios.html">Servicios</a></li>
+            <li><a href="../casos-de-exito.html">Casos</a></li>
+            <li><a href="../portafolio.html">Portafolio</a></li>
+            <li><a href="../blog/index.html">Blog</a></li>
+        </ul>
+        <a href="../contacto.html" class="nav-btn">Solicitar servicio</a>
+        <div class="nav-ham" id="ham"><span></span><span></span><span></span></div>
+    </div>
+</nav>
+<div class="nav-mob" id="mob">
+    <button class="nav-mob-close" id="mobClose">&times;</button>
+    <a href="../metodo.html" onclick="closeM()">Método</a>
+    <a href="../servicios.html" onclick="closeM()">Servicios</a>
+    <a href="../casos-de-exito.html" onclick="closeM()">Casos</a>
+    <a href="../portafolio.html" onclick="closeM()">Portafolio</a>
+    <a href="../blog/index.html" onclick="closeM()">Blog</a>
+    <a href="../contacto.html" onclick="closeM()" style="color:var(--blue)">Solicitar →</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <div class="badge">Legal</div>
+    <h1>Términos y Condiciones</h1>
+    <div class="updated">Última actualización: 18 de febrero de 2026</div>
+</div>
+
+<!-- LAYOUT -->
+<div class="legal-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-label">Índice</div>
+        <nav class="sidebar-nav" id="sideNav">
+            <a href="#aceptacion">1. Aceptación</a>
+            <a href="#descripcion">2. Descripción de servicios</a>
+            <a href="#contratacion">3. Proceso de contratación</a>
+            <a href="#precios">4. Precios y pagos</a>
+            <a href="#revisiones">5. Revisiones y entregas</a>
+            <a href="#propiedad">6. Propiedad intelectual</a>
+            <a href="#cancelaciones">7. Cancelaciones y reembolsos</a>
+            <a href="#responsabilidad">8. Limitación de responsabilidad</a>
+            <a href="#ley">9. Ley aplicable</a>
+            <a href="#contacto">10. Contacto</a>
+        </nav>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="legal-content">
+
+        <section class="legal-section" id="aceptacion">
+            <h2><span class="section-num">01</span> Aceptación de los términos</h2>
+            <p>
+                Al contratar cualquier servicio de <strong>ProWay Lab</strong>, al completar un formulario de solicitud o al utilizar nuestro sitio web, manifiestas tu aceptación expresa de estos Términos y Condiciones en su totalidad.
+            </p>
+            <p>
+                Si no estás de acuerdo con alguna parte de estos términos, te pedimos que no utilices nuestros servicios. ProWay Lab se reserva el derecho de modificar estos términos en cualquier momento, notificando los cambios con al menos 15 días de anticipación.
+            </p>
+        </section>
+
+        <section class="legal-section" id="descripcion">
+            <h2><span class="section-num">02</span> Descripción de servicios</h2>
+            <p>
+                ProWay Lab es una agencia de <strong>ingeniería de marcas fitness</strong> especializada en la profesionalización de entrenadores personales, coaches online y profesionales del fitness en Colombia y LATAM.
+            </p>
+            <p>Nuestros servicios incluyen:</p>
+            <ul>
+                <li>Producción y edición de contenido audiovisual para redes sociales</li>
+                <li>Estrategia de contenido y arquitectura de marca personal</li>
+                <li>Diseño de brand books y sistemas visuales</li>
+                <li>Gestión de cuentas de Instagram y plataformas digitales</li>
+                <li>Desarrollo de guiones y calendario editorial</li>
+                <li>Métricas, análisis y optimización de rendimiento digital</li>
+            </ul>
+        </section>
+
+        <section class="legal-section" id="contratacion">
+            <h2><span class="section-num">03</span> Proceso de contratación</h2>
+            <p>El proceso estándar para contratar un servicio de ProWay Lab es el siguiente:</p>
+            <ul>
+                <li>El cliente completa el formulario de solicitud en nuestro sitio web o contacta directamente por WhatsApp</li>
+                <li>ProWay Lab evalúa la solicitud y envía una propuesta personalizada en un plazo de <strong>24 a 48 horas hábiles</strong></li>
+                <li>El cliente revisa, solicita ajustes si es necesario, y aprueba la propuesta</li>
+                <li>El cliente realiza el <strong>pago del 50% como anticipo</strong> para confirmar la reserva del proyecto</li>
+                <li>ProWay Lab confirma el inicio del proyecto por escrito una vez verificado el pago</li>
+                <li>Al completar y aprobar el entregable, el cliente realiza el <strong>pago del 50% restante</strong></li>
+            </ul>
+            <div class="info-box">
+                <p>La fecha de inicio del proyecto queda confirmada solo tras la verificación del pago del anticipo. Sin pago confirmado, no se garantiza disponibilidad de agenda.</p>
+            </div>
+        </section>
+
+        <section class="legal-section" id="precios">
+            <h2><span class="section-num">04</span> Precios y pagos</h2>
+            <p>
+                Todos los precios de ProWay Lab se expresan en <strong>Pesos Colombianos (COP)</strong> e incluyen los impuestos aplicables según la legislación vigente.
+            </p>
+            <h3>Tarifas base por video</h3>
+            <table class="price-table">
+                <thead>
+                    <tr>
+                        <th>Tier</th>
+                        <th>Duración</th>
+                        <th>Precio</th>
+                        <th>Ideal para</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="td-name">Video Esencial</td>
+                        <td>15 — 45 seg</td>
+                        <td class="td-price">$150.000 COP</td>
+                        <td>Reels de tips, rutinas, before/after</td>
+                    </tr>
+                    <tr>
+                        <td class="td-name">Video Pro</td>
+                        <td>45 — 90 seg</td>
+                        <td class="td-price">$250.000 COP</td>
+                        <td>Lanzamientos, testimonios, educativo</td>
+                    </tr>
+                    <tr>
+                        <td class="td-name">Video Básico</td>
+                        <td>Trending / corto</td>
+                        <td class="td-price">$100.000 COP</td>
+                        <td>Trends, POVs, contenido reactivo</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Medios de pago</h3>
+            <ul>
+                <li>Tarjeta de crédito o débito (Visa, Mastercard, American Express)</li>
+                <li>PSE — transferencia bancaria en línea</li>
+                <li>Efecty y Baloto (puntos de pago en Colombia)</li>
+                <li>Todos los pagos son procesados de forma segura por <strong>PayU Latam</strong></li>
+            </ul>
+            <h3>Paquetes mensuales</h3>
+            <p>
+                Los paquetes mensuales de gestión de contenido se cobran de forma recurrente al inicio de cada ciclo mensual. Los precios de los paquetes están sujetos a cambio con un aviso previo mínimo de <strong>30 días calendario</strong>.
+            </p>
+        </section>
+
+        <section class="legal-section" id="revisiones">
+            <h2><span class="section-num">05</span> Revisiones y entregas</h2>
+            <p>Cada nivel de servicio incluye un número específico de rondas de revisión y plazos de entrega:</p>
+            <table class="price-table">
+                <thead>
+                    <tr>
+                        <th>Servicio</th>
+                        <th>Revisiones incluidas</th>
+                        <th>Plazo de entrega</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="td-name">Video Esencial</td>
+                        <td>1 ronda</td>
+                        <td>48 horas hábiles</td>
+                    </tr>
+                    <tr>
+                        <td class="td-name">Video Pro</td>
+                        <td>2 rondas</td>
+                        <td>72 horas hábiles</td>
+                    </tr>
+                    <tr>
+                        <td class="td-name">Video Básico</td>
+                        <td>1 ronda</td>
+                        <td>48 horas hábiles</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                Los plazos de entrega comienzan a contar una vez que el cliente haya entregado todos los materiales necesarios (footage, briefing, referencias) y se haya confirmado el pago del anticipo.
+            </p>
+            <div class="warn-box">
+                <p><strong>Revisiones adicionales:</strong> Las rondas de revisión que excedan las incluidas en el servicio contratado tienen un costo adicional de <strong>$50.000 COP por ronda</strong>, facturadas antes de proceder.</p>
+            </div>
+        </section>
+
+        <section class="legal-section" id="propiedad">
+            <h2><span class="section-num">06</span> Propiedad intelectual</h2>
+            <h3>Derechos del cliente</h3>
+            <p>
+                El cliente retiene todos los derechos sobre el <strong>contenido original</strong> que nos provea: videos grabados por el cliente, imágenes, voz y cualquier material de autoría propia.
+            </p>
+            <h3>Derechos de ProWay Lab</h3>
+            <p>
+                ProWay Lab retiene los derechos sobre su <strong>proceso creativo, metodología, sistemas visuales, plantillas y el resultado final editado</strong> en tanto proceso creativo. Una vez realizado el pago completo, el cliente recibe una licencia de uso total y exclusivo del contenido producido para su marca.
+            </p>
+            <h3>Portafolio</h3>
+            <p>
+                Al contratar los servicios de ProWay Lab, el cliente autoriza expresamente a ProWay Lab a utilizar los proyectos producidos como material de portafolio, mostrando los resultados en el sitio web, redes sociales y materiales de ventas de ProWay Lab, salvo acuerdo de confidencialidad explícito firmado previamente.
+            </p>
+        </section>
+
+        <section class="legal-section" id="cancelaciones">
+            <h2><span class="section-num">07</span> Cancelaciones y reembolsos</h2>
+            <p>La política de cancelaciones y reembolsos de ProWay Lab es la siguiente:</p>
+            <ul>
+                <li><strong>Cancelación antes del inicio de producción:</strong> Reembolso del 100% del anticipo pagado, procesado en un plazo de 5 a 10 días hábiles.</li>
+                <li><strong>Cancelación durante la producción (antes de entrega):</strong> Reembolso parcial calculado según el porcentaje de avance del proyecto. ProWay Lab comunicará el monto a devolver dentro de las 48 horas siguientes a la solicitud de cancelación.</li>
+                <li><strong>Proyectos entregados y aprobados:</strong> Una vez que el cliente aprueba el entregable final, no procede ningún reembolso.</li>
+                <li><strong>Paquetes mensuales:</strong> Pueden cancelarse con 15 días de aviso antes del siguiente ciclo de facturación. No se reembolsan ciclos ya cobrados y en ejecución.</li>
+            </ul>
+            <div class="info-box">
+                <p>Para solicitar una cancelación, escribe a <strong>analyticfitness@gmail.com</strong> o contacta por WhatsApp indicando el número de proyecto o factura.</p>
+            </div>
+        </section>
+
+        <section class="legal-section" id="responsabilidad">
+            <h2><span class="section-num">08</span> Limitación de responsabilidad</h2>
+            <p>
+                ProWay Lab se compromete a entregar servicios de alta calidad y a aplicar su mejor esfuerzo y conocimiento en cada proyecto. Sin embargo:
+            </p>
+            <ul>
+                <li>ProWay Lab <strong>no garantiza resultados específicos</strong> de crecimiento en seguidores, alcance, engagement o conversiones en redes sociales, ya que estos dependen de múltiples factores externos al control de la agencia.</li>
+                <li>Los casos de éxito y testimonios mostrados en el sitio web son resultados reales de clientes, pero no constituyen una garantía de resultados iguales o similares para todos los casos.</li>
+                <li>ProWay Lab no será responsable por cambios en los algoritmos de plataformas sociales (Instagram, TikTok, YouTube) que puedan afectar el rendimiento del contenido producido.</li>
+                <li>La responsabilidad máxima de ProWay Lab ante cualquier reclamación no excederá el valor del servicio contratado por el cual se genera la reclamación.</li>
+            </ul>
+        </section>
+
+        <section class="legal-section" id="ley">
+            <h2><span class="section-num">09</span> Ley aplicable</h2>
+            <p>
+                Estos Términos y Condiciones se rigen por la <strong>legislación de la República de Colombia</strong>. Cualquier controversia derivada de la interpretación o ejecución de estos términos será sometida a la jurisdicción de los tribunales competentes de <strong>Bogotá, Colombia</strong>.
+            </p>
+            <p>
+                Las partes se comprometen a intentar resolver cualquier diferencia de forma amistosa antes de acudir a instancias judiciales.
+            </p>
+        </section>
+
+        <section class="legal-section" id="contacto">
+            <h2><span class="section-num">10</span> Contacto</h2>
+            <p>Para dudas, consultas o reclamaciones relacionadas con estos Términos y Condiciones:</p>
+            <ul>
+                <li><strong>Email:</strong> analyticfitness@gmail.com</li>
+                <li><strong>WhatsApp:</strong> +57 300 000 0000</li>
+                <li><strong>Instagram:</strong> @proway.lab</li>
+            </ul>
+        </section>
+
+    </main>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer">
+    <div class="wrap">
+        <div class="ft-grid">
+            <div class="ft-brand"><div class="ft-wm">PROWAY<b>.LAB</b></div><p>Ingeniería de marcas fitness para entrenadores en Colombia y LATAM.</p><div class="ft-loc"><b>■</b> Colombia — LATAM · 2026</div></div>
+            <div><div class="ft-col-t">Legal</div><ul class="ft-lnks"><li><a href="privacidad.html">Política de Privacidad</a></li><li><a href="terminos.html">Términos y Condiciones</a></li><li><a href="cookies.html">Política de Cookies</a></li></ul></div>
+            <div><div class="ft-col-t">Contacto</div><ul class="ft-lnks"><li><a href="https://wa.me/573000000000">WhatsApp</a></li><li><a href="mailto:analyticfitness@gmail.com">analyticfitness@gmail.com</a></li></ul></div>
+        </div>
+        <div class="ft-bot"><div class="ft-copy">© 2026 ProWay Lab — Ingeniería de Marcas Fitness.</div></div>
+    </div>
+</footer>
+
+<script>
+// NAV SCROLL
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+// MOBILE MENU
+const ham = document.getElementById('ham');
+const mob = document.getElementById('mob');
+const mobClose = document.getElementById('mobClose');
+ham.addEventListener('click', () => mob.classList.add('open'));
+mobClose.addEventListener('click', closeM);
+function closeM() { mob.classList.remove('open'); }
+
+// SIDEBAR ACTIVE STATE — IntersectionObserver
+const sections = document.querySelectorAll('.legal-section');
+const sideLinks = document.querySelectorAll('#sideNav a');
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const id = entry.target.id;
+            sideLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+            });
+        }
+    });
+}, {
+    rootMargin: '-64px 0px -60% 0px',
+    threshold: 0
+});
+
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

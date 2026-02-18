@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acceso Clientes — ProWay Lab</title>
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0C0C0F;--blue:#00D9FF;--red:#E31E24;--green:#00FF87;
+  --surface:#111114;--surface-2:#191920;--border:#252528;
+  --gray:#A1A1AA;--dark:#52525B;--white:#FFFFFF;
+  --font-m:'Montserrat',sans-serif;--font-i:'Inter',sans-serif;--font-r:'Roboto Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);color:var(--white);font-family:var(--font-i)}
+
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,217,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,217,255,0.04) 1px,transparent 1px);
+  background-size:48px 48px;animation:gridShift 20s linear infinite;pointer-events:none;z-index:0;
+}
+@keyframes gridShift{0%{background-position:0 0,0 0}100%{background-position:48px 48px,48px 48px}}
+
+.orb{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0;opacity:0.15}
+.orb-1{width:500px;height:500px;background:var(--blue);top:-200px;right:-150px}
+.orb-2{width:400px;height:400px;background:var(--red);bottom:-150px;left:-100px}
+
+.page{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px}
+
+.back-link{
+  position:fixed;top:24px;left:28px;
+  font-family:var(--font-r);font-size:11px;letter-spacing:0.08em;
+  color:var(--dark);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.2s;
+}
+.back-link:hover{color:var(--gray)}
+
+.logo-wrap{margin-bottom:36px;text-align:center}
+.logo-wrap img{height:44px;width:auto;filter:brightness(0) invert(1)}
+.logo-sub{font-family:var(--font-r);font-size:10px;letter-spacing:0.15em;color:var(--dark);margin-top:10px;text-transform:uppercase}
+
+.card{
+  width:100%;max-width:420px;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:40px 36px;
+  position:relative;animation:cardIn 0.5s ease both;
+}
+.card::before{content:'';position:absolute;inset:0;border-radius:4px;background:linear-gradient(135deg,rgba(0,217,255,0.04) 0%,transparent 60%);pointer-events:none}
+@keyframes cardIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.card-head{margin-bottom:28px}
+.card-title{font-family:var(--font-m);font-weight:900;font-size:22px;letter-spacing:0.08em;color:var(--white);margin-bottom:6px}
+.card-sub{font-family:var(--font-r);font-size:11px;color:var(--dark);letter-spacing:0.06em}
+.card-divider{height:1px;background:var(--border);margin:20px 0}
+
+.field{margin-bottom:18px}
+.field label{display:block;font-family:var(--font-r);font-size:10px;letter-spacing:0.12em;color:var(--gray);margin-bottom:8px;text-transform:uppercase}
+.field-wrap{position:relative}
+.field input{
+  width:100%;padding:12px 16px;background:var(--surface-2);border:1px solid var(--border);border-radius:3px;
+  color:var(--white);font-family:var(--font-i);font-size:14px;transition:border-color 0.2s,box-shadow 0.2s;outline:none;
+}
+.field input:focus{border-color:rgba(0,217,255,0.4);box-shadow:0 0 0 3px rgba(0,217,255,0.08)}
+.field input::placeholder{color:var(--dark)}
+
+.pw-wrap input{padding-right:44px}
+.pw-toggle{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--dark);cursor:pointer;padding:4px;transition:color 0.2s;line-height:1;
+}
+.pw-toggle:hover{color:var(--gray)}
+
+.error-msg{
+  display:none;background:rgba(227,30,36,0.1);border:1px solid rgba(227,30,36,0.3);
+  border-radius:3px;padding:10px 14px;margin-bottom:18px;
+  font-family:var(--font-r);font-size:11px;color:#ff6b6b;letter-spacing:0.04em;
+}
+.error-msg.show{display:flex;align-items:center;gap:8px}
+
+.success-msg{
+  display:none;background:rgba(0,255,135,0.1);border:1px solid rgba(0,255,135,0.3);
+  border-radius:3px;padding:12px 16px;margin-bottom:18px;
+  font-family:var(--font-r);font-size:11px;color:var(--green);letter-spacing:0.04em;text-align:center;
+}
+.success-msg.show{display:block}
+
+.btn-submit{
+  width:100%;padding:14px;background:var(--blue);border:none;border-radius:3px;
+  font-family:var(--font-m);font-weight:900;font-size:13px;letter-spacing:0.12em;
+  color:#000;cursor:pointer;transition:opacity 0.2s,transform 0.15s;text-transform:uppercase;
+}
+.btn-submit:hover{opacity:0.9;transform:translateY(-1px)}
+.btn-submit:active{transform:translateY(0)}
+.btn-submit.loading{opacity:0.6;pointer-events:none}
+
+.btn-spinner{
+  display:none;width:16px;height:16px;border:2px solid rgba(0,0,0,0.3);
+  border-top-color:#000;border-radius:50%;animation:spin 0.6s linear infinite;margin:0 auto;
+}
+.btn-submit.loading .btn-text{display:none}
+.btn-submit.loading .btn-spinner{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.card-footer{margin-top:24px;text-align:center}
+.footer-link{font-family:var(--font-r);font-size:11px;color:var(--dark);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s;display:block;line-height:1.8}
+.footer-link:hover{color:var(--blue)}
+.footer-sep{color:var(--border);margin:6px 0;font-size:10px}
+
+.status-badge{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-r);font-size:10px;letter-spacing:0.1em;color:var(--dark);margin-bottom:24px}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+
+.page.fade-out{animation:fadeOut 0.4s ease forwards}
+@keyframes fadeOut{to{opacity:0}}
+
+@media(max-width:480px){.card{padding:28px 20px}.card-title{font-size:18px}}
+
+/* ================================================
+   RESPONSIVE MOBILE — CORRECCIONES
+   ================================================ */
+
+/* Evitar scroll horizontal */
+@media(max-width:768px){
+  html,body{overflow-x:hidden}
+
+  /* Padding lateral mínimo 16px en la página */
+  .page{padding:40px 16px}
+
+  /* back-link: evitar que se superponga con el contenido en pantallas pequeñas */
+  .back-link{
+    position:absolute;
+    top:16px;left:16px;
+    font-size:10px;
+  }
+
+  /* Card: ancho máximo en mobile con padding 16px */
+  .card{padding:32px 20px;max-width:100%}
+
+  /* font-size 16px en inputs para prevenir zoom iOS */
+  .field input{font-size:16px;min-height:48px}
+
+  /* Touch target botón submit mínimo 52px */
+  .btn-submit{min-height:52px;font-size:14px}
+
+  /* Touch target botón toggle password */
+  .pw-toggle{padding:8px;min-width:44px;min-height:44px;
+    display:flex;align-items:center;justify-content:center}
+
+  /* Logo más legible */
+  .logo-wrap img{height:40px}
+
+  /* Status badge legible */
+  .status-badge{font-size:10px}
+
+  /* Footer links touch targets */
+  .footer-link{min-height:40px;display:flex;align-items:center;justify-content:center}
+
+  /* Card title */
+  .card-title{font-size:20px}
+}
+
+@media(max-width:380px){
+  .page{padding:32px 14px}
+  .card{padding:24px 16px}
+  .field input{font-size:16px}
+  .card-title{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<a href="index.html" class="back-link">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+  VOLVER AL SITIO
+</a>
+
+<div class="page" id="page">
+
+  <div class="logo-wrap">
+    <img src="logo-proway.png" alt="ProWay Lab">
+    <div class="logo-sub">Portal de Clientes</div>
+  </div>
+
+  <div class="card">
+
+    <div style="text-align:center;margin-bottom:20px">
+      <div class="status-badge">
+        <span class="badge-dot"></span>
+        SISTEMA OPERATIVO
+      </div>
+    </div>
+
+    <div class="card-head">
+      <div class="card-title">ACCESO CLIENTES</div>
+      <div class="card-sub">Portal privado &nbsp;&middot;&nbsp; ProWay Lab</div>
+    </div>
+
+    <div class="card-divider"></div>
+
+    <div class="error-msg" id="errorMsg" role="alert">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
+      Credenciales incorrectas. Verifica tu email y contrase&ntilde;a.
+    </div>
+
+    <div class="success-msg" id="successMsg" role="status">
+      &#10003; Acceso verificado. Redirigiendo a tu portal...
+    </div>
+
+    <form id="loginForm" novalidate>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <div class="field-wrap">
+          <input type="email" id="email" name="email" placeholder="tu@email.com" autocomplete="email" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Contrase&ntilde;a</label>
+        <div class="field-wrap pw-wrap">
+          <input type="password" id="password" name="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" autocomplete="current-password" required>
+          <button type="button" class="pw-toggle" id="pwToggle" aria-label="Mostrar o ocultar contrase&ntilde;a">
+            <!-- eye-open (visible cuando pass oculta) -->
+            <svg id="eyeOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+            </svg>
+            <!-- eye-off (oculto inicialmente) -->
+            <svg id="eyeOff" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+              <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <span class="btn-text">INGRESAR</span>
+        <span class="btn-spinner"></span>
+      </button>
+
+    </form>
+
+    <div class="card-footer">
+      <a href="https://wa.me/573000000000" target="_blank" rel="noopener noreferrer" class="footer-link">
+        &iquest;Primer acceso? Contacta a tu coach &rarr;
+      </a>
+      <div class="footer-sep">&middot;</div>
+      <a href="index.html" class="footer-link">
+        &larr; Volver al inicio
+      </a>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+(function(){
+  // Auth guard — si ya hay sesión activa, redirigir
+  if(localStorage.getItem('pw_client_auth')==='true'){
+    window.location.href='cliente.html';
+    return;
+  }
+
+  // Credenciales demo hardcoded
+  var USERS=[
+    {email:'cliente@proway.com', pass:'cliente123', name:'Valentina Ruiz',   plan:'Video Pro'},
+    {email:'coach1@proway.com',  pass:'coach456',   name:'Alejandro Torres', plan:'Paquete Mensual'}
+  ];
+
+  // Password toggle — alterna entre eye-open y eye-off
+  var pwInput  = document.getElementById('password');
+  var eyeOpen  = document.getElementById('eyeOpen');
+  var eyeOff   = document.getElementById('eyeOff');
+  var visible  = false;
+
+  document.getElementById('pwToggle').addEventListener('click', function(){
+    visible = !visible;
+    pwInput.type = visible ? 'text' : 'password';
+    eyeOpen.style.display = visible ? 'none' : '';
+    eyeOff.style.display  = visible ? ''     : 'none';
+  });
+
+  // Login submit
+  document.getElementById('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    var email   = document.getElementById('email').value.trim().toLowerCase();
+    var pass    = document.getElementById('password').value;
+    var errEl   = document.getElementById('errorMsg');
+    var sucEl   = document.getElementById('successMsg');
+    var btn     = document.getElementById('submitBtn');
+
+    errEl.classList.remove('show');
+    sucEl.classList.remove('show');
+
+    var matched = null;
+    for(var i=0; i<USERS.length; i++){
+      if(USERS[i].email===email && USERS[i].pass===pass){
+        matched = USERS[i];
+        break;
+      }
+    }
+
+    if(!matched){
+      errEl.classList.add('show');
+      document.getElementById('email').focus();
+      return;
+    }
+
+    btn.classList.add('loading');
+    localStorage.setItem('pw_client_auth',  'true');
+    localStorage.setItem('pw_client_name',   matched.name);
+    localStorage.setItem('pw_client_email',  matched.email);
+    localStorage.setItem('pw_client_plan',   matched.plan);
+
+    sucEl.classList.add('show');
+
+    setTimeout(function(){
+      document.getElementById('page').classList.add('fade-out');
+      setTimeout(function(){ window.location.href='cliente.html'; }, 400);
+    }, 800);
+  });
+})();
+</script>
+
+</body>
+</html>

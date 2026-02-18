@@ -1,0 +1,245 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+
+    <!-- Noise / Grain filter -->
+    <filter id="grain" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" result="noise"/>
+      <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise"/>
+      <feBlend in="SourceGraphic" in2="grayNoise" mode="overlay" result="blended"/>
+      <feComposite in="blended" in2="SourceGraphic" operator="in"/>
+    </filter>
+
+    <!-- Cyan glow for accent elements -->
+    <filter id="cyanGlow" x="-10%" y="-200%" width="120%" height="500%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Subtle glow for headline -->
+    <filter id="textGlow" x="-5%" y="-30%" width="110%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Red glow for decorative dot -->
+    <filter id="redGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Grid pattern -->
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#252528" stroke-width="0.8"/>
+    </pattern>
+
+    <!-- Finer sub-grid -->
+    <pattern id="subgrid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1E1E21" stroke-width="0.4"/>
+    </pattern>
+
+    <!-- Radial vignette -->
+    <radialGradient id="vignette" cx="50%" cy="50%" r="70%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#0C0C0F" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0C0C0F" stop-opacity="0.7"/>
+    </radialGradient>
+
+    <!-- Cyan radial glow behind headline -->
+    <radialGradient id="headlineGlow" cx="20%" cy="50%" r="40%">
+      <stop offset="0%" stop-color="#00D9FF" stop-opacity="0.07"/>
+      <stop offset="100%" stop-color="#00D9FF" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Top edge fade -->
+    <linearGradient id="topFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00D9FF" stop-opacity="0.04"/>
+      <stop offset="100%" stop-color="#00D9FF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Accent line gradient -->
+    <linearGradient id="accentLineGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E31E24" stop-opacity="0.9"/>
+      <stop offset="4%" stop-color="#00D9FF" stop-opacity="1"/>
+      <stop offset="96%" stop-color="#00D9FF" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#00D9FF" stop-opacity="0.3"/>
+    </linearGradient>
+
+    <!-- Clip path for safe area -->
+    <clipPath id="canvas">
+      <rect width="1200" height="630"/>
+    </clipPath>
+
+  </defs>
+
+  <g clip-path="url(#canvas)">
+
+    <!-- ░░░ BACKGROUND LAYERS ░░░ -->
+
+    <!-- Base dark background -->
+    <rect width="1200" height="630" fill="#0C0C0F"/>
+
+    <!-- Sub-grid (finer) -->
+    <rect width="1200" height="630" fill="url(#subgrid)" opacity="0.6"/>
+
+    <!-- Main grid -->
+    <rect width="1200" height="630" fill="url(#grid)" opacity="1"/>
+
+    <!-- Headline ambient glow -->
+    <rect width="1200" height="630" fill="url(#headlineGlow)"/>
+
+    <!-- Top edge tint -->
+    <rect width="1200" height="200" fill="url(#topFade)"/>
+
+    <!-- Vignette -->
+    <rect width="1200" height="630" fill="url(#vignette)"/>
+
+    <!-- Grain overlay -->
+    <rect width="1200" height="630" fill="#0C0C0F" opacity="0" filter="url(#grain)"/>
+
+
+    <!-- ░░░ DECORATIVE STRUCTURAL ELEMENTS ░░░ -->
+
+    <!-- Corner bracket - top left -->
+    <g opacity="0.5">
+      <line x1="60" y1="60" x2="60" y2="110" stroke="#00D9FF" stroke-width="1.5"/>
+      <line x1="60" y1="60" x2="110" y2="60" stroke="#00D9FF" stroke-width="1.5"/>
+    </g>
+
+    <!-- Corner bracket - top right -->
+    <g opacity="0.5">
+      <line x1="1140" y1="60" x2="1140" y2="110" stroke="#00D9FF" stroke-width="1.5"/>
+      <line x1="1140" y1="60" x2="1090" y2="60" stroke="#00D9FF" stroke-width="1.5"/>
+    </g>
+
+    <!-- Corner bracket - bottom left -->
+    <g opacity="0.5">
+      <line x1="60" y1="570" x2="60" y2="520" stroke="#00D9FF" stroke-width="1.5"/>
+      <line x1="60" y1="570" x2="110" y2="570" stroke="#00D9FF" stroke-width="1.5"/>
+    </g>
+
+    <!-- Corner bracket - bottom right -->
+    <g opacity="0.5">
+      <line x1="1140" y1="570" x2="1140" y2="520" stroke="#00D9FF" stroke-width="1.5"/>
+      <line x1="1140" y1="570" x2="1090" y2="570" stroke="#00D9FF" stroke-width="1.5"/>
+    </g>
+
+    <!-- Vertical accent line on left edge -->
+    <rect x="0" y="0" width="3" height="630" fill="#00D9FF" opacity="0.6"/>
+    <!-- Left edge glow -->
+    <rect x="0" y="0" width="30" height="630" fill="#00D9FF" opacity="0.03"/>
+
+
+    <!-- ░░░ RED DECORATIVE ELEMENT ░░░ -->
+
+    <!-- Red square accent (top-left zone, next to bracket) -->
+    <rect x="60" y="55" width="8" height="8" fill="#E31E24" filter="url(#redGlow)" opacity="0.9"/>
+
+    <!-- Small red tick on accent line start -->
+    <rect x="0" y="308" width="12" height="4" fill="#E31E24" opacity="0.9" filter="url(#redGlow)"/>
+
+
+    <!-- ░░░ TOP-LEFT: MAIN HEADLINE BLOCK ░░░ -->
+
+    <!-- "PROWAY" - huge, bold, white -->
+    <text
+      x="80"
+      y="240"
+      font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+      font-size="148"
+      font-weight="900"
+      letter-spacing="-4"
+      fill="#FFFFFF"
+      filter="url(#textGlow)"
+    >PROWAY</text>
+
+    <!-- "LAB" - huge, bold, cyan -->
+    <text
+      x="80"
+      y="360"
+      font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+      font-size="148"
+      font-weight="900"
+      letter-spacing="-4"
+      fill="#00D9FF"
+      filter="url(#cyanGlow)"
+    >LAB</text>
+
+    <!-- Subheading: "INGENIERÍA DE MARCAS FITNESS" -->
+    <text
+      x="84"
+      y="404"
+      font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+      font-size="18"
+      font-weight="400"
+      letter-spacing="6"
+      fill="#00D9FF"
+      opacity="0.85"
+    >INGENIER&#237;A DE MARCAS FITNESS</text>
+
+
+    <!-- ░░░ CENTER ACCENT LINE ░░░ -->
+
+    <!-- Main horizontal accent line -->
+    <rect x="0" y="310" width="1200" height="2" fill="url(#accentLineGrad)" filter="url(#cyanGlow)"/>
+
+    <!-- Glow beneath accent line -->
+    <rect x="0" y="312" width="1200" height="8" fill="#00D9FF" opacity="0.04"/>
+
+
+    <!-- ░░░ RIGHT-SIDE VERTICAL LABEL ░░░ -->
+
+    <!-- Rotated vertical text on right -->
+    <text
+      transform="translate(1158, 420) rotate(-90)"
+      font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+      font-size="11"
+      font-weight="400"
+      letter-spacing="4"
+      fill="#252528"
+      text-anchor="middle"
+    >BRAND ENGINEERING STUDIO</text>
+
+
+    <!-- ░░░ BOTTOM SECTION ░░░ -->
+
+    <!-- Bottom separator line (subtle) -->
+    <line x1="80" y1="530" x2="1120" y2="530" stroke="#252528" stroke-width="1"/>
+
+    <!-- Tagline -->
+    <text
+      x="80"
+      y="568"
+      font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+      font-size="20"
+      font-weight="400"
+      letter-spacing="0.5"
+      fill="#A1A1AA"
+    >Contenido que convierte. Marca que posiciona.</text>
+
+    <!-- "@prowaylab.com" monospace, bottom-right -->
+    <text
+      x="1120"
+      y="568"
+      font-family="'Courier New', 'Lucida Console', monospace"
+      font-size="16"
+      font-weight="400"
+      letter-spacing="1"
+      fill="#00D9FF"
+      text-anchor="end"
+      opacity="0.9"
+    >@prowaylab.com</text>
+
+    <!-- Small red dot before @prowaylab -->
+    <circle cx="1128" cy="564" r="3" fill="#E31E24" opacity="0.8" filter="url(#redGlow)"/>
+
+  </g>
+
+</svg>

@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Panel Admin &mdash; ProWay Lab</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!--
+        NOTA DE PRODUCCION:
+        Este panel admin usa datos mock (hardcodeados).
+        Para produccion real, conectar a:
+        - API backend que lea formularios de Formspree/webhook
+        - Base de datos (Supabase, Firebase, o SQL propio)
+        - PayU Latam API para datos de pagos reales
+        - Sistema de notificaciones push
+        - WebSockets para actualizaciones en tiempo real
+    -->
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:        #0C0C0F;
+            --surface:   #111114;
+            --surface-2: #191920;
+            --border:    #252528;
+            --blue:      #00D9FF;
+            --blue-dim:  rgba(0,217,255,0.08);
+            --red:       #E31E24;
+            --green:     #00FF87;
+            --white:     #FFFFFF;
+            --gray:      #A1A1AA;
+            --dark:      #52525B;
+            --font-h:    'Montserrat', sans-serif;
+            --font-b:    'Inter', sans-serif;
+            --font-m:    'Roboto Mono', monospace;
+            --sidebar-w: 260px;
+        }
+
+        html, body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--white);
+            font-family: var(--font-b);
+        }
+
+        /* ════════════════════════════════
+           SIDEBAR
+        ════════════════════════════════ */
+        .admin-sidebar {
+            position: fixed;
+            top: 0; left: 0;
+            width: var(--sidebar-w);
+            height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+        }
+
+        .sidebar-header {
+            padding: 28px 20px 24px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-logo-wordmark {
+            font-family: var(--font-h);
+            font-weight: 900;
+            font-size: 15px;
+            letter-spacing: 0.1em;
+            color: var(--white);
+        }
+
+        .sidebar-logo-wordmark .accent { color: var(--blue); }
+
+        .sidebar-badge {
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.14em;
+            color: var(--dark);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-section-label {
+            font-family: var(--font-m);
+            font-size: 8px;
+            letter-spacing: 0.2em;
+            color: var(--dark);
+            padding: 12px 20px 6px;
+            text-transform: uppercase;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 20px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.18s, background 0.18s, border-color 0.18s;
+            border-left: 2px solid transparent;
+            user-select: none;
+            position: relative;
+        }
+
+        .sidebar-item:hover {
+            color: var(--white);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .sidebar-item.active {
+            color: var(--blue);
+            background: var(--blue-dim);
+            border-left-color: var(--blue);
+        }
+
+        .sidebar-item-icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-item-text {
+            font-family: var(--font-b);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .sidebar-item-count {
+            margin-left: auto;
+            font-family: var(--font-m);
+            font-size: 9px;
+            background: var(--blue-dim);
+            color: var(--blue);
+            padding: 2px 7px;
+            border-radius: 10px;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .sidebar-user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--blue-dim);
+            border: 1px solid rgba(0,217,255,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-h);
+            font-weight: 800;
+            font-size: 12px;
+            color: var(--blue);
+            flex-shrink: 0;
+        }
+
+        .sidebar-user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+
+        .sidebar-user-name {
+            font-family: var(--font-b);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--white);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar-user-role {
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            color: var(--dark);
+        }
+
+        .btn-logout {
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 9px 16px;
+            font-family: var(--font-b);
+            font-size: 12px;
+            color: var(--dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: color 0.18s, border-color 0.18s;
+        }
+
+        .btn-logout:hover {
+            color: var(--red);
+            border-color: rgba(227,30,36,0.4);
+        }
+
+        /* Mobile overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 99;
+        }
+
+        /* ════════════════════════════════
+           MAIN CONTENT
+        ════════════════════════════════ */
+        .admin-content {
+            margin-left: var(--sidebar-w);
+            min-height: 100vh;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top bar */
+        .admin-topbar {
+            position: sticky;
+            top: 0;
+            background: rgba(12,12,15,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 32px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 50;
+            flex-shrink: 0;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .topbar-breadcrumb {
+            font-family: var(--font-m);
+            font-size: 11px;
+            letter-spacing: 0.12em;
+            color: var(--dark);
+        }
+
+        .topbar-breadcrumb span {
+            color: var(--blue);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .topbar-date {
+            font-family: var(--font-m);
+            font-size: 10px;
+            color: var(--dark);
+        }
+
+        .topbar-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.5; transform: scale(0.7); }
+        }
+
+        /* Page area */
+        .admin-page {
+            padding: 32px;
+            flex: 1;
+        }
+
+        .section-view { display: none; }
+        .section-view.active { display: block; }
+
+        /* ════════════════════════════════
+           SECTION HEADER
+        ════════════════════════════════ */
+        .section-header {
+            margin-bottom: 28px;
+        }
+
+        .section-title {
+            font-family: var(--font-h);
+            font-weight: 800;
+            font-size: 22px;
+            letter-spacing: 0.03em;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+
+        .section-subtitle {
+            font-family: var(--font-m);
+            font-size: 10px;
+            letter-spacing: 0.14em;
+            color: var(--dark);
+        }
+
+        .section-divider {
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 28px;
+        }
+
+        /* ════════════════════════════════
+           STAT CARDS
+        ════════════════════════════════ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 22px 24px;
+            transition: border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .stat-card:hover { border-color: var(--blue); }
+        .stat-card:hover::before { opacity: 1; background: linear-gradient(90deg, transparent, var(--blue), transparent); }
+
+        .stat-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .stat-card-label {
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.18em;
+            color: var(--dark);
+            text-transform: uppercase;
+        }
+
+        .stat-card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-card-icon.blue  { background: var(--blue-dim); color: var(--blue); }
+        .stat-card-icon.green { background: rgba(0,255,135,0.08); color: var(--green); }
+        .stat-card-icon.red   { background: rgba(227,30,36,0.08); color: var(--red); }
+        .stat-card-icon.gray  { background: var(--surface-2); color: var(--gray); }
+
+        .stat-card-value {
+            font-family: var(--font-h);
+            font-weight: 800;
+            font-size: 30px;
+            color: var(--white);
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-card-value .currency {
+            font-size: 16px;
+            color: var(--gray);
+            font-weight: 600;
+            margin-right: 2px;
+        }
+
+        .stat-card-delta {
+            font-family: var(--font-m);
+            font-size: 10px;
+            color: var(--green);
+        }
+
+        /* ════════════════════════════════
+           TABLES
+        ════════════════════════════════ */
+        .table-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+
+        .table-card-header {
+            padding: 18px 24px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .table-card-title {
+            font-family: var(--font-h);
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.06em;
+            color: var(--white);
+        }
+
+        .table-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .table-search {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 7px 12px;
+            font-family: var(--font-b);
+            font-size: 12px;
+            color: var(--white);
+            outline: none;
+            width: 180px;
+            transition: border-color 0.2s;
+        }
+
+        .table-search::placeholder { color: var(--dark); }
+        .table-search:focus { border-color: var(--blue); }
+
+        .table-filter {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 7px 12px;
+            font-family: var(--font-b);
+            font-size: 12px;
+            color: var(--gray);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-export {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 7px 14px;
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.16em;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.18s, border-color 0.18s;
+        }
+
+        .btn-export:hover { color: var(--blue); border-color: rgba(0,217,255,0.4); }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: var(--surface-2);
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.18em;
+            color: var(--dark);
+            text-transform: uppercase;
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 13px 16px;
+            border-bottom: 1px solid rgba(37,37,40,0.6);
+            font-family: var(--font-b);
+            font-size: 13px;
+            color: var(--gray);
+            vertical-align: middle;
+        }
+
+        .data-table tr:last-child td { border-bottom: none; }
+
+        .data-table tr:hover td {
+            background: rgba(255,255,255,0.015);
+            color: var(--white);
+        }
+
+        .data-table .col-date {
+            font-family: var(--font-m);
+            font-size: 11px;
+            color: var(--dark);
+            white-space: nowrap;
+        }
+
+        .data-table .col-name {
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            padding: 3px 9px;
+            border-radius: 2px;
+            white-space: nowrap;
+        }
+
+        .badge-new     { background: var(--blue-dim);              color: var(--blue); }
+        .badge-active  { background: rgba(0,255,135,0.1);          color: var(--green); }
+        .badge-process { background: rgba(255,193,7,0.1);          color: #FFC107; }
+        .badge-closed  { background: var(--surface-2);             color: var(--dark); }
+        .badge-paid    { background: rgba(0,255,135,0.1);          color: var(--green); }
+        .badge-pending { background: rgba(255,193,7,0.1);          color: #FFC107; }
+
+        /* Action buttons */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            padding: 4px 10px;
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.1em;
+            color: var(--gray);
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.18s, border-color 0.18s;
+            margin-right: 4px;
+        }
+
+        .btn-action:hover { color: var(--blue); border-color: rgba(0,217,255,0.35); }
+        .btn-action.wa:hover { color: var(--green); border-color: rgba(0,255,135,0.35); }
+
+        /* ════════════════════════════════
+           BAR CHART (CSS pure)
+        ════════════════════════════════ */
+        .chart-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 22px 24px;
+            margin-bottom: 28px;
+        }
+
+        .chart-title {
+            font-family: var(--font-h);
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.06em;
+            color: var(--white);
+            margin-bottom: 24px;
+        }
+
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            gap: 14px;
+            height: 160px;
+            padding-bottom: 32px;
+            position: relative;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Horizontal grid lines */
+        .bar-chart::before {
+            content: '';
+            position: absolute;
+            left: 0; right: 0;
+            bottom: 32px;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .bar-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .bar-value {
+            font-family: var(--font-m);
+            font-size: 10px;
+            color: var(--blue);
+        }
+
+        .bar-track {
+            width: 100%;
+            max-width: 52px;
+            background: var(--surface-2);
+            border-radius: 3px 3px 0 0;
+            position: relative;
+            transition: opacity 0.2s;
+        }
+
+        .bar-track:hover { opacity: 0.8; }
+
+        .bar-fill {
+            width: 100%;
+            border-radius: 3px 3px 0 0;
+            background: linear-gradient(180deg, var(--blue) 0%, rgba(0,217,255,0.35) 100%);
+            transition: height 0.6s cubic-bezier(.4,0,.2,1);
+        }
+
+        .bar-label {
+            font-family: var(--font-m);
+            font-size: 8px;
+            letter-spacing: 0.1em;
+            color: var(--dark);
+            text-align: center;
+            margin-top: 8px;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        /* ════════════════════════════════
+           CLIENT CARDS GRID
+        ════════════════════════════════ */
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .client-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 22px 20px;
+            transition: border-color 0.2s;
+        }
+
+        .client-card:hover { border-color: var(--blue); }
+
+        .client-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .client-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--blue-dim);
+            border: 1px solid rgba(0,217,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-h);
+            font-weight: 800;
+            font-size: 15px;
+            color: var(--blue);
+            flex-shrink: 0;
+        }
+
+        .client-name {
+            font-family: var(--font-b);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--white);
+            margin-bottom: 2px;
+        }
+
+        .client-service {
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            color: var(--blue);
+        }
+
+        .client-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        .client-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .client-meta-label {
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            color: var(--dark);
+        }
+
+        .client-meta-value {
+            font-family: var(--font-b);
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .client-meta-value.warn { color: #FFC107; }
+
+        .btn-wa-client {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            background: rgba(0,255,135,0.06);
+            border: 1px solid rgba(0,255,135,0.2);
+            border-radius: 4px;
+            padding: 8px;
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            color: var(--green);
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+
+        .btn-wa-client:hover { background: rgba(0,255,135,0.12); }
+
+        /* ════════════════════════════════
+           PAGOS SECTION
+        ════════════════════════════════ */
+        .payments-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .pay-summary-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        .pay-summary-label {
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.16em;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .pay-summary-value {
+            font-family: var(--font-h);
+            font-weight: 800;
+            font-size: 22px;
+            color: var(--white);
+            line-height: 1;
+        }
+
+        .pay-summary-value.green { color: var(--green); }
+        .pay-summary-value.yellow { color: #FFC107; }
+
+        .pay-summary-sub {
+            font-family: var(--font-m);
+            font-size: 9px;
+            color: var(--dark);
+            margin-top: 6px;
+        }
+
+        /* ════════════════════════════════
+           COMING SOON
+        ════════════════════════════════ */
+        .coming-soon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 360px;
+            gap: 16px;
+            color: var(--dark);
+        }
+
+        .coming-soon-icon {
+            width: 56px;
+            height: 56px;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: rotateSlow 8s linear infinite;
+        }
+
+        @keyframes rotateSlow { to { transform: rotate(360deg); } }
+
+        .coming-soon-title {
+            font-family: var(--font-h);
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--gray);
+            letter-spacing: 0.06em;
+        }
+
+        .coming-soon-sub {
+            font-family: var(--font-m);
+            font-size: 10px;
+            letter-spacing: 0.16em;
+            color: var(--dark);
+        }
+
+        /* ════════════════════════════════
+           RESPONSIVE
+        ════════════════════════════════ */
+        @media (max-width: 1199px) {
+            .stats-grid   { grid-template-columns: repeat(2, 1fr); }
+            .clients-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 900px) {
+            :root { --sidebar-w: 0px; }
+
+            .admin-sidebar {
+                transform: translateX(-260px);
+                width: 260px;
+            }
+
+            .admin-sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.open { display: block; }
+
+            .admin-content { margin-left: 0; }
+
+            .btn-menu-toggle { display: flex; }
+
+            .admin-page { padding: 20px 16px; }
+
+            .topbar-date { display: none; }
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid       { grid-template-columns: 1fr 1fr; }
+            .clients-grid     { grid-template-columns: 1fr; }
+            .payments-summary { grid-template-columns: 1fr; }
+            .stat-card-value  { font-size: 22px; }
+        }
+
+        @media (max-width: 440px) {
+            .stats-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Row hidden by table filter */
+        .row-hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<!-- Auth guard -->
+<script>
+    (function() {
+        var auth = localStorage.getItem('pw_admin_auth');
+        if (!auth) { window.location.href = 'login.html'; }
+    }());
+</script>
+
+<!-- Mobile sidebar overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ════════════════════════════════
+     SIDEBAR
+════════════════════════════════ -->
+<nav class="admin-sidebar" id="adminSidebar" aria-label="Navegacion principal">
+
+    <div class="sidebar-header">
+        <div class="sidebar-logo">
+            <img src="logo-proway.png" alt="ProWay Lab" style="height:24px;width:auto;object-fit:contain;">
+        </div>
+        <div class="sidebar-badge">PANEL ADMINISTRATIVO v1.0</div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="sidebar-section-label">PRINCIPAL</div>
+
+        <div class="sidebar-item active" data-section="dashboard" role="button" tabindex="0" aria-current="page">
+            <svg class="sidebar-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+            </svg>
+            <span class="sidebar-item-text">Dashboard</span>
+        </div>
+
+        <div class="sidebar-item" data-section="leads" role="button" tabindex="0">
+            <svg class="sidebar-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+                <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/>
+            </svg>
+            <span class="sidebar-item-text">Leads / Solicitudes</span>
+            <span class="sidebar-item-count">12</span>
+        </div>
+
+        <div class="sidebar-item" data-section="clientes" role="button" tabindex="0">
+            <svg class="sidebar-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+            <span class="sidebar-item-text">Clientes Activos</span>
+            <span class="sidebar-item-count">6</span>
+        </div>
+
+        <div class="sidebar-section-label">FINANZAS</div>
+
+        <div class="sidebar-item" data-section="pagos" role="button" tabindex="0">
+            <svg class="sidebar-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                <line x1="1" y1="10" x2="23" y2="10"/>
+            </svg>
+            <span class="sidebar-item-text">Pagos</span>
+        </div>
+
+        <div class="sidebar-section-label">PRODUCCION</div>
+
+        <div class="sidebar-item" data-section="contenido" role="button" tabindex="0">
+            <svg class="sidebar-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/>
+                <line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/>
+                <line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/>
+            </svg>
+            <span class="sidebar-item-text">Contenido / Proyectos</span>
+        </div>
+
+        <div class="sidebar-item" data-section="analytics" role="button" tabindex="0">
+            <svg class="sidebar-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            <span class="sidebar-item-text">Analytics</span>
+        </div>
+
+        <div class="sidebar-section-label">SISTEMA</div>
+
+        <div class="sidebar-item" data-section="config" role="button" tabindex="0">
+            <svg class="sidebar-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+            </svg>
+            <span class="sidebar-item-text">Configuracion</span>
+        </div>
+    </nav>
+
+    <div class="sidebar-footer">
+        <div class="sidebar-user">
+            <div class="sidebar-user-avatar" id="userAvatarLetter">A</div>
+            <div class="sidebar-user-info">
+                <div class="sidebar-user-name" id="adminUser">admin</div>
+                <div class="sidebar-user-role">ADMINISTRADOR</div>
+            </div>
+        </div>
+        <button class="btn-logout" id="logoutBtn" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Cerrar sesion
+        </button>
+    </div>
+</nav>
+
+<!-- ════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════ -->
+<div class="admin-content">
+
+    <!-- Top bar -->
+    <header class="admin-topbar">
+        <div class="topbar-left">
+            <button class="btn-menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+            <div class="topbar-breadcrumb">PROWAY.LAB &nbsp;/&nbsp; <span id="breadcrumbLabel">Dashboard</span></div>
+        </div>
+        <div class="topbar-right">
+            <span class="topbar-date" id="topbarDate"></span>
+            <div class="topbar-dot" title="Sistema operativo"></div>
+        </div>
+    </header>
+
+    <main class="admin-page">
+
+        <!-- ════════════════════════════════
+             DASHBOARD
+        ════════════════════════════════ -->
+        <section class="section-view active" id="sec-dashboard">
+            <div class="section-header">
+                <h1 class="section-title">Dashboard</h1>
+                <p class="section-subtitle">RESUMEN OPERATIVO &nbsp;&middot;&nbsp; PROWAY LAB</p>
+            </div>
+            <div class="section-divider"></div>
+
+            <!-- Stat cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-label">Total Leads</span>
+                        <div class="stat-card-icon blue">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-card-value">47</div>
+                    <div class="stat-card-delta">+8 este mes</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-label">Clientes Activos</span>
+                        <div class="stat-card-icon green">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-card-value" style="color:var(--green)">12</div>
+                    <div class="stat-card-delta">Tasa retencion: 91%</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-label">Pagos este mes</span>
+                        <div class="stat-card-icon blue">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <line x1="12" y1="1" x2="12" y2="23"/>
+                                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-card-value"><span class="currency">COP</span>4.8M</div>
+                    <div class="stat-card-delta">+12% vs mes anterior</div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-label">Conversion</span>
+                        <div class="stat-card-icon gray">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                                <polyline points="17 6 23 6 23 12"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="stat-card-value">25.5<span style="font-size:18px;color:var(--gray)">%</span></div>
+                    <div class="stat-card-delta">+3.2pp este mes</div>
+                </div>
+            </div>
+
+            <!-- Recent solicitudes table -->
+            <div class="table-card">
+                <div class="table-card-header">
+                    <span class="table-card-title">ULTIMAS SOLICITUDES</span>
+                    <div class="table-controls">
+                        <button class="btn-export" type="button" id="dashExportBtn">EXPORTAR CSV</button>
+                    </div>
+                </div>
+                <table class="data-table" id="dashTable">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Servicio</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashTbody">
+                        <tr>
+                            <td class="col-date">18/02/2026</td>
+                            <td class="col-name">Laura Reyes</td>
+                            <td>Paquete Growth</td>
+                            <td><span class="badge badge-new">NUEVO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                                <a class="btn-action wa" href="https://wa.me/573001111111" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">17/02/2026</td>
+                            <td class="col-name">Carlos M.</td>
+                            <td>Video Elite</td>
+                            <td><span class="badge badge-process">EN PROCESO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                                <a class="btn-action wa" href="https://wa.me/573002222222" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">16/02/2026</td>
+                            <td class="col-name">Valeria T.</td>
+                            <td>Paquete Authority</td>
+                            <td><span class="badge badge-active">ACTIVO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">15/02/2026</td>
+                            <td class="col-name">Diana P.</td>
+                            <td>Video Esencial</td>
+                            <td><span class="badge badge-new">NUEVO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                                <a class="btn-action wa" href="https://wa.me/573003333333" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">14/02/2026</td>
+                            <td class="col-name">Roberto S.</td>
+                            <td>Paquete Starter</td>
+                            <td><span class="badge badge-closed">CERRADO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Bar chart -->
+            <div class="chart-card">
+                <div class="chart-title">LEADS POR SERVICIO</div>
+                <div class="bar-chart" id="barChart" aria-label="Grafica de barras leads por servicio"></div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════
+             LEADS
+        ════════════════════════════════ -->
+        <section class="section-view" id="sec-leads">
+            <div class="section-header">
+                <h1 class="section-title">Leads / Solicitudes</h1>
+                <p class="section-subtitle">TODAS LAS SOLICITUDES REGISTRADAS</p>
+            </div>
+            <div class="section-divider"></div>
+
+            <div class="table-card">
+                <div class="table-card-header">
+                    <span class="table-card-title">REGISTRO COMPLETO</span>
+                    <div class="table-controls">
+                        <input class="table-search" type="text" id="leadsSearch" placeholder="Buscar por nombre..." aria-label="Buscar lead">
+                        <select class="table-filter" id="leadsFilter" aria-label="Filtrar por estado">
+                            <option value="">Todos los estados</option>
+                            <option value="NUEVO">Nuevo</option>
+                            <option value="EN PROCESO">En proceso</option>
+                            <option value="ACTIVO">Activo</option>
+                            <option value="CERRADO">Cerrado</option>
+                        </select>
+                        <button class="btn-export" type="button" id="leadsExportBtn">EXPORTAR CSV</button>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Servicio</th>
+                            <th>Ciudad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leadsTbody">
+                        <tr data-estado="NUEVO" data-nombre="Laura Reyes">
+                            <td class="col-date">18/02/2026</td>
+                            <td class="col-name">Laura Reyes</td>
+                            <td>Paquete Growth</td>
+                            <td>Bogota</td>
+                            <td><span class="badge badge-new">NUEVO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                                <a class="btn-action wa" href="https://wa.me/573001111111" target="_blank" rel="noopener noreferrer">WA</a>
+                            </td>
+                        </tr>
+                        <tr data-estado="EN PROCESO" data-nombre="Carlos Morales">
+                            <td class="col-date">17/02/2026</td>
+                            <td class="col-name">Carlos Morales</td>
+                            <td>Video Elite</td>
+                            <td>Medellin</td>
+                            <td><span class="badge badge-process">EN PROCESO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                                <a class="btn-action wa" href="https://wa.me/573002222222" target="_blank" rel="noopener noreferrer">WA</a>
+                            </td>
+                        </tr>
+                        <tr data-estado="ACTIVO" data-nombre="Valeria Torres">
+                            <td class="col-date">16/02/2026</td>
+                            <td class="col-name">Valeria Torres</td>
+                            <td>Paquete Authority</td>
+                            <td>Cali</td>
+                            <td><span class="badge badge-active">ACTIVO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                            </td>
+                        </tr>
+                        <tr data-estado="NUEVO" data-nombre="Diana Perez">
+                            <td class="col-date">15/02/2026</td>
+                            <td class="col-name">Diana Perez</td>
+                            <td>Video Esencial</td>
+                            <td>Bogota</td>
+                            <td><span class="badge badge-new">NUEVO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                                <a class="btn-action wa" href="https://wa.me/573003333333" target="_blank" rel="noopener noreferrer">WA</a>
+                            </td>
+                        </tr>
+                        <tr data-estado="CERRADO" data-nombre="Roberto Silva">
+                            <td class="col-date">14/02/2026</td>
+                            <td class="col-name">Roberto Silva</td>
+                            <td>Paquete Starter</td>
+                            <td>Barranquilla</td>
+                            <td><span class="badge badge-closed">CERRADO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                            </td>
+                        </tr>
+                        <tr data-estado="EN PROCESO" data-nombre="Marcela Rios">
+                            <td class="col-date">13/02/2026</td>
+                            <td class="col-name">Marcela Rios</td>
+                            <td>Video Pro</td>
+                            <td>Bogota</td>
+                            <td><span class="badge badge-process">EN PROCESO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                                <a class="btn-action wa" href="https://wa.me/573004444444" target="_blank" rel="noopener noreferrer">WA</a>
+                            </td>
+                        </tr>
+                        <tr data-estado="ACTIVO" data-nombre="Andres Herrera">
+                            <td class="col-date">12/02/2026</td>
+                            <td class="col-name">Andres Herrera</td>
+                            <td>Paquete Growth</td>
+                            <td>Medellin</td>
+                            <td><span class="badge badge-active">ACTIVO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                            </td>
+                        </tr>
+                        <tr data-estado="NUEVO" data-nombre="Sofia Vargas">
+                            <td class="col-date">11/02/2026</td>
+                            <td class="col-name">Sofia Vargas</td>
+                            <td>Auditoria ProWay</td>
+                            <td>Cali</td>
+                            <td><span class="badge badge-new">NUEVO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                                <a class="btn-action wa" href="https://wa.me/573005555555" target="_blank" rel="noopener noreferrer">WA</a>
+                            </td>
+                        </tr>
+                        <tr data-estado="CERRADO" data-nombre="Felipe Castro">
+                            <td class="col-date">10/02/2026</td>
+                            <td class="col-name">Felipe Castro</td>
+                            <td>Video Esencial</td>
+                            <td>Bogota</td>
+                            <td><span class="badge badge-closed">CERRADO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                            </td>
+                        </tr>
+                        <tr data-estado="ACTIVO" data-nombre="Camila Jimenez">
+                            <td class="col-date">08/02/2026</td>
+                            <td class="col-name">Camila Jimenez</td>
+                            <td>Paquete Authority</td>
+                            <td>Bogota</td>
+                            <td><span class="badge badge-active">ACTIVO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                            </td>
+                        </tr>
+                        <tr data-estado="EN PROCESO" data-nombre="Juan Mendez">
+                            <td class="col-date">06/02/2026</td>
+                            <td class="col-name">Juan Mendez</td>
+                            <td>Video Elite</td>
+                            <td>Cali</td>
+                            <td><span class="badge badge-process">EN PROCESO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                                <a class="btn-action wa" href="https://wa.me/573006666666" target="_blank" rel="noopener noreferrer">WA</a>
+                            </td>
+                        </tr>
+                        <tr data-estado="NUEVO" data-nombre="Paola Gutierrez">
+                            <td class="col-date">04/02/2026</td>
+                            <td class="col-name">Paola Gutierrez</td>
+                            <td>Paquete Starter</td>
+                            <td>Bogota</td>
+                            <td><span class="badge badge-new">NUEVO</span></td>
+                            <td>
+                                <button class="btn-action" type="button">Ver</button>
+                                <a class="btn-action wa" href="https://wa.me/573007777777" target="_blank" rel="noopener noreferrer">WA</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════
+             CLIENTES ACTIVOS
+        ════════════════════════════════ -->
+        <section class="section-view" id="sec-clientes">
+            <div class="section-header">
+                <h1 class="section-title">Clientes Activos</h1>
+                <p class="section-subtitle">6 CLIENTES ACTIVOS EN GESTION</p>
+            </div>
+            <div class="section-divider"></div>
+
+            <div class="clients-grid">
+
+                <div class="client-card">
+                    <div class="client-card-header">
+                        <div class="client-avatar">V</div>
+                        <div>
+                            <div class="client-name">Valeria Torres</div>
+                            <div class="client-service">PAQUETE AUTHORITY</div>
+                        </div>
+                    </div>
+                    <div class="client-meta">
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">INICIO</span>
+                            <span class="client-meta-value">01/01/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">VENCE</span>
+                            <span class="client-meta-value warn">01/03/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">CIUDAD</span>
+                            <span class="client-meta-value">Cali</span>
+                        </div>
+                    </div>
+                    <a class="btn-wa-client" href="https://wa.me/573001234567" target="_blank" rel="noopener noreferrer">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Contactar por WhatsApp
+                    </a>
+                </div>
+
+                <div class="client-card">
+                    <div class="client-card-header">
+                        <div class="client-avatar">A</div>
+                        <div>
+                            <div class="client-name">Andres Herrera</div>
+                            <div class="client-service">PAQUETE GROWTH</div>
+                        </div>
+                    </div>
+                    <div class="client-meta">
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">INICIO</span>
+                            <span class="client-meta-value">05/01/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">VENCE</span>
+                            <span class="client-meta-value">05/03/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">CIUDAD</span>
+                            <span class="client-meta-value">Medellin</span>
+                        </div>
+                    </div>
+                    <a class="btn-wa-client" href="https://wa.me/573001234568" target="_blank" rel="noopener noreferrer">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Contactar por WhatsApp
+                    </a>
+                </div>
+
+                <div class="client-card">
+                    <div class="client-card-header">
+                        <div class="client-avatar">C</div>
+                        <div>
+                            <div class="client-name">Camila Jimenez</div>
+                            <div class="client-service">PAQUETE AUTHORITY</div>
+                        </div>
+                    </div>
+                    <div class="client-meta">
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">INICIO</span>
+                            <span class="client-meta-value">08/01/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">VENCE</span>
+                            <span class="client-meta-value">08/03/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">CIUDAD</span>
+                            <span class="client-meta-value">Bogota</span>
+                        </div>
+                    </div>
+                    <a class="btn-wa-client" href="https://wa.me/573001234569" target="_blank" rel="noopener noreferrer">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Contactar por WhatsApp
+                    </a>
+                </div>
+
+                <div class="client-card">
+                    <div class="client-card-header">
+                        <div class="client-avatar">M</div>
+                        <div>
+                            <div class="client-name">Marcela Rios</div>
+                            <div class="client-service">VIDEO PRO</div>
+                        </div>
+                    </div>
+                    <div class="client-meta">
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">INICIO</span>
+                            <span class="client-meta-value">10/01/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">VENCE</span>
+                            <span class="client-meta-value">10/03/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">CIUDAD</span>
+                            <span class="client-meta-value">Bogota</span>
+                        </div>
+                    </div>
+                    <a class="btn-wa-client" href="https://wa.me/573001234570" target="_blank" rel="noopener noreferrer">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Contactar por WhatsApp
+                    </a>
+                </div>
+
+                <div class="client-card">
+                    <div class="client-card-header">
+                        <div class="client-avatar">J</div>
+                        <div>
+                            <div class="client-name">Juan Mendez</div>
+                            <div class="client-service">VIDEO ELITE</div>
+                        </div>
+                    </div>
+                    <div class="client-meta">
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">INICIO</span>
+                            <span class="client-meta-value">15/01/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">VENCE</span>
+                            <span class="client-meta-value">15/03/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">CIUDAD</span>
+                            <span class="client-meta-value">Cali</span>
+                        </div>
+                    </div>
+                    <a class="btn-wa-client" href="https://wa.me/573001234571" target="_blank" rel="noopener noreferrer">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Contactar por WhatsApp
+                    </a>
+                </div>
+
+                <div class="client-card">
+                    <div class="client-card-header">
+                        <div class="client-avatar">S</div>
+                        <div>
+                            <div class="client-name">Sofia Vargas</div>
+                            <div class="client-service">AUDITORIA PROWAY</div>
+                        </div>
+                    </div>
+                    <div class="client-meta">
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">INICIO</span>
+                            <span class="client-meta-value">20/01/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">VENCE</span>
+                            <span class="client-meta-value warn">25/02/2026</span>
+                        </div>
+                        <div class="client-meta-row">
+                            <span class="client-meta-label">CIUDAD</span>
+                            <span class="client-meta-value">Cali</span>
+                        </div>
+                    </div>
+                    <a class="btn-wa-client" href="https://wa.me/573001234572" target="_blank" rel="noopener noreferrer">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        Contactar por WhatsApp
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════
+             PAGOS
+        ════════════════════════════════ -->
+        <section class="section-view" id="sec-pagos">
+            <div class="section-header">
+                <h1 class="section-title">Pagos</h1>
+                <p class="section-subtitle">REGISTRO FINANCIERO &nbsp;&middot;&nbsp; FEBRERO 2026</p>
+            </div>
+            <div class="section-divider"></div>
+
+            <div class="payments-summary">
+                <div class="pay-summary-card">
+                    <div class="pay-summary-label">TOTAL RECIBIDO (MES)</div>
+                    <div class="pay-summary-value green">$4.800.000</div>
+                    <div class="pay-summary-sub">COP &nbsp;&middot;&nbsp; 10 transacciones</div>
+                </div>
+                <div class="pay-summary-card">
+                    <div class="pay-summary-label">PENDIENTES DE COBRO</div>
+                    <div class="pay-summary-value yellow">$1.200.000</div>
+                    <div class="pay-summary-sub">COP &nbsp;&middot;&nbsp; 3 clientes</div>
+                </div>
+                <div class="pay-summary-card">
+                    <div class="pay-summary-label">ACUMULADO 2026</div>
+                    <div class="pay-summary-value">$12.400.000</div>
+                    <div class="pay-summary-sub">COP &nbsp;&middot;&nbsp; Meta: $20M</div>
+                </div>
+            </div>
+
+            <div class="table-card">
+                <div class="table-card-header">
+                    <span class="table-card-title">ULTIMOS PAGOS</span>
+                    <div class="table-controls">
+                        <a class="btn-export" href="https://dashboard.payulatam.com" target="_blank" rel="noopener noreferrer">VER EN PAYU</a>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Servicio</th>
+                            <th>Monto COP</th>
+                            <th>Metodo</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-date">17/02/2026</td>
+                            <td class="col-name">Valeria Torres</td>
+                            <td>Paquete Authority</td>
+                            <td style="font-family:var(--font-m);color:var(--green)">$2.200.000</td>
+                            <td>Transferencia</td>
+                            <td><span class="badge badge-paid">PAGADO</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">15/02/2026</td>
+                            <td class="col-name">Andres Herrera</td>
+                            <td>Paquete Growth</td>
+                            <td style="font-family:var(--font-m);color:var(--green)">$1.600.000</td>
+                            <td>PayU</td>
+                            <td><span class="badge badge-paid">PAGADO</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">13/02/2026</td>
+                            <td class="col-name">Camila Jimenez</td>
+                            <td>Paquete Authority</td>
+                            <td style="font-family:var(--font-m);color:var(--green)">$2.200.000</td>
+                            <td>Nequi</td>
+                            <td><span class="badge badge-paid">PAGADO</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">10/02/2026</td>
+                            <td class="col-name">Marcela Rios</td>
+                            <td>Video Pro</td>
+                            <td style="font-family:var(--font-m);color:var(--green)">$150.000</td>
+                            <td>Transferencia</td>
+                            <td><span class="badge badge-paid">PAGADO</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">08/02/2026</td>
+                            <td class="col-name">Juan Mendez</td>
+                            <td>Video Elite</td>
+                            <td style="font-family:var(--font-m);color:var(--green)">$250.000</td>
+                            <td>PayU</td>
+                            <td><span class="badge badge-paid">PAGADO</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">06/02/2026</td>
+                            <td class="col-name">Sofia Vargas</td>
+                            <td>Auditoria ProWay</td>
+                            <td style="font-family:var(--font-m);color:var(--green)">$200.000</td>
+                            <td>Daviplata</td>
+                            <td><span class="badge badge-paid">PAGADO</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">04/02/2026</td>
+                            <td class="col-name">Laura Reyes</td>
+                            <td>Paquete Growth</td>
+                            <td style="font-family:var(--font-m);color:#FFC107">$800.000</td>
+                            <td>Pendiente</td>
+                            <td><span class="badge badge-pending">PENDIENTE</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">02/02/2026</td>
+                            <td class="col-name">Carlos Morales</td>
+                            <td>Video Elite</td>
+                            <td style="font-family:var(--font-m);color:#FFC107">$250.000</td>
+                            <td>Pendiente</td>
+                            <td><span class="badge badge-pending">PENDIENTE</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">01/02/2026</td>
+                            <td class="col-name">Diana Perez</td>
+                            <td>Video Esencial</td>
+                            <td style="font-family:var(--font-m);color:#FFC107">$100.000</td>
+                            <td>Pendiente</td>
+                            <td><span class="badge badge-pending">PENDIENTE</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">01/02/2026</td>
+                            <td class="col-name">Roberto Silva</td>
+                            <td>Paquete Starter</td>
+                            <td style="font-family:var(--font-m);color:var(--dark)">$1.200.000</td>
+                            <td>Transferencia</td>
+                            <td><span class="badge badge-closed">CERRADO</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════
+             COMING SOON sections
+        ════════════════════════════════ -->
+        <section class="section-view" id="sec-contenido">
+            <div class="section-header">
+                <h1 class="section-title">Contenido / Proyectos</h1>
+                <p class="section-subtitle">GESTION DE PRODUCCION</p>
+            </div>
+            <div class="section-divider"></div>
+            <div class="coming-soon">
+                <div class="coming-soon-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--dark)" stroke-width="1.5" aria-hidden="true">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+                    </svg>
+                </div>
+                <div class="coming-soon-title">Seccion en Desarrollo</div>
+                <div class="coming-soon-sub">PROXIMAMENTE &nbsp;&middot;&nbsp; PROWAY LAB v1.1</div>
+            </div>
+        </section>
+
+        <section class="section-view" id="sec-analytics">
+            <div class="section-header">
+                <h1 class="section-title">Analytics</h1>
+                <p class="section-subtitle">METRICAS DE RENDIMIENTO</p>
+            </div>
+            <div class="section-divider"></div>
+            <div class="coming-soon">
+                <div class="coming-soon-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--dark)" stroke-width="1.5" aria-hidden="true">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                </div>
+                <div class="coming-soon-title">Seccion en Desarrollo</div>
+                <div class="coming-soon-sub">PROXIMAMENTE &nbsp;&middot;&nbsp; PROWAY LAB v1.1</div>
+            </div>
+        </section>
+
+        <section class="section-view" id="sec-config">
+            <div class="section-header">
+                <h1 class="section-title">Configuracion</h1>
+                <p class="section-subtitle">AJUSTES DEL SISTEMA</p>
+            </div>
+            <div class="section-divider"></div>
+            <div class="coming-soon">
+                <div class="coming-soon-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--dark)" stroke-width="1.5" aria-hidden="true">
+                        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                </div>
+                <div class="coming-soon-title">Seccion en Desarrollo</div>
+                <div class="coming-soon-sub">PROXIMAMENTE &nbsp;&middot;&nbsp; PROWAY LAB v1.1</div>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- ════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════ -->
+<script>
+    /* ─── AUTH & USER DISPLAY ─────────────────────────────── */
+    var storedUser = localStorage.getItem('pw_admin_user') || 'admin';
+
+    /* Set username in sidebar */
+    (function() {
+        var userEl   = document.getElementById('adminUser');
+        var avatarEl = document.getElementById('userAvatarLetter');
+        if (userEl)   { userEl.textContent   = storedUser; }
+        if (avatarEl) { avatarEl.textContent = storedUser.charAt(0).toUpperCase(); }
+    }());
+
+    /* Logout */
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('pw_admin_auth');
+        localStorage.removeItem('pw_admin_user');
+        localStorage.removeItem('pw_admin_keep');
+        window.location.href = 'login.html';
+    });
+
+    /* ─── DATE in topbar ─────────────────────────────────── */
+    (function() {
+        var el = document.getElementById('topbarDate');
+        if (!el) { return; }
+        var d   = new Date();
+        var day = String(d.getDate()).padStart(2, '0');
+        var mon = String(d.getMonth() + 1).padStart(2, '0');
+        var yr  = d.getFullYear();
+        el.textContent = day + '/' + mon + '/' + yr;
+    }());
+
+    /* ─── NAVIGATION ─────────────────────────────────────── */
+    var SECTION_LABELS = {
+        dashboard:  'Dashboard',
+        leads:      'Leads / Solicitudes',
+        clientes:   'Clientes Activos',
+        pagos:      'Pagos',
+        contenido:  'Contenido / Proyectos',
+        analytics:  'Analytics',
+        config:     'Configuracion'
+    };
+
+    function navigateTo(sectionId) {
+        /* Update sections */
+        var views = document.querySelectorAll('.section-view');
+        for (var i = 0; i < views.length; i++) {
+            views[i].classList.remove('active');
+        }
+        var target = document.getElementById('sec-' + sectionId);
+        if (target) { target.classList.add('active'); }
+
+        /* Update sidebar items */
+        var items = document.querySelectorAll('.sidebar-item');
+        for (var j = 0; j < items.length; j++) {
+            items[j].classList.remove('active');
+            items[j].removeAttribute('aria-current');
+            if (items[j].getAttribute('data-section') === sectionId) {
+                items[j].classList.add('active');
+                items[j].setAttribute('aria-current', 'page');
+            }
+        }
+
+        /* Update breadcrumb */
+        var bc = document.getElementById('breadcrumbLabel');
+        if (bc) { bc.textContent = SECTION_LABELS[sectionId] || sectionId; }
+
+        /* Close sidebar on mobile */
+        if (window.innerWidth <= 900) {
+            closeSidebar();
+        }
+    }
+
+    /* Bind sidebar item clicks */
+    var sidebarItems = document.querySelectorAll('.sidebar-item');
+    for (var si = 0; si < sidebarItems.length; si++) {
+        (function(item) {
+            item.addEventListener('click', function() {
+                navigateTo(item.getAttribute('data-section'));
+            });
+            item.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    navigateTo(item.getAttribute('data-section'));
+                }
+            });
+        }(sidebarItems[si]));
+    }
+
+    /* ─── MOBILE SIDEBAR ─────────────────────────────────── */
+    var sidebar  = document.getElementById('adminSidebar');
+    var overlay  = document.getElementById('sidebarOverlay');
+    var menuBtn  = document.getElementById('menuToggle');
+
+    function openSidebar() {
+        sidebar.classList.add('open');
+        overlay.classList.add('open');
+        menuBtn.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('open');
+        menuBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    menuBtn.addEventListener('click', function() {
+        if (sidebar.classList.contains('open')) { closeSidebar(); }
+        else { openSidebar(); }
+    });
+
+    overlay.addEventListener('click', closeSidebar);
+
+    /* ─── BAR CHART (CSS pure) ───────────────────────────── */
+    (function() {
+        var chartEl = document.getElementById('barChart');
+        if (!chartEl) { return; }
+
+        var data = [
+            { label: 'V.Esencial', value: 8,  max: 12 },
+            { label: 'V.Pro',      value: 12, max: 12 },
+            { label: 'V.Elite',    value: 7,  max: 12 },
+            { label: 'Starter',    value: 5,  max: 12 },
+            { label: 'Growth',     value: 10, max: 12 },
+            { label: 'Authority',  value: 5,  max: 12 }
+        ];
+
+        var chartHeight = 128; /* px available for bars */
+
+        data.forEach(function(d) {
+            var pct    = Math.round((d.value / d.max) * 100);
+            var barH   = Math.round((d.value / d.max) * chartHeight);
+
+            var wrap = document.createElement('div');
+            wrap.className = 'bar-wrap';
+
+            var valLabel = document.createElement('div');
+            valLabel.className = 'bar-value';
+            valLabel.textContent = d.value;
+
+            var track = document.createElement('div');
+            track.className = 'bar-track';
+            track.style.height = chartHeight + 'px';
+            track.setAttribute('role', 'img');
+            track.setAttribute('aria-label', d.label + ': ' + d.value + ' leads');
+
+            var fill = document.createElement('div');
+            fill.className = 'bar-fill';
+            fill.style.height = '0px';
+
+            /* Animate bars on load */
+            setTimeout(function() {
+                fill.style.height = barH + 'px';
+            }, 120);
+
+            var lblEl = document.createElement('div');
+            lblEl.className = 'bar-label';
+            lblEl.textContent = d.label;
+
+            track.appendChild(fill);
+            track.appendChild(lblEl);
+            wrap.appendChild(valLabel);
+            wrap.appendChild(track);
+            chartEl.appendChild(wrap);
+        });
+    }());
+
+    /* ─── LEADS FILTER & SEARCH ─────────────────────────── */
+    function filterLeadsTable() {
+        var searchVal  = document.getElementById('leadsSearch').value.toLowerCase().trim();
+        var filterVal  = document.getElementById('leadsFilter').value;
+        var rows       = document.querySelectorAll('#leadsTbody tr');
+
+        rows.forEach(function(row) {
+            var nombre = row.getAttribute('data-nombre') || '';
+            var estado = row.getAttribute('data-estado') || '';
+
+            var matchSearch = !searchVal || nombre.toLowerCase().indexOf(searchVal) !== -1;
+            var matchFilter = !filterVal || estado === filterVal;
+
+            if (matchSearch && matchFilter) {
+                row.classList.remove('row-hidden');
+            } else {
+                row.classList.add('row-hidden');
+            }
+        });
+    }
+
+    document.getElementById('leadsSearch').addEventListener('input', filterLeadsTable);
+    document.getElementById('leadsFilter').addEventListener('change', filterLeadsTable);
+
+    /* ─── CSV EXPORT ────────────────────────────────────── */
+    function exportTableToCSV(tbodyId, filename) {
+        var rows    = document.querySelectorAll('#' + tbodyId + ' tr:not(.row-hidden)');
+        var csvRows = ['Fecha,Nombre,Servicio,Estado'];
+
+        rows.forEach(function(row) {
+            var cells = row.querySelectorAll('td');
+            if (cells.length >= 4) {
+                var fecha    = cells[0].textContent.trim();
+                var nombre   = '"' + cells[1].textContent.trim() + '"';
+                var servicio = '"' + cells[2].textContent.trim() + '"';
+                /* Get badge text (estado) from span.badge */
+                var badgeEl  = cells[3].querySelector('.badge');
+                var estado   = badgeEl ? badgeEl.textContent.trim() : cells[3].textContent.trim();
+                csvRows.push([fecha, nombre, servicio, '"' + estado + '"'].join(','));
+            }
+        });
+
+        var csvContent = csvRows.join('\r\n');
+        var blob       = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        var url        = URL.createObjectURL(blob);
+        var link       = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    document.getElementById('leadsExportBtn').addEventListener('click', function() {
+        exportTableToCSV('leadsTbody', 'proway-leads-' + new Date().toISOString().slice(0,10) + '.csv');
+    });
+
+    document.getElementById('dashExportBtn').addEventListener('click', function() {
+        exportTableToCSV('dashTbody', 'proway-solicitudes-recientes.csv');
+    });
+</script>
+
+</body>
+</html>

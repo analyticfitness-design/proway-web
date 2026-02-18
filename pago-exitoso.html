@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Exitoso — ProWay Lab</title>
+    <meta name="description" content="Tu pago fue recibido. El equipo ProWay Lab se contactará contigo en las próximas 24 horas.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg:      #0C0C0F;
+            --surface: #111114;
+            --border:  #252528;
+            --blue:    #00D9FF;
+            --blue-glow: rgba(0,217,255,0.25);
+            --green:   #00FF87;
+            --white:   #FFFFFF;
+            --gray:    #A1A1AA;
+            --dark:    #52525B;
+            --font-h:  'Montserrat', sans-serif;
+            --font-b:  'Inter', sans-serif;
+            --font-m:  'Roboto Mono', monospace;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { font-size: 16px; }
+
+        body {
+            background: var(--bg);
+            color: var(--white);
+            font-family: var(--font-b);
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex; flex-direction: column;
+        }
+
+        /* Noise overlay */
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            background-size: 180px 180px;
+            pointer-events: none; z-index: 9999; opacity: 0.5;
+        }
+
+        /* ---- Navbar minimal ---- */
+        #nav {
+            background: rgba(12,12,15,0.96); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 0;
+        }
+        .nav-wrap {
+            max-width: 1300px; margin: 0 auto; padding: 0 32px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-wordmark {
+            font-family: var(--font-h); font-weight: 900; font-size: 17px;
+            letter-spacing: 0.18em; text-transform: uppercase; color: var(--white);
+            text-decoration: none;
+        }
+        .nav-wordmark b { color: var(--blue); }
+
+        /* ---- Main content ---- */
+        main {
+            flex: 1; display: flex; align-items: center; justify-content: center;
+            padding: 80px 32px;
+        }
+
+        .success-container {
+            max-width: 600px; width: 100%; text-align: center;
+        }
+
+        /* Animated checkmark */
+        .check-wrap {
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .check-ring {
+            width: 96px; height: 96px; border-radius: 50%;
+            border: 2px solid rgba(0,255,135,0.2);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            animation: ring-pulse 3s ease-in-out infinite;
+        }
+        @keyframes ring-pulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(0,255,135,0.0); }
+            50%      { box-shadow: 0 0 0 16px rgba(0,255,135,0.0); }
+        }
+
+        .check-inner {
+            width: 72px; height: 72px; border-radius: 50%;
+            background: rgba(0,255,135,0.08);
+            border: 2px solid var(--green);
+            display: flex; align-items: center; justify-content: center;
+            animation: check-glow 3s ease-in-out infinite;
+        }
+        @keyframes check-glow {
+            0%,100% { box-shadow: 0 0 20px rgba(0,255,135,0.15); }
+            50%      { box-shadow: 0 0 40px rgba(0,255,135,0.35); }
+        }
+
+        .check-svg {
+            width: 32px; height: 32px; color: var(--green);
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+            animation: draw-check 0.6s ease 0.3s forwards;
+        }
+        @keyframes draw-check {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .success-label {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.45em;
+            text-transform: uppercase; color: var(--green); margin-bottom: 16px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .success-label::before,
+        .success-label::after {
+            content: ''; width: 30px; height: 1px; background: rgba(0,255,135,0.4);
+        }
+
+        .success-title {
+            font-family: var(--font-h); font-weight: 900;
+            font-size: clamp(28px,5vw,52px); line-height: 0.95;
+            letter-spacing: -0.025em; text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .success-text {
+            font-size: 16px; line-height: 1.7; color: var(--gray);
+            margin-bottom: 40px;
+        }
+        .success-text strong { color: var(--white); }
+
+        /* Info cards */
+        .info-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 12px; margin-bottom: 40px;
+            text-align: left;
+        }
+        .info-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 16px 18px;
+            position: relative;
+        }
+        .info-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        }
+        .info-card.blue::before  { background: var(--blue); }
+        .info-card.green::before { background: var(--green); }
+        .ic-label {
+            font-family: var(--font-m); font-size: 8px; letter-spacing: 0.3em;
+            text-transform: uppercase; color: var(--dark); margin-bottom: 6px;
+        }
+        .ic-value {
+            font-family: var(--font-h); font-weight: 700; font-size: 14px;
+            letter-spacing: 0.04em; text-transform: uppercase;
+        }
+        .ic-value.blue  { color: var(--blue); }
+        .ic-value.green { color: var(--green); }
+
+        /* CTA button */
+        .btn-home {
+            display: inline-block;
+            font-family: var(--font-h); font-weight: 800; font-size: 12px;
+            letter-spacing: 0.18em; text-transform: uppercase; color: #0C0C0F;
+            background: var(--blue); padding: 16px 40px; text-decoration: none;
+            clip-path: polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+            transition: all 0.3s;
+        }
+        .btn-home:hover {
+            background: #33E4FF; transform: translateY(-2px);
+            box-shadow: 0 16px 48px rgba(0,217,255,0.4);
+        }
+
+        /* Footer minimal */
+        #footer {
+            background: var(--surface); border-top: 1px solid var(--border);
+            padding: 24px 0;
+        }
+        .ft-bot {
+            max-width: 1300px; margin: 0 auto; padding: 0 32px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .ft-copy {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.2em;
+            color: var(--dark); text-transform: uppercase;
+        }
+        .ft-lnk {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--dark); text-decoration: none;
+            transition: color 0.3s;
+        }
+        .ft-lnk:hover { color: var(--blue); }
+
+        @media (max-width: 480px) {
+            main { padding: 60px 20px; }
+            .info-grid { grid-template-columns: 1fr; }
+            .nav-wrap { padding: 0 20px; }
+        }
+
+        /* ================================================
+           RESPONSIVE MOBILE — CORRECCIONES
+           ================================================ */
+        @media (max-width: 768px) {
+            /* Evitar scroll horizontal */
+            html, body { overflow-x: hidden; }
+
+            /* Padding lateral mínimo 16px */
+            main { padding: 56px 16px; }
+            .nav-wrap { padding: 0 16px; }
+            .ft-bot { padding: 0 16px; }
+
+            /* Animación success: contener dentro del viewport */
+            .check-wrap { overflow: hidden; }
+            .check-ring {
+                width: 80px;
+                height: 80px;
+            }
+            .check-inner {
+                width: 60px;
+                height: 60px;
+            }
+            .check-svg {
+                width: 26px;
+                height: 26px;
+            }
+
+            /* Success container: ancho completo */
+            .success-container {
+                max-width: 100%;
+                padding: 0 4px;
+            }
+
+            /* Texto legible */
+            .success-text { font-size: 15px; }
+
+            /* Info grid: 1 columna */
+            .info-grid { grid-template-columns: 1fr; gap: 10px; }
+
+            /* CTA button: full width en mobile */
+            .btn-home {
+                display: block;
+                width: 100%;
+                text-align: center;
+                padding: 18px 24px;
+                box-sizing: border-box;
+                /* clip-path incompatible con bordes redondeados en width:100%, simplificar */
+                clip-path: none;
+                border-radius: 2px;
+                min-height: 56px;
+                line-height: 1.3;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Label decorativo legible */
+            .success-label { font-size: 10px; letter-spacing: 0.3em; }
+
+            /* Margen inferior del checkmark */
+            .check-wrap { margin-bottom: 28px; }
+
+            /* Texto de retorno en navbar: más visible */
+            #nav a:last-child {
+                font-size: 10px;
+                letter-spacing: 0.15em;
+            }
+        }
+
+        @media (max-width: 380px) {
+            main { padding: 40px 14px; }
+            .check-ring { width: 72px; height: 72px; }
+            .check-inner { width: 54px; height: 54px; }
+            .check-svg { width: 22px; height: 22px; }
+            .success-text { font-size: 14px; }
+            .ic-value { font-size: 13px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar minimal -->
+<nav id="nav">
+    <div class="nav-wrap">
+        <a href="index.html" class="nav-wordmark">PROWAY<b>.LAB</b></a>
+        <a href="index.html" style="font-family:'Roboto Mono',monospace;font-size:9px;letter-spacing:0.25em;text-transform:uppercase;color:var(--dark);text-decoration:none;">
+            &larr; Volver al inicio
+        </a>
+    </div>
+</nav>
+
+<!-- Main -->
+<main>
+    <div class="success-container">
+
+        <!-- Checkmark animado -->
+        <div class="check-wrap">
+            <div class="check-ring">
+                <div class="check-inner">
+                    <svg class="check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Label -->
+        <div class="success-label">Pago confirmado</div>
+
+        <!-- Título -->
+        <h1 class="success-title">
+            PAGO <span style="color:var(--green)">RECIBIDO</span>
+        </h1>
+
+        <!-- Texto -->
+        <p class="success-text">
+            Tu transacción fue procesada exitosamente.<br>
+            Nos contactaremos contigo por <strong>WhatsApp en las próximas 24 horas</strong>
+            para coordinar el inicio de tu proyecto.
+        </p>
+
+        <!-- Info cards -->
+        <div class="info-grid">
+            <div class="info-card blue">
+                <div class="ic-label">Tiempo de respuesta</div>
+                <div class="ic-value blue">Menos de 24h</div>
+            </div>
+            <div class="info-card green">
+                <div class="ic-label">Canal de contacto</div>
+                <div class="ic-value green">WhatsApp directo</div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <a href="index.html" class="btn-home">VOLVER AL INICIO</a>
+
+    </div>
+</main>
+
+<!-- Footer minimal -->
+<footer id="footer">
+    <div class="ft-bot">
+        <div class="ft-copy">© 2026 ProWay Lab — Ingeniería de Marcas Fitness.</div>
+        <a href="contacto.html" class="ft-lnk">Contacto</a>
+    </div>
+</footer>
+
+</body>
+</html>

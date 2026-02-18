@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Seguro — ProWay Lab</title>
+    <meta name="description" content="Paga tu servicio ProWay Lab de forma segura con PayU Latam. Tarjetas de crédito, débito, PSE y efectivo.">
+    <meta property="og:title" content="Pago Seguro — ProWay Lab">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#00D9FF">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800&family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================================================
+           CSS VARIABLES
+           ================================================ */
+        :root {
+            --bg:          #0C0C0F;
+            --surface:     #111114;
+            --surface-2:   #191920;
+            --border:      #252528;
+            --blue:        #00D9FF;
+            --blue-dim:    rgba(0,217,255,0.08);
+            --blue-glow:   rgba(0,217,255,0.25);
+            --red:         #E31E24;
+            --red-dim:     rgba(227,30,36,0.10);
+            --green:       #00FF87;
+            --green-dim:   rgba(0,255,135,0.08);
+            --yellow:      #FFD700;
+            --white:       #FFFFFF;
+            --gray:        #A1A1AA;
+            --dark:        #52525B;
+            --font-h:      'Montserrat', sans-serif;
+            --font-b:      'Inter', sans-serif;
+            --font-m:      'Roboto Mono', monospace;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            background: var(--bg);
+            color: var(--white);
+            font-family: var(--font-b);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Noise overlay */
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            background-size: 180px 180px;
+            pointer-events: none; z-index: 9999; opacity: 0.5;
+        }
+
+        /* ================================================
+           PROGRESS BAR
+           ================================================ */
+        #progress {
+            position: fixed; top: 0; left: 0; height: 2px;
+            background: var(--blue);
+            box-shadow: 0 0 10px var(--blue-glow);
+            z-index: 9997; width: 0; transition: width 0.08s;
+        }
+
+        /* ================================================
+           NAVBAR
+           ================================================ */
+        #nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            padding: 22px 0; transition: all 0.4s ease;
+        }
+        #nav.scrolled {
+            background: rgba(12,12,15,0.96); backdrop-filter: blur(20px);
+            padding: 14px 0; border-bottom: 1px solid var(--border);
+        }
+        .nav-wrap {
+            max-width: 1300px; margin: 0 auto; padding: 0 32px;
+            display: flex; align-items: center; justify-content: space-between; gap: 24px;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .nav-wordmark {
+            font-family: var(--font-h); font-weight: 900; font-size: 17px;
+            letter-spacing: 0.18em; text-transform: uppercase; color: var(--white);
+        }
+        .nav-wordmark b { color: var(--blue); }
+        .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+        .nav-links a {
+            font-family: var(--font-m); font-size: 10px; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--gray); text-decoration: none; transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--blue); }
+        .nav-btn {
+            font-family: var(--font-h); font-weight: 700; font-size: 11px;
+            letter-spacing: 0.15em; text-transform: uppercase; color: #000;
+            background: var(--blue); padding: 10px 22px; text-decoration: none;
+            clip-path: polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+            transition: all 0.3s;
+        }
+        .nav-btn:hover { background: #33E4FF; transform: translateY(-1px); box-shadow: 0 8px 30px var(--blue-glow); }
+        .nav-ham { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+        .nav-ham span { width: 22px; height: 1.5px; background: var(--white); transition: all 0.3s; }
+
+        /* Mobile overlay */
+        .nav-mob {
+            display: none; position: fixed; inset: 0; background: rgba(12,12,15,0.98);
+            backdrop-filter: blur(20px); z-index: 999; flex-direction: column;
+            align-items: center; justify-content: center; gap: 28px;
+        }
+        .nav-mob.open { display: flex; }
+        .nav-mob a {
+            font-family: var(--font-h); font-weight: 800; font-size: 28px;
+            letter-spacing: 0.06em; text-transform: uppercase; color: var(--gray);
+            text-decoration: none; transition: color 0.3s;
+        }
+        .nav-mob a:hover { color: var(--blue); }
+        .nav-mob-close {
+            position: absolute; top: 20px; right: 28px; font-size: 28px;
+            color: var(--gray); background: none; border: none; cursor: pointer; line-height: 1;
+        }
+
+        /* ================================================
+           LAYOUT
+           ================================================ */
+        .wrap { max-width: 1300px; margin: 0 auto; padding: 0 32px; }
+
+        /* Reveal */
+        .rv { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+        .rv.on { opacity: 1; transform: none; }
+        .rv.d1 { transition-delay: 0.1s; }
+        .rv.d2 { transition-delay: 0.2s; }
+        .rv.d3 { transition-delay: 0.3s; }
+        .rv.d4 { transition-delay: 0.4s; }
+
+        /* ================================================
+           HERO
+           ================================================ */
+        #hero {
+            min-height: 42vh; display: flex; align-items: center;
+            position: relative; overflow: hidden; padding-top: 110px;
+        }
+        .h-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(0,217,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,217,255,0.03) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 30%, transparent 100%);
+        }
+        .h-orb {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 700px; height: 700px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,217,255,0.04) 0%, transparent 65%);
+            pointer-events: none;
+            animation: orb-pulse 6s ease-in-out infinite;
+        }
+        @keyframes orb-pulse {
+            0%,100% { opacity: 0.7; transform: translate(-50%,-50%) scale(1); }
+            50%      { opacity: 1;   transform: translate(-50%,-50%) scale(1.06); }
+        }
+        .h-content {
+            position: relative; z-index: 10;
+            max-width: 1300px; margin: 0 auto; padding: 0 32px 80px;
+            text-align: center;
+        }
+        .h-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.4em;
+            text-transform: uppercase; color: var(--green);
+            border: 1px solid rgba(0,255,135,0.3); padding: 7px 16px;
+            margin-bottom: 28px;
+        }
+        .h-badge::before {
+            content: ''; width: 5px; height: 5px; border-radius: 50%;
+            background: var(--green); animation: pd 2.2s ease-in-out infinite;
+        }
+        @keyframes pd {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.35; transform: scale(0.6); }
+        }
+        .h-title {
+            font-family: var(--font-h); font-weight: 900;
+            font-size: clamp(36px,7vw,80px); line-height: 0.92;
+            letter-spacing: -0.03em; text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .h-sub {
+            font-size: clamp(14px,1.4vw,16px); line-height: 1.65; color: var(--gray);
+            max-width: 480px; margin: 0 auto;
+        }
+        #hero::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* ================================================
+           SECURE BADGE BAR
+           ================================================ */
+        .secure-bar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 0;
+        }
+        .secure-bar-inner {
+            max-width: 1300px; margin: 0 auto; padding: 0 32px;
+            display: flex; align-items: center; justify-content: center;
+            gap: 32px; flex-wrap: wrap;
+        }
+        .sec-badge {
+            display: flex; align-items: center; gap: 8px;
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.25em;
+            text-transform: uppercase; color: var(--dark);
+        }
+        .sec-badge .ico { width: 16px; height: 16px; color: var(--green); }
+        .sec-badge.highlight { color: var(--gray); }
+
+        /* ================================================
+           CHECKOUT LAYOUT
+           ================================================ */
+        #checkout { padding: 72px 0 100px; }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* Step indicator */
+        .steps {
+            display: flex; align-items: center; gap: 0;
+            margin-bottom: 40px;
+        }
+        .step {
+            display: flex; align-items: center; gap: 10px;
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.25em;
+            text-transform: uppercase; color: var(--dark);
+        }
+        .step.active { color: var(--blue); }
+        .step.done { color: var(--green); }
+        .step-num {
+            width: 24px; height: 24px; border-radius: 50%;
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 9px; font-weight: 700; flex-shrink: 0;
+        }
+        .step.active .step-num { background: var(--blue); border-color: var(--blue); color: #0C0C0F; }
+        .step.done  .step-num  { background: var(--green); border-color: var(--green); color: #0C0C0F; }
+        .step-sep { flex: 1; height: 1px; background: var(--border); margin: 0 12px; max-width: 48px; }
+
+        /* Section card */
+        .checkout-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+        .checkout-card-header {
+            padding: 20px 28px; border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 12px;
+        }
+        .cch-num {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--blue); color: #0C0C0F;
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-m); font-size: 11px; font-weight: 700; flex-shrink: 0;
+        }
+        .cch-title {
+            font-family: var(--font-h); font-weight: 800; font-size: 14px;
+            letter-spacing: 0.08em; text-transform: uppercase;
+        }
+        .checkout-card-body { padding: 28px; }
+
+        /* ---- Service selector cards ---- */
+        .service-grid {
+            display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+        }
+        .svc-card {
+            background: var(--surface-2); border: 1px solid var(--border);
+            padding: 18px 16px; cursor: pointer;
+            transition: all 0.25s; position: relative;
+        }
+        .svc-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--blue); transform: scaleX(0); transform-origin: left;
+            transition: transform 0.25s ease;
+        }
+        .svc-card:hover { border-color: rgba(0,217,255,0.35); transform: translateY(-2px); }
+        .svc-card:hover::before { transform: scaleX(1); }
+        .svc-card.selected {
+            border-color: var(--blue); background: var(--blue-dim);
+            box-shadow: 0 0 0 1px var(--blue) inset;
+        }
+        .svc-card.selected::before { transform: scaleX(1); }
+
+        .svc-tag {
+            font-family: var(--font-m); font-size: 7px; letter-spacing: 0.3em;
+            text-transform: uppercase; color: var(--dark); margin-bottom: 6px;
+        }
+        .svc-card.selected .svc-tag { color: rgba(0,217,255,0.7); }
+        .svc-name {
+            font-family: var(--font-h); font-weight: 800; font-size: 13px;
+            letter-spacing: 0.04em; text-transform: uppercase;
+            color: var(--white); margin-bottom: 8px; line-height: 1.2;
+        }
+        .svc-price {
+            font-family: var(--font-m); font-size: 16px; font-weight: 700;
+            color: var(--blue); line-height: 1;
+        }
+        .svc-price-unit {
+            font-family: var(--font-m); font-size: 8px; letter-spacing: 0.2em;
+            color: var(--dark); text-transform: uppercase; margin-top: 3px;
+        }
+        .svc-check {
+            position: absolute; top: 10px; right: 10px;
+            width: 18px; height: 18px; border-radius: 50%;
+            background: var(--blue); color: #0C0C0F;
+            display: none; align-items: center; justify-content: center;
+            font-size: 9px; font-weight: 900;
+        }
+        .svc-card.selected .svc-check { display: flex; }
+
+        /* ---- Quantity selector (per-unit services only) ---- */
+        .qty-row {
+            display: none; align-items: center; gap: 14px;
+            margin-top: 18px; padding-top: 18px;
+            border-top: 1px solid var(--border);
+        }
+        .qty-row.visible { display: flex; }
+        .qty-label {
+            font-family: var(--font-m); font-size: 10px;
+            letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--gray); flex: 1;
+        }
+        .qty-controls {
+            display: flex; align-items: center;
+            border: 1px solid var(--border);
+        }
+        .qty-btn {
+            width: 34px; height: 34px; background: transparent; border: none;
+            color: var(--gray); font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: color 0.15s, background 0.15s; line-height: 1;
+        }
+        .qty-btn:hover { color: var(--blue); background: rgba(0,217,255,0.08); }
+        .qty-btn:active { background: rgba(0,217,255,0.15); }
+        .qty-num {
+            width: 44px; text-align: center;
+            font-family: var(--font-m); font-size: 15px; font-weight: 700;
+            color: var(--white);
+            border-left: 1px solid var(--border); border-right: 1px solid var(--border);
+            height: 34px; line-height: 34px; user-select: none;
+        }
+        .qty-unit {
+            font-family: var(--font-m); font-size: 10px; color: var(--dark);
+            letter-spacing: 0.06em; white-space: nowrap;
+        }
+
+        /* ---- Buyer data ---- */
+        .form-grid-2 {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px;
+        }
+        .form-full { grid-column: 1 / -1; }
+        .form-group { display: flex; flex-direction: column; gap: 7px; }
+        .form-label {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.3em;
+            text-transform: uppercase; color: var(--gray);
+        }
+        .form-input {
+            background: var(--surface-2); border: 1px solid var(--border);
+            color: var(--white); font-family: var(--font-b); font-size: 14px;
+            padding: 13px 16px; outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            width: 100%; border-radius: 0;
+        }
+        .form-input::placeholder { color: var(--dark); }
+        .form-input:focus {
+            border-color: rgba(0,217,255,0.5);
+            box-shadow: 0 0 0 3px rgba(0,217,255,0.07);
+        }
+
+        /* Checkbox */
+        .form-check {
+            display: flex; align-items: flex-start; gap: 12px; margin-top: 4px;
+        }
+        .form-check input[type="checkbox"] {
+            width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px;
+            accent-color: var(--blue); cursor: pointer;
+        }
+        .form-check-label {
+            font-size: 12px; color: var(--gray); line-height: 1.6; cursor: pointer;
+        }
+        .form-check-label a { color: var(--blue); text-decoration: none; }
+        .form-check-label a:hover { text-decoration: underline; }
+
+        /* WellCore discount */
+        .discount-row {
+            display: flex; align-items: center; gap: 12px;
+            background: var(--surface-2); border: 1px solid var(--border);
+            padding: 14px 16px; margin-top: 16px;
+        }
+        .discount-row input[type="checkbox"] {
+            width: 16px; height: 16px; accent-color: var(--green); cursor: pointer;
+        }
+        .discount-label { font-size: 13px; color: var(--gray); cursor: pointer; line-height: 1.4; }
+        .discount-badge {
+            margin-left: auto; flex-shrink: 0;
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--green);
+            background: var(--green-dim); border: 1px solid rgba(0,255,135,0.25);
+            padding: 4px 10px;
+        }
+
+        /* ================================================
+           ORDER SUMMARY
+           ================================================ */
+        .summary-sticky { position: sticky; top: 100px; }
+
+        .summary-card {
+            background: var(--surface); border: 1px solid var(--border); position: relative;
+        }
+        .summary-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--green);
+        }
+        .summary-header { padding: 20px 24px; border-bottom: 1px solid var(--border); }
+        .summary-header-title {
+            font-family: var(--font-h); font-weight: 800; font-size: 13px;
+            letter-spacing: 0.08em; text-transform: uppercase;
+        }
+        .summary-body { padding: 24px; }
+
+        .summary-row {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            gap: 12px; padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+        .summary-row:last-of-type { border-bottom: none; }
+        .sr-label { color: var(--gray); line-height: 1.4; }
+        .sr-value {
+            font-family: var(--font-m); font-size: 13px;
+            color: var(--white); text-align: right; flex-shrink: 0;
+        }
+        .sr-value.discount { color: var(--green); }
+        .sr-value.total { font-size: 20px; font-weight: 700; color: var(--blue); }
+
+        .summary-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+        /* Selected service summary */
+        .svc-selected-box {
+            background: var(--surface-2); border: 1px solid rgba(0,217,255,0.2);
+            padding: 14px 16px; margin-bottom: 16px;
+        }
+        .ssb-empty {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.25em;
+            text-transform: uppercase; color: var(--dark); text-align: center;
+            padding: 12px 0;
+        }
+        .ssb-name {
+            font-family: var(--font-h); font-weight: 800; font-size: 14px;
+            letter-spacing: 0.04em; text-transform: uppercase;
+            color: var(--white); margin-bottom: 4px;
+        }
+        .ssb-price {
+            font-family: var(--font-m); font-size: 18px; font-weight: 700; color: var(--blue);
+        }
+
+        /* Payment methods */
+        .pm-row {
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 16px 0;
+        }
+        .pm-badge {
+            font-family: var(--font-m); font-size: 8px; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--dark);
+            border: 1px solid var(--border); padding: 4px 8px;
+        }
+
+        /* Pay button */
+        .pay-btn {
+            width: 100%; padding: 18px; background: var(--green); color: #0C0C0F;
+            font-family: var(--font-h); font-weight: 800; font-size: 13px;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            border: none; cursor: pointer;
+            clip-path: polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+            transition: all 0.3s; margin-bottom: 12px;
+        }
+        .pay-btn:hover {
+            background: #22e57a; transform: translateY(-2px);
+            box-shadow: 0 16px 48px rgba(0,255,135,0.35);
+        }
+        .pay-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .pay-btn:active { transform: translateY(0); }
+
+        /* Security note */
+        .security-note {
+            display: flex; align-items: flex-start; gap: 10px;
+            background: var(--surface-2); border: 1px solid var(--border);
+            padding: 12px 14px; margin-bottom: 12px;
+        }
+        .security-note svg { flex-shrink: 0; color: var(--green); margin-top: 1px; }
+        .security-note p { font-size: 11px; color: var(--gray); line-height: 1.55; }
+        .security-note strong { color: var(--white); }
+
+        /* Config notice */
+        .config-notice {
+            background: rgba(227,30,36,0.08); border: 1px solid rgba(227,30,36,0.25);
+            padding: 14px 16px; margin-bottom: 16px;
+        }
+        .config-notice p {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.2em;
+            text-transform: uppercase; color: rgba(227,30,36,0.8); line-height: 1.6;
+        }
+
+        /* PayU note */
+        .payu-note {
+            display: flex; align-items: center; gap: 8px;
+            font-family: var(--font-m); font-size: 8px; letter-spacing: 0.2em;
+            color: var(--dark); text-transform: uppercase;
+            margin-top: 10px; justify-content: center;
+        }
+
+        /* ================================================
+           FOOTER
+           ================================================ */
+        #footer {
+            background: var(--surface); border-top: 1px solid var(--border);
+            padding: 64px 0 32px;
+        }
+        .ft-grid {
+            display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 48px;
+            margin-bottom: 48px;
+        }
+        .ft-wm {
+            font-family: var(--font-h); font-weight: 900; font-size: 20px;
+            letter-spacing: 0.18em; text-transform: uppercase; color: var(--white);
+            margin-bottom: 14px;
+        }
+        .ft-wm b { color: var(--blue); }
+        .ft-brand p { font-size: 13px; line-height: 1.65; color: var(--dark); max-width: 260px; }
+        .ft-loc {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.25em;
+            color: var(--dark); text-transform: uppercase; margin-top: 14px;
+        }
+        .ft-loc b { color: var(--blue); font-style: normal; }
+        .ft-col-t {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.35em;
+            text-transform: uppercase; color: var(--dark); margin-bottom: 18px;
+        }
+        .ft-lnks { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .ft-lnks a { font-size: 13px; color: var(--gray); text-decoration: none; transition: color 0.3s; }
+        .ft-lnks a:hover { color: var(--blue); }
+        .ft-bot {
+            border-top: 1px solid var(--border); padding-top: 24px;
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .ft-copy {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.2em;
+            color: var(--dark); text-transform: uppercase;
+        }
+
+        /* ================================================
+           RESPONSIVE
+           ================================================ */
+        @media (max-width: 1100px) {
+            .checkout-grid { grid-template-columns: 1fr; }
+            .summary-sticky { position: static; }
+            .service-grid { grid-template-columns: repeat(2,1fr); }
+        }
+        @media (max-width: 768px) {
+            .nav-links, .nav-btn { display: none; }
+            .nav-ham { display: flex; }
+            .form-grid-2 { grid-template-columns: 1fr; }
+            .form-full { grid-column: auto; }
+            .ft-grid { grid-template-columns: 1fr; gap: 32px; }
+            .step-sep { max-width: 24px; }
+        }
+        @media (max-width: 480px) {
+            .wrap { padding: 0 20px; }
+            .service-grid { grid-template-columns: 1fr; }
+            .checkout-card-body { padding: 20px; }
+            .checkout-card-header { padding: 16px 20px; }
+        }
+
+        /* ================================================
+           RESPONSIVE MOBILE — CORRECCIONES
+           ================================================ */
+        @media (max-width: 768px) {
+            /* Evitar scroll horizontal */
+            html, body { overflow-x: hidden; }
+
+            /* Padding lateral mínimo 16px */
+            .wrap { padding: 0 16px; }
+
+            /* Steps: overflow scroll horizontal si no caben, sin romper layout */
+            .steps {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 4px;
+                flex-wrap: nowrap;
+                gap: 4px;
+            }
+            .step { white-space: nowrap; }
+            .step-sep { max-width: 20px; min-width: 10px; flex-shrink: 0; }
+
+            /* Secure bar: wrap en columnas en mobile */
+            .secure-bar-inner {
+                gap: 12px;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0 16px;
+            }
+            .sec-badge { font-size: 10px; }
+
+            /* Hero padding */
+            .h-content { padding: 0 16px 60px; }
+
+            /* font-size 16px en inputs para prevenir zoom iOS */
+            .form-input { font-size: 16px; min-height: 48px; }
+
+            /* Touch target botones */
+            .qty-btn { width: 44px; height: 44px; }
+            .qty-num { height: 44px; line-height: 44px; }
+
+            /* Checkout padding */
+            #checkout { padding: 48px 0 64px; }
+
+            /* Botón pagar: full width ya tiene 100%, asegurar altura */
+            .pay-btn { min-height: 56px; font-size: 14px; }
+
+            /* Resumen del pedido: quitar sticky y colocarlo al final en mobile */
+            .summary-sticky { position: static; }
+
+            /* Nav: acceso clientes oculto también */
+            .nav-access { display: none; }
+
+            /* Service grid: 2 columnas en 768px hasta 481px */
+            .service-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 480px) {
+            /* Padding mínimo lateral */
+            .wrap { padding: 0 16px; }
+
+            /* Service grid a 1 columna */
+            .service-grid { grid-template-columns: 1fr; }
+
+            /* Cards padding reducido */
+            .checkout-card-body { padding: 16px; }
+            .checkout-card-header { padding: 14px 16px; }
+
+            /* Steps compactos */
+            .step { font-size: 8px; }
+            .step-num { width: 22px; height: 22px; font-size: 8px; }
+
+            /* font-size 16px inputs */
+            .form-input { font-size: 16px; }
+
+            /* Secure bar ocultar items redundantes en pantallas muy pequeñas */
+            .secure-bar-inner { gap: 8px; }
+
+            /* Summary card body */
+            .summary-body { padding: 16px; }
+            .summary-header { padding: 14px 16px; }
+
+            /* Texto legible */
+            .sr-label, .sr-value { font-size: 13px; }
+            .sr-value.total { font-size: 18px; }
+
+            /* Botón pagar */
+            .pay-btn { min-height: 56px; }
+
+            /* Config notice */
+            .config-notice { padding: 12px; }
+            .config-notice p { font-size: 10px; letter-spacing: 0.1em; }
+
+            /* Descuento row: wrap en pantallas muy pequeñas */
+            .discount-row { flex-wrap: wrap; gap: 8px; }
+            .discount-badge { margin-left: 0; }
+
+            /* Qty row */
+            .qty-label { font-size: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div id="progress"></div>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav id="nav">
+    <div class="nav-wrap">
+        <a href="index.html" class="nav-logo">
+            <span class="nav-wordmark">PROWAY<b>.LAB</b></span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="metodo.html">Método</a></li>
+            <li><a href="servicios.html">Servicios</a></li>
+            <li><a href="casos-de-exito.html">Casos</a></li>
+            <li><a href="portafolio.html">Portafolio</a></li>
+            <li><a href="blog/index.html">Blog</a></li>
+        </ul>
+        <a href="contacto.html" class="nav-btn" style="background:var(--blue);color:#0C0C0F">Solicitar servicio</a>
+        <div class="nav-ham" id="ham"><span></span><span></span><span></span></div>
+    </div>
+</nav>
+
+<div class="nav-mob" id="mob">
+    <button class="nav-mob-close" id="mobClose">&times;</button>
+    <a href="metodo.html" onclick="closeM()">Método</a>
+    <a href="servicios.html" onclick="closeM()">Servicios</a>
+    <a href="casos-de-exito.html" onclick="closeM()">Casos</a>
+    <a href="portafolio.html" onclick="closeM()">Portafolio</a>
+    <a href="blog/index.html" onclick="closeM()">Blog</a>
+    <a href="contacto.html" onclick="closeM()" style="color:var(--blue)">Solicitar &rarr;</a>
+</div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section id="hero">
+    <div class="h-grid"></div>
+    <div class="h-orb"></div>
+    <div class="h-content">
+        <div class="h-badge rv">PAGO SEGURO &nbsp;&middot;&nbsp; PAYULATAM</div>
+        <h1 class="h-title rv d1">PAGO <span style="color:var(--green)">SEGURO</span></h1>
+        <p class="h-sub rv d2">Selecciona tu servicio, completa tus datos y paga de forma segura con PayU Latam.</p>
+    </div>
+</section>
+
+<!-- ============================================================
+     SECURE BAR
+     ============================================================ -->
+<div class="secure-bar">
+    <div class="secure-bar-inner">
+        <div class="sec-badge highlight">
+            <svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+            </svg>
+            Pago 100% seguro
+        </div>
+        <div class="sec-badge">Tarjetas de crédito y débito</div>
+        <div class="sec-badge">PSE — Transferencia bancaria</div>
+        <div class="sec-badge">Efecty / Baloto</div>
+        <div class="sec-badge">Encriptación SSL 256-bit</div>
+    </div>
+</div>
+
+<!-- ============================================================
+     CHECKOUT
+     ============================================================ -->
+<section id="checkout">
+    <div class="wrap">
+
+        <!-- Config notice — visible only in sandbox mode -->
+        <div class="config-notice rv" id="configNotice">
+            <p>MODO SANDBOX ACTIVO — Reemplazar PAYU_CONFIG con datos reales antes de producción. Ver comentarios en el JS.</p>
+        </div>
+
+        <div class="checkout-grid">
+
+            <!-- ---- COLUMNA IZQUIERDA ---- -->
+            <div>
+                <!-- Steps -->
+                <div class="steps rv">
+                    <div class="step active" id="step1">
+                        <div class="step-num">1</div>
+                        <span>Servicio</span>
+                    </div>
+                    <div class="step-sep"></div>
+                    <div class="step" id="step2">
+                        <div class="step-num">2</div>
+                        <span>Datos</span>
+                    </div>
+                    <div class="step-sep"></div>
+                    <div class="step" id="step3">
+                        <div class="step-num">3</div>
+                        <span>Pago</span>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 1: Selector de servicio -->
+                <div class="checkout-card rv d1">
+                    <div class="checkout-card-header">
+                        <div class="cch-num">1</div>
+                        <div class="cch-title">Selecciona tu servicio</div>
+                    </div>
+                    <div class="checkout-card-body">
+                        <div class="service-grid">
+                            <div class="svc-card" data-name="Video Esencial" data-amount="100000" data-id="video-esencial" onclick="selectService(this)">
+                                <div class="svc-check">&#10003;</div>
+                                <div class="svc-tag">Por unidad</div>
+                                <div class="svc-name">Video<br>Esencial</div>
+                                <div class="svc-price">$100.000</div>
+                                <div class="svc-price-unit">COP</div>
+                            </div>
+                            <div class="svc-card" data-name="Video Pro" data-amount="150000" data-id="video-pro" onclick="selectService(this)">
+                                <div class="svc-check">&#10003;</div>
+                                <div class="svc-tag">Por unidad</div>
+                                <div class="svc-name">Video<br>Pro</div>
+                                <div class="svc-price">$150.000</div>
+                                <div class="svc-price-unit">COP</div>
+                            </div>
+                            <div class="svc-card" data-name="Video Elite" data-amount="250000" data-id="video-elite" onclick="selectService(this)">
+                                <div class="svc-check">&#10003;</div>
+                                <div class="svc-tag">Por unidad</div>
+                                <div class="svc-name">Video<br>Elite</div>
+                                <div class="svc-price">$250.000</div>
+                                <div class="svc-price-unit">COP</div>
+                            </div>
+                            <div class="svc-card" data-name="Paquete Starter" data-amount="1200000" data-id="paquete-starter" onclick="selectService(this)">
+                                <div class="svc-check">&#10003;</div>
+                                <div class="svc-tag">Mensual</div>
+                                <div class="svc-name">Paquete<br>Starter</div>
+                                <div class="svc-price">$1.200.000</div>
+                                <div class="svc-price-unit">COP / mes</div>
+                            </div>
+                            <div class="svc-card" data-name="Paquete Growth" data-amount="1600000" data-id="paquete-growth" onclick="selectService(this)">
+                                <div class="svc-check">&#10003;</div>
+                                <div class="svc-tag">Mensual</div>
+                                <div class="svc-name">Paquete<br>Growth</div>
+                                <div class="svc-price">$1.600.000</div>
+                                <div class="svc-price-unit">COP / mes</div>
+                            </div>
+                            <div class="svc-card" data-name="Paquete Authority" data-amount="2200000" data-id="paquete-authority" onclick="selectService(this)">
+                                <div class="svc-check">&#10003;</div>
+                                <div class="svc-tag">Mensual</div>
+                                <div class="svc-name">Paquete<br>Authority</div>
+                                <div class="svc-price">$2.200.000</div>
+                                <div class="svc-price-unit">COP / mes</div>
+                            </div>
+                        </div>
+                        <!-- Selector de cantidad (solo para servicios por unidad) -->
+                        <div class="qty-row" id="qtyRow">
+                            <div class="qty-label">Cantidad de videos</div>
+                            <div class="qty-controls">
+                                <button class="qty-btn" onclick="changeQty(-1)" aria-label="Reducir cantidad">&#8722;</button>
+                                <div class="qty-num" id="qtyNum">1</div>
+                                <button class="qty-btn" onclick="changeQty(1)" aria-label="Aumentar cantidad">&#43;</button>
+                            </div>
+                            <div class="qty-unit" id="qtyUnit"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: Datos del comprador -->
+                <div class="checkout-card rv d2">
+                    <div class="checkout-card-header">
+                        <div class="cch-num">2</div>
+                        <div class="cch-title">Tus datos de comprador</div>
+                    </div>
+                    <div class="checkout-card-body">
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label" for="buyerName">Nombre completo</label>
+                                <input class="form-input" type="text" id="buyerName"
+                                    placeholder="Tu nombre completo" autocomplete="name"
+                                    oninput="updatePayBtn()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="buyerEmail">Email</label>
+                                <input class="form-input" type="email" id="buyerEmail"
+                                    placeholder="tu@email.com" autocomplete="email"
+                                    oninput="updatePayBtn()">
+                            </div>
+                            <div class="form-group form-full">
+                                <label class="form-label" for="buyerPhone">WhatsApp / Teléfono</label>
+                                <input class="form-input" type="tel" id="buyerPhone"
+                                    placeholder="+57 300 000 0000" autocomplete="tel">
+                            </div>
+                        </div>
+
+                        <!-- Descuento WellCore -->
+                        <div class="discount-row">
+                            <input type="checkbox" id="wellcoreDiscount" onchange="applyDiscount()">
+                            <label class="discount-label" for="wellcoreDiscount">
+                                Soy cliente activo de <strong style="color:var(--white)">WellCore Fitness</strong>
+                            </label>
+                            <div class="discount-badge">- 15%</div>
+                        </div>
+
+                        <!-- T&C -->
+                        <div class="form-check" style="margin-top:16px">
+                            <input type="checkbox" id="termsCheck" onchange="updatePayBtn()">
+                            <label class="form-check-label" for="termsCheck">
+                                He leído y acepto los
+                                <a href="legal/terminos.html" target="_blank">Términos y Condiciones</a>
+                                y la
+                                <a href="legal/privacidad.html" target="_blank">Política de Privacidad</a>.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /left column -->
+
+            <!-- ---- COLUMNA DERECHA: Resumen ---- -->
+            <aside class="summary-sticky rv d1">
+                <div class="summary-card">
+                    <div class="summary-header">
+                        <div class="summary-header-title">Resumen del pedido</div>
+                    </div>
+                    <div class="summary-body">
+
+                        <!-- Servicio seleccionado -->
+                        <div class="svc-selected-box">
+                            <div id="summaryServiceEmpty" class="ssb-empty">Ningún servicio seleccionado</div>
+                            <div id="summaryServiceDetail" style="display:none">
+                                <div class="ssb-name" id="summaryServiceName"></div>
+                                <div class="ssb-price" id="summaryServicePrice"></div>
+                            </div>
+                        </div>
+
+                        <!-- Filas -->
+                        <div class="summary-row">
+                            <span class="sr-label">Subtotal</span>
+                            <span class="sr-value" id="summarySubtotal">—</span>
+                        </div>
+                        <div class="summary-row" id="discountRow" style="display:none">
+                            <span class="sr-label">Descuento WellCore (15%)</span>
+                            <span class="sr-value discount" id="summaryDiscount">—</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="sr-label">Divisa</span>
+                            <span class="sr-value">COP</span>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-row">
+                            <span class="sr-label" style="font-weight:600;color:var(--white)">TOTAL</span>
+                            <span class="sr-value total" id="summaryTotal">—</span>
+                        </div>
+
+                        <!-- Métodos de pago -->
+                        <div class="pm-row">
+                            <div class="pm-badge">Visa</div>
+                            <div class="pm-badge">Mastercard</div>
+                            <div class="pm-badge">PSE</div>
+                            <div class="pm-badge">Efecty</div>
+                            <div class="pm-badge">Baloto</div>
+                        </div>
+
+                        <!-- Security note -->
+                        <div class="security-note">
+                            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+                            </svg>
+                            <p>
+                                <strong>Pago 100% seguro con PayU Latam.</strong>
+                                Aceptamos tarjetas de crédito, débito, PSE y efectivo (Efecty, Baloto). Datos protegidos con SSL.
+                            </p>
+                        </div>
+
+                        <!-- Pay button -->
+                        <button class="pay-btn" id="payBtn" onclick="submitPayment()" disabled>
+                            PAGAR AHORA
+                        </button>
+
+                        <div class="payu-note">
+                            Procesado por PayU Latam &nbsp;&#9632;&nbsp; Colombia
+                        </div>
+
+                    </div>
+                </div>
+            </aside>
+
+        </div><!-- /checkout-grid -->
+    </div><!-- /wrap -->
+</section>
+
+<!-- PayU hidden form — enviado programáticamente -->
+<form id="payuForm" method="POST" style="display:none">
+    <input type="hidden" name="merchantId"    id="f_merchantId">
+    <input type="hidden" name="accountId"     id="f_accountId">
+    <input type="hidden" name="description"   id="f_description">
+    <input type="hidden" name="referenceCode" id="f_referenceCode">
+    <input type="hidden" name="amount"        id="f_amount">
+    <input type="hidden" name="tax"           value="0">
+    <input type="hidden" name="taxReturnBase" value="0">
+    <input type="hidden" name="currency"      value="COP">
+    <input type="hidden" name="signature"     id="f_signature">
+    <input type="hidden" name="test"          id="f_test">
+    <input type="hidden" name="buyerFullName" id="f_buyerName">
+    <input type="hidden" name="buyerEmail"    id="f_buyerEmail">
+    <input type="hidden" name="responseUrl"   id="f_responseUrl">
+    <input type="hidden" name="confirmationUrl" id="f_confirmUrl">
+    <input type="hidden" name="lng"           value="es">
+    <input type="hidden" name="extra1"        id="f_extra1">
+    <input type="hidden" name="extra2"        value="ProWay Lab Web">
+</form>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer id="footer">
+    <div class="wrap">
+        <div class="ft-grid">
+            <div class="ft-brand">
+                <div class="ft-wm">PROWAY<b>.LAB</b></div>
+                <p>Ingeniería de marcas fitness para entrenadores en Colombia y LATAM.</p>
+                <div class="ft-loc"><b>&#9632;</b> Colombia — LATAM &middot; 2026</div>
+            </div>
+            <div>
+                <div class="ft-col-t">Navegación</div>
+                <ul class="ft-lnks">
+                    <li><a href="metodo.html">Método</a></li>
+                    <li><a href="servicios.html">Servicios</a></li>
+                    <li><a href="casos-de-exito.html">Casos de Éxito</a></li>
+                    <li><a href="portafolio.html">Portafolio</a></li>
+                    <li><a href="blog/index.html">Blog</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="ft-col-t">Legal</div>
+                <ul class="ft-lnks">
+                    <li><a href="legal/privacidad.html">Política de Privacidad</a></li>
+                    <li><a href="legal/terminos.html">Términos y Condiciones</a></li>
+                    <li><a href="legal/cookies.html">Política de Cookies</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="ft-bot">
+            <div class="ft-copy">© 2026 ProWay Lab — Ingeniería de Marcas Fitness.</div>
+        </div>
+    </div>
+</footer>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+    /* ============================================================
+       CONFIGURACIÓN PAYULATAM
+       Reemplazar con datos reales antes de producción.
+       Obtener en: https://colombia.payu.com
+         - Panel PayU → Mi cuenta → Configuración técnica → merchantId, apiKey
+         - Panel PayU → Mi cuenta → Cuentas → accountId
+       ============================================================ */
+    var PAYU_CONFIG = {
+        merchantId:  'YOUR_MERCHANT_ID',
+        accountId:   'YOUR_ACCOUNT_ID',
+        apiKey:      'YOUR_API_KEY',
+        sandbox:     true,
+        responseUrl: 'https://prowaylab.com/pago-exitoso.html',
+        confirmUrl:  'https://prowaylab.com/pago-confirmado.html'
+    };
+
+    // Ocultar aviso sandbox en producción
+    if (!PAYU_CONFIG.sandbox) {
+        var cn = document.getElementById('configNotice');
+        if (cn) cn.style.display = 'none';
+    }
+
+    /* ============================================================
+       MD5 IMPLEMENTATION — pure JS, sin dependencias externas
+       ============================================================ */
+    function md5(str) {
+        function safeAdd(x, y) {
+            var l = (x & 0xFFFF) + (y & 0xFFFF);
+            var m = (x >> 16) + (y >> 16) + (l >> 16);
+            return (m << 16) | (l & 0xFFFF);
+        }
+        function rol(n, c) { return (n << c) | (n >>> (32 - c)); }
+        function cmn(q, a, b, x, s, t) { return safeAdd(rol(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b); }
+        function ff(a,b,c,d,x,s,t) { return cmn((b&c)|((~b)&d),a,b,x,s,t); }
+        function gg(a,b,c,d,x,s,t) { return cmn((b&d)|(c&(~d)),a,b,x,s,t); }
+        function hh(a,b,c,d,x,s,t) { return cmn(b^c^d,a,b,x,s,t); }
+        function ii(a,b,c,d,x,s,t) { return cmn(c^(b|(~d)),a,b,x,s,t); }
+        function blk(s, i) {
+            var arr = [], j;
+            for (j = 0; j < 16; j++) arr[j] = 0;
+            for (j = 0; j < 64 && i + j < s.length; j++) {
+                arr[j >> 2] |= s.charCodeAt(i + j) << ((j % 4) * 8);
+            }
+            var rem = s.length - i;
+            if (rem < 64) {
+                arr[rem >> 2] |= 0x80 << ((rem % 4) * 8);
+                if (rem < 56) arr[14] = s.length * 8;
+            }
+            return arr;
+        }
+        function cycle(st, k) {
+            var a=st[0], b=st[1], c=st[2], d=st[3];
+            a=ff(a,b,c,d,k[0], 7,-680876936);  d=ff(d,a,b,c,k[1],12,-389564586);
+            c=ff(c,d,a,b,k[2],17, 606105819);  b=ff(b,c,d,a,k[3],22,-1044525330);
+            a=ff(a,b,c,d,k[4], 7,-176418897);  d=ff(d,a,b,c,k[5],12, 1200080426);
+            c=ff(c,d,a,b,k[6],17,-1473231341); b=ff(b,c,d,a,k[7],22,-45705983);
+            a=ff(a,b,c,d,k[8], 7, 1770035416); d=ff(d,a,b,c,k[9],12,-1958414417);
+            c=ff(c,d,a,b,k[10],17,-42063);     b=ff(b,c,d,a,k[11],22,-1990404162);
+            a=ff(a,b,c,d,k[12], 7, 1804603682);d=ff(d,a,b,c,k[13],12,-40341101);
+            c=ff(c,d,a,b,k[14],17,-1502002290);b=ff(b,c,d,a,k[15],22, 1236535329);
+            a=gg(a,b,c,d,k[1], 5,-165796510);  d=gg(d,a,b,c,k[6], 9,-1069501632);
+            c=gg(c,d,a,b,k[11],14, 643717713); b=gg(b,c,d,a,k[0],20,-373897302);
+            a=gg(a,b,c,d,k[5], 5,-701558691);  d=gg(d,a,b,c,k[10], 9, 38016083);
+            c=gg(c,d,a,b,k[15],14,-660478335); b=gg(b,c,d,a,k[4],20,-405537848);
+            a=gg(a,b,c,d,k[9], 5, 568446438);  d=gg(d,a,b,c,k[14], 9,-1019803690);
+            c=gg(c,d,a,b,k[3],14,-187363961);  b=gg(b,c,d,a,k[8],20, 1163531501);
+            a=gg(a,b,c,d,k[13], 5,-1444681467);d=gg(d,a,b,c,k[2], 9,-51403784);
+            c=gg(c,d,a,b,k[7],14, 1735328473); b=gg(b,c,d,a,k[12],20,-1926607734);
+            a=hh(a,b,c,d,k[5], 4,-378558);     d=hh(d,a,b,c,k[8],11,-2022574463);
+            c=hh(c,d,a,b,k[11],16, 1839030562);b=hh(b,c,d,a,k[14],23,-35309556);
+            a=hh(a,b,c,d,k[1], 4,-1530992060); d=hh(d,a,b,c,k[4],11, 1272893353);
+            c=hh(c,d,a,b,k[7],16,-155497632);  b=hh(b,c,d,a,k[10],23,-1094730640);
+            a=hh(a,b,c,d,k[13], 4, 681279174); d=hh(d,a,b,c,k[0],11,-358537222);
+            c=hh(c,d,a,b,k[3],16,-722521979);  b=hh(b,c,d,a,k[6],23, 76029189);
+            a=hh(a,b,c,d,k[9], 4,-640364487);  d=hh(d,a,b,c,k[12],11,-421815835);
+            c=hh(c,d,a,b,k[15],16, 530742520); b=hh(b,c,d,a,k[2],23,-995338651);
+            a=ii(a,b,c,d,k[0], 6,-198630844);  d=ii(d,a,b,c,k[7],10, 1126891415);
+            c=ii(c,d,a,b,k[14],15,-1416354905);b=ii(b,c,d,a,k[5],21,-57434055);
+            a=ii(a,b,c,d,k[12], 6, 1700485571);d=ii(d,a,b,c,k[3],10,-1894986606);
+            c=ii(c,d,a,b,k[10],15,-1051523);   b=ii(b,c,d,a,k[1],21,-2054922799);
+            a=ii(a,b,c,d,k[8], 6, 1873313359); d=ii(d,a,b,c,k[15],10,-30611744);
+            c=ii(c,d,a,b,k[6],15,-1560198380); b=ii(b,c,d,a,k[13],21, 1309151649);
+            a=ii(a,b,c,d,k[4], 6,-145523070);  d=ii(d,a,b,c,k[11],10,-1120210379);
+            c=ii(c,d,a,b,k[2],15, 718787259);  b=ii(b,c,d,a,k[9],21,-343485551);
+            st[0]=safeAdd(a,st[0]); st[1]=safeAdd(b,st[1]);
+            st[2]=safeAdd(c,st[2]); st[3]=safeAdd(d,st[3]);
+            return st;
+        }
+        function rhex(n) {
+            var s = '', j;
+            for (j = 0; j < 4; j++) {
+                s += ('0' + ((n >>> (j*8+4)) & 0xF).toString(16));
+                s += ('0' + ((n >>> (j*8))   & 0xF).toString(16));
+            }
+            return s;
+        }
+
+        // Convert string to byte array (UTF-8 safe via encodeURIComponent)
+        var utf8 = unescape(encodeURIComponent(str));
+        var n = utf8.length;
+        var st = [1732584193, -271733879, -1732584194, 271733878];
+        var i, arr;
+
+        for (i = 64; i <= n; i += 64) {
+            arr = [];
+            var j;
+            for (j = 0; j < 16; j++) {
+                arr[j] = utf8.charCodeAt(i-64+j*4)
+                       | (utf8.charCodeAt(i-64+j*4+1) << 8)
+                       | (utf8.charCodeAt(i-64+j*4+2) << 16)
+                       | (utf8.charCodeAt(i-64+j*4+3) << 24);
+            }
+            cycle(st, arr);
+        }
+
+        arr = [];
+        for (j = 0; j < 16; j++) arr[j] = 0;
+        var tail = utf8.substring(i - 64);
+        for (j = 0; j < tail.length; j++) {
+            arr[j >> 2] |= tail.charCodeAt(j) << ((j % 4) * 8);
+        }
+        arr[tail.length >> 2] |= 0x80 << ((tail.length % 4) * 8);
+        if (tail.length > 55) {
+            cycle(st, arr);
+            for (j = 0; j < 16; j++) arr[j] = 0;
+        }
+        arr[14] = n * 8;
+        cycle(st, arr);
+
+        return rhex(st[0]) + rhex(st[1]) + rhex(st[2]) + rhex(st[3]);
+    }
+
+    /* ============================================================
+       APP STATE
+       ============================================================ */
+    var state = {
+        serviceId:   null,
+        serviceName: null,
+        baseAmount:  0,   // unit price
+        quantity:    1,
+        isUnit:      false, // true for per-video, false for monthly packages
+        discount:    false
+    };
+
+    function formatCOP(n) {
+        return '$' + n.toLocaleString('es-CO') + ' COP';
+    }
+
+    function getSubtotal() {
+        return state.baseAmount * state.quantity;
+    }
+
+    function getTotal() {
+        var sub = getSubtotal();
+        if (!sub) return 0;
+        return state.discount ? Math.round(sub * 0.85) : sub;
+    }
+
+    function changeQty(delta) {
+        var newQty = state.quantity + delta;
+        if (newQty < 1) newQty = 1;
+        if (newQty > 20) newQty = 20;
+        state.quantity = newQty;
+        document.getElementById('qtyNum').textContent = newQty;
+        document.getElementById('qtyUnit').textContent = formatCOP(state.baseAmount) + ' c/u';
+        updateSummary();
+    }
+
+    /* ---- Update summary using textContent only (no innerHTML) ---- */
+    function updateSummary() {
+        var sub   = getSubtotal();
+        var disc  = state.discount ? Math.round(sub * 0.15) : 0;
+        var total = getTotal();
+
+        // Service box — use textContent for all user-visible strings
+        var emptyEl  = document.getElementById('summaryServiceEmpty');
+        var detailEl = document.getElementById('summaryServiceDetail');
+        var nameEl   = document.getElementById('summaryServiceName');
+        var priceEl  = document.getElementById('summaryServicePrice');
+
+        if (state.serviceName) {
+            emptyEl.style.display  = 'none';
+            detailEl.style.display = 'block';
+            nameEl.textContent  = state.isUnit && state.quantity > 1
+                ? state.serviceName + ' \u00d7 ' + state.quantity
+                : state.serviceName;
+            priceEl.textContent = formatCOP(sub);
+        } else {
+            emptyEl.style.display  = 'block';
+            detailEl.style.display = 'none';
+        }
+
+        document.getElementById('summarySubtotal').textContent = sub ? formatCOP(sub) : '—';
+        document.getElementById('summaryTotal').textContent    = total ? formatCOP(total) : '—';
+
+        var dRow = document.getElementById('discountRow');
+        if (state.discount && sub) {
+            dRow.style.display = 'flex';
+            document.getElementById('summaryDiscount').textContent = '- ' + formatCOP(disc);
+        } else {
+            dRow.style.display = 'none';
+        }
+
+        updatePayBtn();
+    }
+
+    function updatePayBtn() {
+        var btn      = document.getElementById('payBtn');
+        var hasService = !!state.serviceId;
+        var nameVal    = document.getElementById('buyerName').value.trim();
+        var emailVal   = document.getElementById('buyerEmail').value.trim();
+        var hasName    = nameVal.length > 2;
+        var hasEmail   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
+        var hasTerms   = document.getElementById('termsCheck').checked;
+        btn.disabled = !(hasService && hasName && hasEmail && hasTerms);
+    }
+
+    function selectService(el) {
+        var cards = document.querySelectorAll('.svc-card');
+        for (var i = 0; i < cards.length; i++) cards[i].classList.remove('selected');
+        el.classList.add('selected');
+
+        state.serviceId   = el.dataset.id;
+        state.serviceName = el.dataset.name;
+        state.baseAmount  = parseInt(el.dataset.amount, 10);
+        state.isUnit      = el.dataset.id.indexOf('video-') === 0;
+        state.quantity    = 1;
+
+        // Show / hide quantity row
+        var qtyRow = document.getElementById('qtyRow');
+        if (state.isUnit) {
+            qtyRow.classList.add('visible');
+            document.getElementById('qtyNum').textContent = '1';
+            document.getElementById('qtyUnit').textContent = formatCOP(state.baseAmount) + ' c/u';
+        } else {
+            qtyRow.classList.remove('visible');
+        }
+
+        document.getElementById('step1').classList.add('done');
+        document.getElementById('step2').classList.add('active');
+
+        updateSummary();
+    }
+
+    function applyDiscount() {
+        state.discount = document.getElementById('wellcoreDiscount').checked;
+        updateSummary();
+    }
+
+    /* ---- Submit to PayU ---- */
+    function submitPayment() {
+        var name  = document.getElementById('buyerName').value.trim();
+        var email = document.getElementById('buyerEmail').value.trim();
+        var total = getTotal();
+
+        if (!state.serviceId || !name || !email || !total) {
+            alert('Por favor completa todos los campos antes de continuar.');
+            return;
+        }
+        if (!document.getElementById('termsCheck').checked) {
+            alert('Debes aceptar los Términos y Condiciones para continuar.');
+            return;
+        }
+
+        var referenceCode    = 'PROWAY-' + Date.now();
+        var amountFormatted  = total.toFixed(2);
+
+        // Signature: MD5(apiKey~merchantId~referenceCode~amount~currency)
+        var sigStr    = PAYU_CONFIG.apiKey + '~' + PAYU_CONFIG.merchantId + '~' + referenceCode + '~' + amountFormatted + '~COP';
+        var signature = md5(sigStr);
+
+        var endpoint = PAYU_CONFIG.sandbox
+            ? 'https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/'
+            : 'https://checkout.payulatam.com/ppp-web-gateway-payu/';
+
+        document.getElementById('f_merchantId').value    = PAYU_CONFIG.merchantId;
+        document.getElementById('f_accountId').value     = PAYU_CONFIG.accountId;
+        var desc = 'ProWay Lab - ' + state.serviceName;
+        if (state.isUnit && state.quantity > 1) desc += ' x' + state.quantity;
+        document.getElementById('f_description').value   = desc;
+        document.getElementById('f_referenceCode').value = referenceCode;
+        document.getElementById('f_amount').value        = amountFormatted;
+        document.getElementById('f_signature').value     = signature;
+        document.getElementById('f_test').value          = PAYU_CONFIG.sandbox ? '1' : '0';
+        document.getElementById('f_buyerName').value     = name;
+        document.getElementById('f_buyerEmail').value    = email;
+        document.getElementById('f_responseUrl').value   = PAYU_CONFIG.responseUrl;
+        document.getElementById('f_confirmUrl').value    = PAYU_CONFIG.confirmUrl;
+        document.getElementById('f_extra1').value        = state.serviceId;
+
+        var payuForm = document.getElementById('payuForm');
+        payuForm.action = endpoint;
+
+        document.getElementById('step2').classList.add('done');
+        document.getElementById('step3').classList.add('active');
+
+        payuForm.submit();
+    }
+
+    /* ============================================================
+       PROGRESS BAR + NAVBAR + MOBILE MENU
+       ============================================================ */
+    var prog = document.getElementById('progress');
+    window.addEventListener('scroll', function() {
+        var pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+        prog.style.width = Math.min(pct, 100) + '%';
+    }, { passive: true });
+
+    var nav = document.getElementById('nav');
+    window.addEventListener('scroll', function() {
+        nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    document.getElementById('ham').addEventListener('click', function() {
+        document.getElementById('mob').classList.add('open');
+    });
+    document.getElementById('mobClose').addEventListener('click', function() {
+        document.getElementById('mob').classList.remove('open');
+    });
+    function closeM() { document.getElementById('mob').classList.remove('open'); }
+
+    /* ---- Scroll reveal ---- */
+    var revealObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+            if (e.isIntersecting) { e.target.classList.add('on'); revealObs.unobserve(e.target); }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.rv').forEach(function(el) { revealObs.observe(el); });
+
+    /* ---- Pre-select service from URL param: pagar.html?servicio=video-pro ---- */
+    (function() {
+        var params = new URLSearchParams(window.location.search);
+        var svc    = params.get('servicio');
+        if (svc) {
+            var card = document.querySelector('.svc-card[data-id="' + svc + '"]');
+            if (card) {
+                setTimeout(function() {
+                    selectService(card);
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 400);
+            }
+        }
+    })();
+</script>
+
+</body>
+</html>

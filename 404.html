@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>404 — Página no encontrada | ProWay Lab</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── CSS Variables ─────────────────────────────────── */
+    :root {
+      --bg:       #0C0C0F;
+      --blue:     #00D9FF;
+      --red:      #E31E24;
+      --white:    #FFFFFF;
+      --gray:     #6B7280;
+      --gray-lt:  #9CA3AF;
+      --border:   rgba(0, 217, 255, 0.12);
+    }
+
+    /* ─── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding: 2rem 1.5rem;
+    }
+
+    /* ─── Background noise texture ──────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(0, 217, 255, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 30% at 80% 80%, rgba(227, 30, 36, 0.04) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── Container ──────────────────────────────────────── */
+    .container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 640px;
+      width: 100%;
+      gap: 0;
+    }
+
+    /* ─── Logo ───────────────────────────────────────────── */
+    .logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: 0.9rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gray-lt);
+      margin-bottom: 3.5rem;
+      position: relative;
+    }
+
+    .logo span {
+      color: var(--blue);
+    }
+
+    .logo::after {
+      content: '';
+      display: block;
+      width: 32px;
+      height: 2px;
+      background: var(--blue);
+      margin: 0.6rem auto 0;
+      opacity: 0.6;
+    }
+
+    /* ─── 404 Number ─────────────────────────────────────── */
+    .error-code {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 900;
+      font-size: clamp(7rem, 22vw, 14rem);
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: var(--blue);
+      position: relative;
+      margin-bottom: 2rem;
+      user-select: none;
+
+      /* subtle text-shadow depth */
+      text-shadow:
+        0 0 40px rgba(0, 217, 255, 0.25),
+        0 0 80px rgba(0, 217, 255, 0.10);
+
+      animation: glitch 6s infinite;
+    }
+
+    /* Red accent pseudo-element behind the number */
+    .error-code::before {
+      content: '404';
+      position: absolute;
+      inset: 0;
+      color: var(--red);
+      opacity: 0.18;
+      transform: translate(4px, 3px);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* ─── Glitch animation ───────────────────────────────── */
+    @keyframes glitch {
+      0%, 90%, 100% {
+        clip-path: none;
+        transform: none;
+        opacity: 1;
+      }
+      91% {
+        clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+        transform: translate(-3px, 0);
+        opacity: 0.9;
+      }
+      92% {
+        clip-path: polygon(0 55%, 100% 55%, 100% 70%, 0 70%);
+        transform: translate(3px, 0);
+        opacity: 0.85;
+      }
+      93% {
+        clip-path: none;
+        transform: none;
+        opacity: 1;
+      }
+      94% {
+        clip-path: polygon(0 10%, 100% 10%, 100% 25%, 0 25%);
+        transform: translate(-2px, 0);
+        opacity: 0.92;
+      }
+      95% {
+        clip-path: none;
+        transform: none;
+        opacity: 1;
+      }
+    }
+
+    /* ─── Divider ─────────────────────────────────────────── */
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+      margin-bottom: 2rem;
+      opacity: 0.5;
+    }
+
+    /* ─── Subtext ─────────────────────────────────────────── */
+    .subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--gray-lt);
+      margin-bottom: 0.85rem;
+    }
+
+    .body-text {
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 400;
+      font-size: clamp(0.78rem, 2vw, 0.9rem);
+      color: var(--gray);
+      letter-spacing: 0.02em;
+      line-height: 1.6;
+      margin-bottom: 2.8rem;
+    }
+
+    /* ─── CTA Button ─────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--bg);
+      background: var(--blue);
+      padding: 0.85rem 2.2rem;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 0 24px rgba(0, 217, 255, 0.30);
+    }
+
+    /* Subtle shine sweep on hover */
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -75%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent);
+      transition: left 0.4s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 36px rgba(0, 217, 255, 0.50);
+    }
+
+    .btn:hover::after {
+      left: 125%;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    /* Arrow icon inside button */
+    .btn-arrow {
+      display: inline-block;
+      font-size: 1rem;
+      line-height: 1;
+      transform: rotate(180deg);
+    }
+
+    /* ─── Tagline ─────────────────────────────────────────── */
+    .tagline {
+      margin-top: 4rem;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 400;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--gray);
+      opacity: 0.6;
+      text-transform: uppercase;
+    }
+
+    .tagline strong {
+      color: var(--blue);
+      font-weight: 500;
+      opacity: 0.8;
+    }
+
+    /* ─── Fade-in on load ────────────────────────────────── */
+    .container {
+      animation: fadeUp 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ─── Responsive ─────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 0.75rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .tagline {
+        margin-top: 3rem;
+        font-size: 0.62rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Logo -->
+    <div class="logo">
+      PROWAY <span>LAB</span>
+    </div>
+
+    <!-- 404 -->
+    <h1 class="error-code">404</h1>
+
+    <div class="divider"></div>
+
+    <!-- Texts -->
+    <p class="subtitle">Esta página no existe</p>
+    <p class="body-text">La URL que buscas no existe o fue movida.</p>
+
+    <!-- CTA -->
+    <a href="/" class="btn">
+      <span class="btn-arrow">&#8594;</span>
+      Volver al inicio
+    </a>
+
+    <!-- Tagline -->
+    <p class="tagline">
+      <strong>ProWay Lab</strong> &mdash; Ingenieria de Marcas Fitness
+    </p>
+
+  </div>
+
+</body>
+</html>
