@@ -1,12 +1,10 @@
-FROM php:8.2-fpm-alpine
+FROM php:8.2-apache
 
-RUN apk add --no-cache nginx supervisor \
- && docker-php-ext-install pdo pdo_mysql \
- && mkdir -p /run/nginx
+RUN docker-php-ext-install pdo pdo_mysql
+
+RUN a2enmod rewrite headers
 
 COPY --chown=www-data:www-data . /var/www/html/
-COPY nginx.conf /etc/nginx/http.d/default.conf
-COPY supervisord.conf /etc/supervisord.conf
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
 EXPOSE 80
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
