@@ -21,9 +21,20 @@ function respondError(string $message, int $code = 400): void {
 
 /**
  * Decode JSON request body into an array.
+ * Uses multiple fallback methods for proxy-forwarded requests.
  */
 function getJsonBody(): array {
     $raw = file_get_contents('php://input');
+
+    // Fallback for chunked transfer or proxy stripping Content-Length
+    if (!$raw) {
+        $fp = fopen('php://input', 'rb');
+        if ($fp !== false) {
+            $raw = stream_get_contents($fp);
+            fclose($fp);
+        }
+    }
+
     return json_decode($raw ?: '{}', true) ?? [];
 }
 

@@ -14,8 +14,7 @@ $email    = trim($body['email'] ?? $body['username'] ?? '');
 $password = $body['password'] ?? '';
 
 if (!$email || !$password) {
-    $raw = (string) file_get_contents('php://input');
-    respondError('Credenciales requeridas [b64:' . base64_encode($raw) . '|ct:' . ($_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? 'nil') . ']', 422);
+    respondError('Se requieren credenciales', 422);
 }
 
 $db = getDB();
