@@ -18,6 +18,16 @@ $db = getDB();
 $results = [];
 $errors  = [];
 
+// ── DROP tablas en orden inverso (respetar FK) para recrear con schema correcto
+try {
+    $db->prepare("SET FOREIGN_KEY_CHECKS = 0")->execute();
+    foreach (['brand_assets','invoices','deliverables','projects','auth_tokens','client_profiles','clients','admins'] as $t) {
+        $db->prepare("DROP TABLE IF EXISTS $t")->execute();
+    }
+    $db->prepare("SET FOREIGN_KEY_CHECKS = 1")->execute();
+    $results[] = 'tablas anteriores: eliminadas para recrear con schema correcto';
+} catch (\Exception $e) { $errors[] = 'drop tables: ' . $e->getMessage(); }
+
 // ── TABLAS ────────────────────────────────────────────────────────────────────
 
 $tables = [
