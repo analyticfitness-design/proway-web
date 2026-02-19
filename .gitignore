@@ -1,4 +1,3 @@
-api/config/database.php
 .env
 *.env
 test/
