@@ -4,8 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sergio Daniel Esparza — Portafolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@400;500&display=swap">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@400;500&display=swap');
 
 :root {
   --bg:      #080808;
@@ -1165,9 +1167,60 @@ footer {
   color: var(--accent);
   margin-top: 2px;
 }
+
+/* ══════════════════════════════════
+   LOADING SCREEN
+══════════════════════════════════ */
+#loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #080808;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  transition: opacity .5s ease, visibility .5s ease;
+}
+#loader.hidden { opacity: 0; visibility: hidden; }
+.loader-logo {
+  font-family: 'Montserrat', 'Arial Black', Arial, sans-serif;
+  font-weight: 900;
+  font-size: 28px;
+  letter-spacing: .06em;
+  color: #fff;
+}
+.loader-logo span { color: #00D9FF; }
+.loader-bar {
+  width: 120px;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  position: relative;
+  overflow: hidden;
+}
+.loader-bar::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: #00D9FF;
+  animation: loader-slide 1.2s ease infinite;
+}
+@keyframes loader-slide {
+  0%   { left: -100%; }
+  50%  { left: 0%; }
+  100% { left: 100%; }
+}
 </style>
 </head>
 <body>
+
+<!-- LOADING SCREEN -->
+<div id="loader">
+  <div class="loader-logo">S<span>.</span>D<span>.</span>E</div>
+  <div class="loader-bar"></div>
+</div>
 
 <!-- ─── NAV ─── -->
 <nav>
@@ -1695,5 +1748,17 @@ const observer = new IntersectionObserver((entries) => {
 reveals.forEach(el => observer.observe(el));
 </script>
 
+
+<script>
+  window.addEventListener('load', function() {
+    var l = document.getElementById('loader');
+    if (l) l.classList.add('hidden');
+  });
+  // Fallback: hide after 4s no matter what
+  setTimeout(function() {
+    var l = document.getElementById('loader');
+    if (l) l.classList.add('hidden');
+  }, 4000);
+</script>
 </body>
 </html>
