@@ -1093,17 +1093,33 @@ footer {
 /* ══════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════ */
+.ref-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
 @media (max-width: 900px) {
   .projects-grid { grid-template-columns: 1fr; }
   .about-photo { width: 140px; }
   .about-grid { grid-template-columns: 140px 1fr; gap: 28px; }
   .services-grid { grid-template-columns: 1fr 1fr; }
   .reels-grid { grid-template-columns: repeat(3, 1fr); }
+  .ref-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 600px) {
+  section { padding: 64px 6vw; }
   .reels-grid { grid-template-columns: repeat(2, 1fr); }
   .services-grid { grid-template-columns: 1fr; }
   .nav-links { display: none; }
+  .about-grid { grid-template-columns: 1fr; gap: 20px; }
+  .about-photo { width: 130px; }
+  .ref-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 8px; text-align: center; font-size: 11px; }
+}
+@media (max-width: 420px) {
+  section { padding: 52px 5vw; }
+  .reels-grid { grid-template-columns: 1fr 1fr; }
+  .hero-name { font-size: clamp(44px, 12vw, 80px); }
 }
 
 /* ══════════════════════════════════
@@ -1602,7 +1618,7 @@ footer {
   <div class="section-label"><span class="ln"></span>Referencias laborales</div>
   <h2 class="section-title">Personas que<br>pueden dar fe.</h2>
 
-  <div style="display: grid; grid-template-columns: repeat(3,1fr); gap: 2px;" data-reveal>
+  <div class="ref-grid" data-reveal>
 
     <div style="background: var(--s1); border: 1px solid var(--border); padding: 28px 24px;">
       <div style="font-family:'Roboto Mono',monospace; font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); margin-bottom:14px;">01 — Empresa</div>
