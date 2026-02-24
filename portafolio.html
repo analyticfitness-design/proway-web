@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portafolio — ProWay Lab | Agencia de Contenido Fitness</title>
-  <meta name="description" content="Portafolio de producción audiovisual y estrategia de marca de ProWay Lab. 09 proyectos. 47 coaches. +2.3M reproducciones.">
+  <meta name="description" content="Portafolio de producción audiovisual y estrategia de marca de ProWay Lab. 04 proyectos principales. +120 videos producidos. +2.3M reproducciones.">
   <meta property="og:title" content="Portafolio — ProWay Lab | Agencia de Contenido Fitness">
-  <meta property="og:description" content="Portafolio de producción audiovisual y estrategia de marca de ProWay Lab. 09 proyectos. 47 coaches. +2.3M reproducciones.">
+  <meta property="og:description" content="Portafolio de producción audiovisual y estrategia de marca de ProWay Lab. 04 proyectos principales. +120 videos producidos. +2.3M reproducciones.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://prowaylab.com/portafolio.html">
   <meta property="og:image" content="https://prowaylab.com/images/og-proway.jpg">
@@ -968,6 +968,256 @@
     }
 
     /* ============================================================
+       VIDEO REELS SECTION
+    ============================================================ */
+    #reels-section {
+      padding: 80px 24px;
+      background: var(--surface);
+    }
+
+    .reels-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .reels-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    .reel-card {
+      position: relative;
+      aspect-ratio: 9/14;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      overflow: hidden;
+      transition: border-color 0.25s ease;
+    }
+
+    .reel-card:hover { border-color: var(--blue); }
+    .reel-card:hover .reel-overlay { opacity: 1; }
+
+    .reel-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--surface-2) 0%, var(--surface) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .reel-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      transition: transform 0.35s ease, filter 0.35s ease;
+      filter: brightness(0.75) saturate(0.9);
+    }
+
+    .reel-card:hover .reel-bg img {
+      transform: scale(1.04);
+      filter: brightness(0.55) saturate(0.8);
+    }
+
+    .reel-play-static {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid rgba(0,217,255,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(0,217,255,0.5);
+      font-size: 12px;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+      z-index: 2;
+    }
+
+    .reel-card:hover .reel-play-static {
+      border-color: var(--blue);
+      color: var(--bg);
+      background: var(--blue);
+    }
+
+    .reel-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,217,255,0.04);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .reel-label {
+      font-family: var(--font-m);
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--blue);
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .reel-card:hover .reel-label { opacity: 1; }
+
+    .reel-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 8px 10px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .reel-idx {
+      font-family: var(--font-m);
+      font-size: 8px;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.25);
+    }
+
+    .reel-ig {
+      font-family: var(--font-m);
+      font-size: 7px;
+      letter-spacing: 0.06em;
+      color: rgba(0,217,255,0.4);
+      text-transform: uppercase;
+    }
+
+    /* ============================================================
+       TEAM / CREATOR SECTION
+    ============================================================ */
+    #team-section {
+      padding: 80px 24px;
+      background: var(--bg);
+    }
+
+    .team-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .team-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 48px 40px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .team-name {
+      font-family: var(--font-h);
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 900;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .team-roles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .team-role-chip {
+      padding: 5px 12px;
+      border: 1px solid var(--border);
+      font-family: var(--font-m);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray);
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .team-role-chip.main {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .team-bio {
+      font-family: var(--font-b);
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.7;
+      max-width: 600px;
+      margin-bottom: 28px;
+    }
+
+    .team-skills-title {
+      font-family: var(--font-m);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      color: var(--dark);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .team-skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .team-skill {
+      font-family: var(--font-m);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      color: var(--gray);
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .team-skill.accent {
+      border-color: rgba(0,217,255,0.3);
+      color: var(--blue);
+    }
+
+    .team-location {
+      font-family: var(--font-m);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--dark);
+      text-transform: uppercase;
+    }
+
+    .team-location b {
+      color: var(--red);
+      margin-right: 4px;
+      font-size: 8px;
+    }
+
+    /* ============================================================
        METRICS PANEL — CINEMATIC DASHBOARD
     ============================================================ */
     #metrics {
@@ -1458,6 +1708,7 @@
     ============================================================ */
     @media (max-width: 1024px) {
       .projects-grid { grid-template-columns: repeat(2, 1fr); }
+      .reels-grid { grid-template-columns: repeat(3, 1fr); }
       .metrics-numbers { grid-template-columns: repeat(2, 1fr); }
       .metric-item:nth-child(2) { border-right: none; }
       .metric-item:nth-child(3) { border-right: 1px solid rgba(0,217,255,0.1); }
@@ -1478,6 +1729,8 @@
       }
 
       .projects-grid { grid-template-columns: 1fr; }
+      .reels-grid { grid-template-columns: repeat(2, 1fr); }
+      .team-card { padding: 32px 24px; }
 
       .timeline-container {
         flex-direction: column;
@@ -1611,12 +1864,12 @@
     <!-- Stats flotantes -->
     <div class="hero-stats">
       <div class="hero-stat">
-        <div class="hero-stat-num">09</div>
-        <div class="hero-stat-label">Proyectos</div>
+        <div class="hero-stat-num">04</div>
+        <div class="hero-stat-label">Proyectos principales</div>
       </div>
       <div class="hero-stat">
-        <div class="hero-stat-num blue">47</div>
-        <div class="hero-stat-label">Coaches</div>
+        <div class="hero-stat-num blue">+120</div>
+        <div class="hero-stat-label">Videos producidos</div>
       </div>
       <div class="hero-stat">
         <div class="hero-stat-num green">+2.3M</div>
@@ -1641,7 +1894,7 @@
   <div class="featured-wrap rv">
     <div class="featured-label">// PROYECTO DESTACADO</div>
 
-    <div class="featured-card" id="featuredCard">
+    <a href="https://www.wellcorefitness.com" target="_blank" class="featured-card" id="featuredCard" style="display:block;text-decoration:none;color:inherit;">
       <!-- Scanlines CSS -->
       <div class="featured-scanlines"></div>
       <!-- Ambient glow -->
@@ -1655,29 +1908,29 @@
 
       <!-- Content -->
       <div class="fc-content">
-        <div class="fc-category">Video &mdash; Coach Fitness &mdash; Bogot&aacute;</div>
-        <h2 class="fc-title">COACH FITMAX</h2>
-        <p class="fc-tagline">Transformación completa de marca personal para entrenador élite</p>
+        <div class="fc-category">Web + Branding &mdash; Coach Fitness &mdash; Colombia</div>
+        <h2 class="fc-title">WELLCORE FITNESS</h2>
+        <p class="fc-tagline">Plataforma completa de fitness online: web, portal de clientes, admin y sistema de marca</p>
       </div>
 
       <!-- Info bar -->
       <div class="fc-info-bar">
-        <span class="fc-info-item">VIDEO</span>
+        <span class="fc-info-item">WEB + BRANDING</span>
         <div class="fc-info-sep"></div>
-        <span class="fc-info-item">COACH FITNESS</span>
+        <span class="fc-info-item">FITNESS</span>
         <div class="fc-info-sep"></div>
-        <span class="fc-info-item">BOGOT&Aacute;</span>
+        <span class="fc-info-item">COLOMBIA</span>
         <div class="fc-info-sep"></div>
-        <span class="fc-info-item">2025</span>
+        <span class="fc-info-item">2025&ndash;2026</span>
         <div class="fc-info-sep"></div>
-        <span class="fc-info-item highlight">+325% SEGUIDORES</span>
+        <span class="fc-info-item highlight">EN PRODUCCI&Oacute;N</span>
       </div>
 
       <!-- Hover CTA -->
       <div class="fc-hover-overlay">
-        <button class="fc-cta-btn">Ver caso &rarr;</button>
+        <span class="fc-cta-btn">Ver proyecto &rarr;</span>
       </div>
-    </div>
+    </a>
   </div>
 </section>
 
@@ -1688,44 +1941,82 @@
   <div class="projects-wrap">
     <div class="section-header rv">
       <h2 class="section-title">Todos los proyectos</h2>
-      <span class="section-count">// 08 PROYECTOS M&Aacute;S</span>
+      <span class="section-count">// 09 PROYECTOS</span>
     </div>
 
     <div class="projects-grid" id="projectsGrid">
 
-      <!-- P02 — VIDEO -->
-      <div class="proj-card rv" data-cat="VIDEO">
+      <!-- P02 — BRANDING — WellCore Fitness -->
+      <div class="proj-card rv" data-cat="BRANDING">
         <div class="proj-grid-line"></div>
         <div class="proj-num">P02</div>
-        <div class="proj-cat-badge cat-video">Video</div>
+        <div class="proj-cat-badge cat-branding">Branding</div>
         <div class="proj-footer">
-          <div class="proj-name">Coach @andresfuncional</div>
-          <div class="proj-meta">Medell&iacute;n &middot; +367% seguidores</div>
+          <div class="proj-name">WellCore Fitness</div>
+          <div class="proj-meta">Colombia &middot; Web + Branding</div>
         </div>
         <div class="proj-hover-overlay">
           <div class="proj-icon-wrap">
-            <!-- Play icon SVG -->
             <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="24" cy="24" r="22" stroke="rgba(0,217,255,0.6)" stroke-width="1.5"/>
-              <path d="M20 16L34 24L20 32V16Z" fill="#00D9FF"/>
+              <path d="M24 4 L40 14 L40 34 L24 44 L8 34 L8 14 Z" stroke="rgba(227,30,36,0.6)" stroke-width="1.5" fill="none"/>
+              <circle cx="24" cy="24" r="8" fill="rgba(227,30,36,0.3)" stroke="#E31E24" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="proj-result-text">WELLCOREFITNESS.COM &rarr;</div>
+        </div>
+      </div>
+
+      <!-- P03 — BRANDING — ProWay Lab -->
+      <div class="proj-card rv" data-cat="BRANDING">
+        <div class="proj-grid-line"></div>
+        <div class="proj-num">P03</div>
+        <div class="proj-cat-badge cat-branding">Branding</div>
+        <div class="proj-footer">
+          <div class="proj-name">ProWay Lab</div>
+          <div class="proj-meta">Colombia &middot; Identidad + Web + API</div>
+        </div>
+        <div class="proj-hover-overlay">
+          <div class="proj-icon-wrap">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 4 L40 14 L40 34 L24 44 L8 34 L8 14 Z" stroke="rgba(227,30,36,0.6)" stroke-width="1.5" fill="none"/>
+              <circle cx="24" cy="24" r="8" fill="rgba(227,30,36,0.3)" stroke="#E31E24" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div class="proj-result-text">PROWAYLAB.COM &rarr;</div>
+        </div>
+      </div>
+
+      <!-- P04 — BRANDING — JK Training -->
+      <div class="proj-card rv" data-cat="BRANDING">
+        <div class="proj-grid-line"></div>
+        <div class="proj-num">P04</div>
+        <div class="proj-cat-badge cat-branding">Branding</div>
+        <div class="proj-footer">
+          <div class="proj-name">JK Training</div>
+          <div class="proj-meta">Editorial &middot; Workout Book + Logo</div>
+        </div>
+        <div class="proj-hover-overlay">
+          <div class="proj-icon-wrap">
+            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 4 L40 14 L40 34 L24 44 L8 34 L8 14 Z" stroke="rgba(227,30,36,0.6)" stroke-width="1.5" fill="none"/>
+              <circle cx="24" cy="24" r="8" fill="rgba(227,30,36,0.3)" stroke="#E31E24" stroke-width="1.5"/>
             </svg>
           </div>
           <div class="proj-result-text">VER RESULTADO &rarr;</div>
         </div>
       </div>
 
-      <!-- P03 — ESTRATEGIA -->
+      <!-- P05 — ESTRATEGIA — Campañas Digitales -->
       <div class="proj-card rv" data-cat="ESTRATEGIA">
         <div class="proj-grid-line"></div>
-        <div class="proj-num">P03</div>
+        <div class="proj-num">P05</div>
         <div class="proj-cat-badge cat-estrategia">Estrategia</div>
         <div class="proj-footer">
-          <div class="proj-name">Brand System @nutrifit</div>
-          <div class="proj-meta">Bogot&aacute; &middot; +180% engagement</div>
+          <div class="proj-name">Campa&ntilde;as Digitales</div>
+          <div class="proj-meta">Multi-cliente &middot; Posts, Stories, Assets</div>
         </div>
         <div class="proj-hover-overlay">
           <div class="proj-icon-wrap">
-            <!-- Chart icon SVG -->
             <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="8" y="28" width="7" height="14" fill="rgba(0,255,135,0.3)" stroke="rgba(0,255,135,0.6)" stroke-width="1"/>
               <rect x="20" y="18" width="7" height="24" fill="rgba(0,255,135,0.3)" stroke="rgba(0,255,135,0.6)" stroke-width="1"/>
@@ -1737,13 +2028,13 @@
         </div>
       </div>
 
-      <!-- P04 — VIDEO -->
+      <!-- P06 — VIDEO — Reels Educativos -->
       <div class="proj-card rv" data-cat="VIDEO">
         <div class="proj-grid-line"></div>
-        <div class="proj-num">P04</div>
+        <div class="proj-num">P06</div>
         <div class="proj-cat-badge cat-video">Video</div>
         <div class="proj-footer">
-          <div class="proj-name">Serie Reels Educativos</div>
+          <div class="proj-name">Reels Educativos @fitcoach_co</div>
           <div class="proj-meta">Cali &middot; 2.1M vistas</div>
         </div>
         <div class="proj-hover-overlay">
@@ -1757,32 +2048,30 @@
         </div>
       </div>
 
-      <!-- P05 — BRANDING -->
-      <div class="proj-card rv" data-cat="BRANDING">
+      <!-- P07 — VIDEO — Branded Content -->
+      <div class="proj-card rv" data-cat="VIDEO">
         <div class="proj-grid-line"></div>
-        <div class="proj-num">P05</div>
-        <div class="proj-cat-badge cat-branding">Branding</div>
+        <div class="proj-num">P07</div>
+        <div class="proj-cat-badge cat-video">Video</div>
         <div class="proj-footer">
-          <div class="proj-name">Identidad Visual Yoga</div>
-          <div class="proj-meta">Nacional &middot; Brand completo</div>
+          <div class="proj-name">Branded Content @powerfit</div>
+          <div class="proj-meta">Bogot&aacute; &middot; +8.7% conversion</div>
         </div>
         <div class="proj-hover-overlay">
           <div class="proj-icon-wrap">
-            <!-- Brand icon SVG -->
             <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <hexagon points="24,4 40,14 40,34 24,44 8,34 8,14" stroke="rgba(227,30,36,0.6)" stroke-width="1.5" fill="none"/>
-              <circle cx="24" cy="24" r="8" fill="rgba(227,30,36,0.3)" stroke="#E31E24" stroke-width="1.5"/>
-              <path d="M24 4 L40 14 L40 34 L24 44 L8 34 L8 14 Z" stroke="rgba(227,30,36,0.6)" stroke-width="1.5" fill="none"/>
+              <circle cx="24" cy="24" r="22" stroke="rgba(0,217,255,0.6)" stroke-width="1.5"/>
+              <path d="M20 16L34 24L20 32V16Z" fill="#00D9FF"/>
             </svg>
           </div>
           <div class="proj-result-text">VER RESULTADO &rarr;</div>
         </div>
       </div>
 
-      <!-- P06 — ESTRATEGIA -->
+      <!-- P08 — ESTRATEGIA — Sistema Editorial 90D -->
       <div class="proj-card rv" data-cat="ESTRATEGIA">
         <div class="proj-grid-line"></div>
-        <div class="proj-num">P06</div>
+        <div class="proj-num">P08</div>
         <div class="proj-cat-badge cat-estrategia">Estrategia</div>
         <div class="proj-footer">
           <div class="proj-name">Sistema Editorial 90D</div>
@@ -1801,47 +2090,7 @@
         </div>
       </div>
 
-      <!-- P07 — VIDEO -->
-      <div class="proj-card rv" data-cat="VIDEO">
-        <div class="proj-grid-line"></div>
-        <div class="proj-num">P07</div>
-        <div class="proj-cat-badge cat-video">Video</div>
-        <div class="proj-footer">
-          <div class="proj-name">Branded Testimonials</div>
-          <div class="proj-meta">Bogot&aacute; &middot; +8.7% conversion</div>
-        </div>
-        <div class="proj-hover-overlay">
-          <div class="proj-icon-wrap">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="24" cy="24" r="22" stroke="rgba(0,217,255,0.6)" stroke-width="1.5"/>
-              <path d="M20 16L34 24L20 32V16Z" fill="#00D9FF"/>
-            </svg>
-          </div>
-          <div class="proj-result-text">VER RESULTADO &rarr;</div>
-        </div>
-      </div>
-
-      <!-- P08 — BRANDING -->
-      <div class="proj-card rv" data-cat="BRANDING">
-        <div class="proj-grid-line"></div>
-        <div class="proj-num">P08</div>
-        <div class="proj-cat-badge cat-branding">Branding</div>
-        <div class="proj-footer">
-          <div class="proj-name">Brand Kit Premium</div>
-          <div class="proj-meta">Nacional &middot; 3 coaches</div>
-        </div>
-        <div class="proj-hover-overlay">
-          <div class="proj-icon-wrap">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M24 4 L40 14 L40 34 L24 44 L8 34 L8 14 Z" stroke="rgba(227,30,36,0.6)" stroke-width="1.5" fill="none"/>
-              <circle cx="24" cy="24" r="8" fill="rgba(227,30,36,0.3)" stroke="#E31E24" stroke-width="1.5"/>
-            </svg>
-          </div>
-          <div class="proj-result-text">VER RESULTADO &rarr;</div>
-        </div>
-      </div>
-
-      <!-- P09 — ESTRATEGIA -->
+      <!-- P09 — ESTRATEGIA — Analytics Growth Plan -->
       <div class="proj-card rv" data-cat="ESTRATEGIA">
         <div class="proj-grid-line"></div>
         <div class="proj-num">P09</div>
@@ -1863,7 +2112,165 @@
         </div>
       </div>
 
+      <!-- PLACEHOLDER 1 — Próximo proyecto -->
+      <div class="proj-card rv" data-cat="TODOS" style="background:transparent;border-style:dashed;border-color:var(--border);cursor:default;">
+        <div class="proj-footer" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;inset:0;background:none;padding:24px;">
+          <div class="proj-name" style="color:var(--dark);font-size:14px;text-align:center;">Pr&oacute;ximo proyecto</div>
+          <div class="proj-meta" style="color:var(--dark);text-align:center;">En desarrollo</div>
+        </div>
+      </div>
+
+      <!-- PLACEHOLDER 2 — Próximo proyecto -->
+      <div class="proj-card rv" data-cat="TODOS" style="background:transparent;border-style:dashed;border-color:var(--border);cursor:default;">
+        <div class="proj-footer" style="display:flex;flex-direction:column;align-items:center;justify-content:center;position:absolute;inset:0;background:none;padding:24px;">
+          <div class="proj-name" style="color:var(--dark);font-size:14px;text-align:center;">Pr&oacute;ximo proyecto</div>
+          <div class="proj-meta" style="color:var(--dark);text-align:center;">Disponible</div>
+        </div>
+      </div>
+
     </div><!-- /projects-grid -->
+  </div>
+</section>
+
+<!-- ============================================================
+     VIDEO REELS — PRODUCCIÓN AUDIOVISUAL
+============================================================ -->
+<section id="reels-section">
+  <div class="reels-wrap">
+    <div class="rv">
+      <div class="section-eyebrow">// VIDEO PRODUCIDO</div>
+      <h2 class="proceso-title">Producci&oacute;n audiovisual</h2>
+    </div>
+
+    <div class="reels-grid rv">
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DTv9xHUkX8G/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-01.jpg" alt="Reel 01" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">01</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DUB7GxwES6u/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-02.jpg" alt="Reel 02" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">02</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DTJfoGED9B9/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-03.jpg" alt="Reel 03" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">03</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DTNnb8kDfgL/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-04.jpg" alt="Reel 04" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">04</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DUrP9v-j_ob/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-05.jpg" alt="Reel 05" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">05</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DSFpOZhjQ60/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-06.jpg" alt="Reel 06" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">06</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DUwRn95iWfG/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-07.jpg" alt="Reel 07" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">07</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DSdFkP4jmj8/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-08.jpg" alt="Reel 08" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">08</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DTv5xIcEV5y/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-09.jpg" alt="Reel 09" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">09</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DSlWF9zETpU/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-10.jpg" alt="Reel 10" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">10</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DUgm7E-jydZ/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-11.jpg" alt="Reel 11" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">11</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+      <a class="reel-card" href="https://www.instagram.com/reel/DTgfRyeEdkR/" target="_blank">
+        <div class="reel-bg"><img src="/images/portafolio/portafolio-12.jpg" alt="Reel 12" loading="lazy"></div>
+        <div class="reel-play-static">&#9654;</div>
+        <div class="reel-label">Ver en Instagram</div>
+        <div class="reel-bottom"><div class="reel-idx">12</div><div class="reel-ig">Instagram</div></div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TEAM / CREATOR — QUIÉN ESTÁ DETRÁS
+============================================================ -->
+<section id="team-section">
+  <div class="team-wrap">
+    <div class="rv">
+      <div class="section-eyebrow">// EL EQUIPO</div>
+      <h2 class="proceso-title">Qui&eacute;n est&aacute; detr&aacute;s</h2>
+    </div>
+
+    <div class="team-card rv">
+      <div>
+        <div class="team-name">Sergio Daniel Esparza</div>
+        <div class="team-roles">
+          <span class="team-role-chip main">Dise&ntilde;ador Gr&aacute;fico</span>
+          <span class="team-role-chip">Desarrollador Web</span>
+          <span class="team-role-chip">Director Creativo</span>
+          <span class="team-role-chip">Editor de Video</span>
+        </div>
+        <p class="team-bio">
+          Creo identidades, experiencias web y contenido visual que conecta marcas con personas. Combino criterio deportivo, visi&oacute;n creativa y capacidad t&eacute;cnica en un solo perfil &mdash; no solo hago que las cosas se vean bien, hago que funcionen para el objetivo.
+        </p>
+
+        <div class="team-skills-title">Stack de herramientas</div>
+        <div class="team-skills-grid">
+          <span class="team-skill accent">Photoshop</span>
+          <span class="team-skill accent">Illustrator</span>
+          <span class="team-skill accent">After Effects</span>
+          <span class="team-skill accent">Premiere</span>
+          <span class="team-skill">Figma</span>
+          <span class="team-skill">HTML/CSS/JS</span>
+          <span class="team-skill">Python</span>
+          <span class="team-skill">PHP</span>
+          <span class="team-skill">Claude Code</span>
+        </div>
+
+        <div class="team-location"><b>&#9632;</b> Bucaramanga, Colombia</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1879,12 +2286,12 @@
       <!-- Números principales -->
       <div class="metrics-numbers">
         <div class="metric-item">
-          <div class="metric-val">09</div>
+          <div class="metric-val">04</div>
           <div class="metric-label">Proyectos</div>
         </div>
         <div class="metric-item">
-          <div class="metric-val">47</div>
-          <div class="metric-label">Coaches</div>
+          <div class="metric-val">+120</div>
+          <div class="metric-label">Videos</div>
         </div>
         <div class="metric-item">
           <div class="metric-val green">2.3M</div>
@@ -1901,16 +2308,16 @@
         <div class="bar-row">
           <div class="bar-label">Proyectos</div>
           <div class="bar-track">
-            <div class="bar-fill" data-w="90"></div>
+            <div class="bar-fill" data-w="40"></div>
           </div>
-          <div class="bar-val">09/10</div>
+          <div class="bar-val">04</div>
         </div>
         <div class="bar-row">
-          <div class="bar-label">Coaches</div>
+          <div class="bar-label">Videos</div>
           <div class="bar-track">
-            <div class="bar-fill" data-w="94"></div>
+            <div class="bar-fill" data-w="80"></div>
           </div>
-          <div class="bar-val">47</div>
+          <div class="bar-val">+120</div>
         </div>
         <div class="bar-row">
           <div class="bar-label">Reproduc.</div>
@@ -2657,7 +3064,7 @@
       var filter = this.getAttribute('data-filter');
 
       // Show/hide featured card
-      if (filter === 'TODOS' || filter === 'VIDEO') {
+      if (filter === 'TODOS' || filter === 'BRANDING') {
         featuredSection.style.display = '';
       } else {
         featuredSection.style.display = 'none';
