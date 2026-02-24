@@ -56,9 +56,9 @@ if (!$wap) {
 $wap = preg_replace('/[^0-9]/', '', $wap);
 if (strlen($wap) === 10) $wap = '57' . $wap; // Colombia default
 
-// WhatsApp Business API config
-$waPhoneId = env('WA_PHONE_NUMBER_ID', '');
-$waToken   = env('WA_ACCESS_TOKEN', '');
+// WhatsApp Business API config (defined in database.php)
+$waPhoneId = defined('WA_PHONE_NUMBER_ID') ? WA_PHONE_NUMBER_ID : env('WA_PHONE_NUMBER_ID', '');
+$waToken   = defined('WA_ACCESS_TOKEN')    ? WA_ACCESS_TOKEN    : env('WA_ACCESS_TOKEN', '');
 
 if (!$waPhoneId || !$waToken) {
     // WhatsApp API not configured yet — log and return success
@@ -81,7 +81,7 @@ $payload = [
     'text'              => ['body' => $message],
 ];
 
-$ch = curl_init("https://graph.facebook.com/v21.0/$waPhoneId/messages");
+$ch = curl_init("https://graph.facebook.com/v22.0/$waPhoneId/messages");
 curl_setopt_array($ch, [
     CURLOPT_POST           => true,
     CURLOPT_HTTPHEADER     => [

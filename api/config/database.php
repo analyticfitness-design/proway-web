@@ -33,6 +33,11 @@ define('PAYU_API_KEY',        env('PAYU_API_KEY',        'YOUR_API_KEY'));
 define('PAYU_ACCOUNT_ID_COP', env('PAYU_ACCOUNT_ID_COP', 'YOUR_ACCOUNT_ID'));
 define('PAYU_TEST_MODE',      env('PAYU_TEST_MODE', 'true') === 'true');
 
+// WhatsApp Business API (Meta)
+define('WA_PHONE_NUMBER_ID', env('WA_PHONE_NUMBER_ID', '1013772675149039'));
+define('WA_ACCESS_TOKEN',    env('WA_ACCESS_TOKEN',    'EAANNz5iZB4XYBQxTPCJnn1oY93U83Ek9EwXf96lOLbIFW7sshwqBJc6SiZCEGZBdwPJ8q8sJjcyb8vQmzCd5nUoImAPCZAeDNjvoAQdUZATVsVaGpbp6GltZCX5Us9QX84FfmSTHPhjlTfgtqdEPDwlleDVN6I5V3CFhqQQLew8Gq0t7pZA3LG3Dg4J6K8voYGI4hOgqVMkPm4YmU4mmCFC0PodQLONbHS7iLA6nkWncEI8z1dT0m9utfiB6a1UX04QuVKvW3KU8up9hfUOm26uw3sbPLGq6ywB09ep6gZDZD'));
+define('N8N_API_KEY',        env('N8N_API_KEY',        'proway-n8n-2026'));
+
 function getDB(): PDO {
     static $pdo = null;
     if ($pdo === null) {

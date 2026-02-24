@@ -14,7 +14,14 @@ require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
 
 requireMethod('GET');
-authenticateAdmin();
+
+// Accept admin Bearer token OR n8n API key
+$apiKey = $_SERVER['HTTP_X_API_KEY'] ?? '';
+$validKey = defined('N8N_API_KEY') ? N8N_API_KEY : env('N8N_API_KEY', 'proway-n8n-2026');
+
+if ($apiKey !== $validKey) {
+    authenticateAdmin();
+}
 $db = getDB();
 
 // Period filter: ?period=week|month|all (default: month)
