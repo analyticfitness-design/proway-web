@@ -134,7 +134,7 @@ try {
     // Ignorar si la tabla requiere campos adicionales — el lead se guardó igualmente
 }
 
-// Notify admin about new lead
+// Notify admin about new lead (email)
 sendNotification('new_lead', [
     'nombre'   => $nombre,
     'email'    => $email,
@@ -142,5 +142,27 @@ sendNotification('new_lead', [
     'servicio' => $svc,
     'mensaje'  => $msg,
 ]);
+
+// Trigger n8n webhook for WhatsApp notification (fire-and-forget)
+$n8nWebhook = env('N8N_WEBHOOK_URL', 'http://localhost:5678') . '/webhook/proway-new-lead';
+$n8nData = json_encode([
+    'name'    => $nombre,
+    'email'   => $email,
+    'phone'   => $wap,
+    'service' => $svc,
+    'message' => $msg,
+    'lead_id' => $newId,
+]);
+$ch2 = curl_init($n8nWebhook);
+curl_setopt_array($ch2, [
+    CURLOPT_POST           => true,
+    CURLOPT_HTTPHEADER     => ['Content-Type: application/json'],
+    CURLOPT_POSTFIELDS     => $n8nData,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_TIMEOUT        => 3,
+    CURLOPT_CONNECTTIMEOUT => 2,
+]);
+curl_exec($ch2);
+curl_close($ch2);
 
 respond(['message' => 'Lead registrado', 'id' => $newId, 'code' => $code], 201);
