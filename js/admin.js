@@ -43,6 +43,8 @@
         clientes:   'Clientes Activos',
         pagos:      'Pagos',
         contenido:  'Contenido / Proyectos',
+        blog:       'Blog',
+        mensajes:   'Mensajes',
         analytics:  'Analytics',
         config:     'Configuracion'
     };
@@ -134,7 +136,6 @@
         var chartHeight = 128; /* px available for bars */
 
         data.forEach(function(d) {
-            var pct    = Math.round((d.value / d.max) * 100);
             var barH   = Math.round((d.value / d.max) * chartHeight);
 
             var wrap = document.createElement('div');
@@ -525,7 +526,84 @@
             .catch(function() {}); // Silently fail — mantiene demo
     }
 
+    /* ─── DASHBOARD METRIC CARDS ──────────────────────────── */
+
+    function loadDashboardMetrics() {
+        // Leads este mes
+        apiBearerFetch('/leads/list.php')
+            .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function(data) {
+                var count = 0;
+                if (Array.isArray(data)) {
+                    count = data.length;
+                } else if (data && typeof data.total === 'number') {
+                    count = data.total;
+                } else if (data && Array.isArray(data.leads)) {
+                    count = data.leads.length;
+                }
+                var el = document.getElementById('metricLeads');
+                if (el) el.textContent = String(count);
+            })
+            .catch(function() {
+                var el = document.getElementById('metricLeads');
+                if (el) el.textContent = '--';
+            });
+
+        // Proyectos activos
+        apiBearerFetch('/admin/projects')
+            .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function(data) {
+                var count = 0;
+                if (Array.isArray(data)) {
+                    count = data.filter(function(p) {
+                        return p.status === 'en_progreso' || p.status === 'revision' || p.status === 'pendiente';
+                    }).length;
+                } else if (data && typeof data.total === 'number') {
+                    count = data.total;
+                }
+                var el = document.getElementById('metricProjects');
+                if (el) el.textContent = String(count);
+            })
+            .catch(function() {
+                var el = document.getElementById('metricProjects');
+                if (el) el.textContent = '--';
+            });
+
+        // Ingresos del mes
+        apiBearerFetch('/admin/invoices')
+            .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+            .then(function(data) {
+                var total = 0;
+                if (Array.isArray(data)) {
+                    data.forEach(function(inv) {
+                        if (inv.amount) total += Number(inv.amount);
+                    });
+                } else if (data && typeof data.total === 'number') {
+                    total = data.total;
+                }
+                var el = document.getElementById('metricIngresos');
+                if (el) {
+                    if (total >= 1000000) {
+                        el.textContent = '$' + (total / 1000000).toFixed(1) + 'M';
+                    } else if (total > 0) {
+                        el.textContent = '$' + total.toLocaleString('es-CO');
+                    } else {
+                        el.textContent = '--';
+                    }
+                }
+            })
+            .catch(function() {
+                var el = document.getElementById('metricIngresos');
+                if (el) el.textContent = '--';
+            });
+
+        // Mensajes chatbot — placeholder
+        var chatEl = document.getElementById('metricChatbot');
+        if (chatEl) chatEl.textContent = '--';
+    }
+
     // Iniciar carga de datos live (no bloquea UI si API no responde)
+    loadDashboardMetrics();
     loadLiveClients();
     loadLiveProjects();
     loadLiveLeads();

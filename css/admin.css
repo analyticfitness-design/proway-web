@@ -901,4 +901,41 @@
 
         /* Row hidden by table filter */
         .row-hidden { display: none; }
+
+        /* ════════════════════════════════
+           DASHBOARD METRIC CARDS (API-fed)
+        ════════════════════════════════ */
+        .dash-metric-card {
+            border-left: 3px solid var(--blue);
+            border-radius: 0;
+        }
+
+        .dash-metric-card:nth-child(2) { border-left-color: var(--green); }
+        .dash-metric-card:nth-child(3) { border-left-color: var(--blue); }
+        .dash-metric-card:nth-child(4) { border-left-color: var(--dark); }
+
+        .dash-metric-value {
+            font-family: var(--font-m);
+        }
+
+        /* ════════════════════════════════
+           BLOG / MENSAJES SECTIONS
+        ════════════════════════════════ */
+        .badge-published {
+            background: rgba(0,255,135,0.1);
+            color: var(--green);
+        }
+
+        .btn-disabled-nuevo {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .table-note {
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.14em;
+            color: var(--dark);
+        }
     

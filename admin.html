@@ -95,6 +95,21 @@
             <span class="sidebar-item-text">Contenido / Proyectos</span>
         </div>
 
+        <div class="sidebar-item" data-section="blog" role="button" tabindex="0">
+            <svg class="sidebar-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+            </svg>
+            <span class="sidebar-item-text">Blog</span>
+            <span class="sidebar-item-count">6</span>
+        </div>
+
+        <div class="sidebar-item" data-section="mensajes" role="button" tabindex="0">
+            <svg class="sidebar-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            </svg>
+            <span class="sidebar-item-text">Mensajes</span>
+        </div>
+
         <div class="sidebar-item" data-section="analytics" role="button" tabindex="0">
             <svg class="sidebar-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
@@ -167,40 +182,40 @@
             </div>
             <div class="section-divider"></div>
 
-            <!-- Stat cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
+            <!-- Dashboard metric cards (fetched from API) -->
+            <div class="stats-grid" id="dashMetricCards">
+                <div class="stat-card dash-metric-card">
                     <div class="stat-card-header">
-                        <span class="stat-card-label">Total Leads</span>
+                        <span class="stat-card-label">Leads este mes</span>
                         <div class="stat-card-icon blue">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+                                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+                                <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/>
                             </svg>
                         </div>
                     </div>
-                    <div class="stat-card-value">47</div>
-                    <div class="stat-card-delta">+8 este mes</div>
+                    <div class="stat-card-value dash-metric-value" id="metricLeads" style="color:var(--blue)">--</div>
+                    <div class="stat-card-delta" id="metricLeadsDelta">&nbsp;</div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card dash-metric-card">
                     <div class="stat-card-header">
-                        <span class="stat-card-label">Clientes Activos</span>
+                        <span class="stat-card-label">Proyectos activos</span>
                         <div class="stat-card-icon green">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
-                                <polyline points="22 4 12 14.01 9 11.01"/>
+                                <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/>
+                                <line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/>
+                                <line x1="2" y1="12" x2="22" y2="12"/>
                             </svg>
                         </div>
                     </div>
-                    <div class="stat-card-value" style="color:var(--green)">12</div>
-                    <div class="stat-card-delta">Tasa retencion: 91%</div>
+                    <div class="stat-card-value dash-metric-value" id="metricProjects" style="color:var(--blue)">--</div>
+                    <div class="stat-card-delta" id="metricProjectsDelta">&nbsp;</div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card dash-metric-card">
                     <div class="stat-card-header">
-                        <span class="stat-card-label">Pagos este mes</span>
+                        <span class="stat-card-label">Ingresos del mes</span>
                         <div class="stat-card-icon blue">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <line x1="12" y1="1" x2="12" y2="23"/>
@@ -208,22 +223,21 @@
                             </svg>
                         </div>
                     </div>
-                    <div class="stat-card-value"><span class="currency">COP</span>4.8M</div>
-                    <div class="stat-card-delta">+12% vs mes anterior</div>
+                    <div class="stat-card-value dash-metric-value" id="metricIngresos" style="color:var(--blue)">--</div>
+                    <div class="stat-card-delta" id="metricIngresosDelta">&nbsp;</div>
                 </div>
 
-                <div class="stat-card">
+                <div class="stat-card dash-metric-card">
                     <div class="stat-card-header">
-                        <span class="stat-card-label">Conversion</span>
+                        <span class="stat-card-label">Mensajes chatbot</span>
                         <div class="stat-card-icon gray">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
-                                <polyline points="17 6 23 6 23 12"/>
+                                <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
                             </svg>
                         </div>
                     </div>
-                    <div class="stat-card-value">25.5<span style="font-size:18px;color:var(--gray)">%</span></div>
-                    <div class="stat-card-delta">+3.2pp este mes</div>
+                    <div class="stat-card-value dash-metric-value" id="metricChatbot" style="color:var(--blue)">--</div>
+                    <div class="stat-card-delta" id="metricChatbotDelta">&nbsp;</div>
                 </div>
             </div>
 
@@ -824,6 +838,135 @@
                 </div>
                 <div class="coming-soon-title">Seccion en Desarrollo</div>
                 <div class="coming-soon-sub">PROXIMAMENTE &nbsp;&middot;&nbsp; PROWAY LAB v1.1</div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════
+             BLOG MANAGEMENT
+        ════════════════════════════════ -->
+        <section class="section-view" id="sec-blog">
+            <div class="section-header">
+                <h1 class="section-title">Blog</h1>
+                <p class="section-subtitle">GESTION DE ARTICULOS &nbsp;&middot;&nbsp; PROWAY LAB</p>
+            </div>
+            <div class="section-divider"></div>
+
+            <div class="table-card">
+                <div class="table-card-header">
+                    <span class="table-card-title">ARTICULOS PUBLICADOS</span>
+                    <div class="table-controls">
+                        <button class="btn-export btn-disabled-nuevo" type="button" disabled title="Proximamente">NUEVO ARTICULO</button>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Titulo</th>
+                            <th>Categoria</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-name">Reels que venden</td>
+                            <td>Video Marketing</td>
+                            <td class="col-date">20/02/2026</td>
+                            <td><span class="badge badge-published">PUBLICADO</span></td>
+                            <td><a class="btn-action" href="/blog/reels-que-venden.html" target="_blank" rel="noopener noreferrer">Ver</a></td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">Fracaso en Instagram</td>
+                            <td>Redes Sociales</td>
+                            <td class="col-date">18/02/2026</td>
+                            <td><span class="badge badge-published">PUBLICADO</span></td>
+                            <td><a class="btn-action" href="/blog/fracaso-instagram.html" target="_blank" rel="noopener noreferrer">Ver</a></td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">Marca personal</td>
+                            <td>Branding</td>
+                            <td class="col-date">15/02/2026</td>
+                            <td><span class="badge badge-published">PUBLICADO</span></td>
+                            <td><a class="btn-action" href="/blog/marca-personal.html" target="_blank" rel="noopener noreferrer">Ver</a></td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">Elegir editor de video</td>
+                            <td>Produccion</td>
+                            <td class="col-date">12/02/2026</td>
+                            <td><span class="badge badge-published">PUBLICADO</span></td>
+                            <td><a class="btn-action" href="/blog/elegir-editor-video.html" target="_blank" rel="noopener noreferrer">Ver</a></td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">Que esperar de productora</td>
+                            <td>Servicios</td>
+                            <td class="col-date">08/02/2026</td>
+                            <td><span class="badge badge-published">PUBLICADO</span></td>
+                            <td><a class="btn-action" href="/blog/que-esperar-productora.html" target="_blank" rel="noopener noreferrer">Ver</a></td>
+                        </tr>
+                        <tr>
+                            <td class="col-name">ROI contenido calidad</td>
+                            <td>Estrategia</td>
+                            <td class="col-date">04/02/2026</td>
+                            <td><span class="badge badge-published">PUBLICADO</span></td>
+                            <td><a class="btn-action" href="/blog/roi-contenido-calidad.html" target="_blank" rel="noopener noreferrer">Ver</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════
+             MENSAJES CHATBOT
+        ════════════════════════════════ -->
+        <section class="section-view" id="sec-mensajes">
+            <div class="section-header">
+                <h1 class="section-title">Mensajes</h1>
+                <p class="section-subtitle">INTERACCIONES DEL CHATBOT &nbsp;&middot;&nbsp; PROWAY LAB</p>
+            </div>
+            <div class="section-divider"></div>
+
+            <div class="table-card">
+                <div class="table-card-header">
+                    <span class="table-card-title">CONVERSACIONES RECIENTES</span>
+                    <div class="table-controls">
+                        <span class="table-note">Proximamente: datos en tiempo real del API</span>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>IP</th>
+                            <th>Pregunta</th>
+                            <th>Respuesta</th>
+                            <th>Topic</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-date">24/02/2026 14:32</td>
+                            <td style="font-family:var(--font-m);font-size:11px;color:var(--dark)">192.168.1.45</td>
+                            <td>Cuanto cuesta el paquete Growth?</td>
+                            <td style="max-width:280px;white-space:normal;">El paquete Growth incluye produccion mensual de 8 reels + estrategia de contenido. Contactanos para cotizacion personalizada.</td>
+                            <td><span class="badge badge-new">PRECIOS</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">24/02/2026 11:18</td>
+                            <td style="font-family:var(--font-m);font-size:11px;color:var(--dark)">10.0.0.87</td>
+                            <td>Que servicios de edicion de video ofrecen?</td>
+                            <td style="max-width:280px;white-space:normal;">Ofrecemos edicion de reels, contenido largo para YouTube, video corporativo y motion graphics. Cada paquete se adapta a tus necesidades.</td>
+                            <td><span class="badge badge-process">SERVICIOS</span></td>
+                        </tr>
+                        <tr>
+                            <td class="col-date">23/02/2026 09:45</td>
+                            <td style="font-family:var(--font-m);font-size:11px;color:var(--dark)">172.16.0.12</td>
+                            <td>Tienen portafolio de trabajos anteriores?</td>
+                            <td style="max-width:280px;white-space:normal;">Si, puedes ver nuestros casos de exito en la seccion de portafolio o visitando nuestro Instagram @proway.lab.</td>
+                            <td><span class="badge badge-active">PORTAFOLIO</span></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </section>
 
