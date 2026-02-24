@@ -8,6 +8,9 @@
 <meta property="og:title" content="Casos de Exito — ProWay Lab">
 <meta property="og:description" content="Antes y despues del Metodo ProWay. +47 coaches transformados, +2.3M reproducciones generadas.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://prowaylab.com/casos-de-exito.html">
+<meta property="og:image" content="https://prowaylab.com/images/og-proway.jpg">
+<meta property="og:locale" content="es_CO">
 <meta name="theme-color" content="#00D9FF">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1043,6 +1046,266 @@ body {
 .ft-copy { font-family: var(--font-m); font-size: 11px; color: #333; letter-spacing: 0.04em; }
 
 /* ============================================================
+   SHOWREEL SECTION
+============================================================ */
+#showreel { padding: 120px 0; background: var(--surface); position: relative; overflow: hidden; }
+.showreel-header { text-align: center; margin-bottom: 56px; }
+.showreel-header .section-sub { margin: 0 auto; }
+.showreel-card {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #000;
+  border: 1px solid var(--border);
+  position: relative;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.showreel-card:hover { border-color: rgba(0,217,255,0.4); }
+.showreel-card:hover .showreel-play { transform: scale(1.1); border-color: var(--blue); }
+.showreel-bg-pattern {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,217,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,217,255,0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+.showreel-gradient {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0,217,255,0.08) 0%, transparent 70%);
+}
+.showreel-play {
+  width: 80px; height: 80px;
+  border: 2px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; z-index: 2;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.showreel-play svg { margin-left: 4px; }
+.showreel-label-top {
+  position: absolute; top: 20px; left: 24px;
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--blue); letter-spacing: 0.12em;
+  text-transform: uppercase; z-index: 2;
+}
+.showreel-label-bottom {
+  position: absolute; bottom: 20px; right: 24px;
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--dark); letter-spacing: 0.08em; z-index: 2;
+}
+.showreel-stats {
+  display: flex; gap: 32px; justify-content: center;
+  margin-top: 32px; flex-wrap: wrap;
+}
+.showreel-stat {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.showreel-stat-num {
+  font-family: var(--font-h); font-weight: 800;
+  font-size: 20px; color: var(--white);
+}
+.showreel-stat-lbl {
+  font-family: var(--font-m); font-size: 9px;
+  color: var(--dark); letter-spacing: 0.1em; text-transform: uppercase;
+}
+
+/* ============================================================
+   CASE DEEP-DIVE METRICS
+============================================================ */
+.case-metrics-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border);
+  margin-top: 12px;
+}
+.case-metric-cell {
+  background: var(--surface-2); padding: 16px 12px; text-align: center;
+}
+.case-metric-val {
+  font-family: var(--font-h); font-weight: 900;
+  font-size: 18px; color: var(--blue); line-height: 1;
+  margin-bottom: 4px;
+}
+.case-metric-val.green { color: var(--green); }
+.case-metric-val.red { color: var(--red); }
+.case-metric-lbl {
+  font-family: var(--font-m); font-size: 8px;
+  color: var(--dark); letter-spacing: 0.08em;
+  text-transform: uppercase; line-height: 1.3;
+}
+@media (max-width: 480px) {
+  .case-metrics-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ============================================================
+   BRANDING BEFORE/AFTER SECTION
+============================================================ */
+#brand-transform { padding: 120px 0; }
+.brand-header { text-align: center; margin-bottom: 72px; }
+.brand-header .section-sub { margin: 0 auto; }
+.brand-case {
+  margin-bottom: 72px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+}
+.brand-case:last-child { margin-bottom: 0; }
+.brand-case-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.brand-case-av {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-h); font-weight: 800; font-size: 16px;
+  flex-shrink: 0;
+}
+.brand-case-info { flex: 1; min-width: 0; }
+.brand-case-name {
+  font-family: var(--font-h); font-weight: 700;
+  font-size: 14px; color: var(--white);
+}
+.brand-case-niche {
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--dark); letter-spacing: 0.06em;
+}
+.brand-split {
+  display: grid; grid-template-columns: 1fr 1fr; min-height: 320px;
+}
+.brand-side {
+  padding: 32px 28px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+.brand-side.side-before {
+  background: var(--surface-2);
+  border-right: 1px solid var(--border);
+}
+.brand-side.side-after { background: var(--surface); }
+.brand-side-tag {
+  font-family: var(--font-m); font-size: 10px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 4px 12px; display: inline-block; width: fit-content;
+  border: 1px solid;
+}
+.brand-side-tag.tag-before {
+  color: var(--red); border-color: rgba(227,30,36,0.4);
+  background: var(--red-dim);
+}
+.brand-side-tag.tag-after {
+  color: var(--blue); border-color: rgba(0,217,255,0.4);
+  background: var(--blue-dim);
+}
+.brand-mock {
+  flex: 1; display: flex; flex-direction: column; gap: 12px;
+}
+.brand-mock-logo {
+  width: 100%; height: 60px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-h); font-weight: 800; font-size: 18px;
+}
+.brand-mock-logo.mock-before {
+  background: #1a1a1f; color: #444; border: 1px dashed #333;
+}
+.brand-mock-logo.mock-after {
+  background: #0a1520; color: var(--blue);
+  border: 1px solid rgba(0,217,255,0.3);
+}
+.brand-mock-feed {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;
+}
+.brand-mock-tile {
+  aspect-ratio: 1;
+}
+.brand-mock-tile.tile-before { background: #1a1a1f; border: 1px solid #222; }
+.brand-mock-tile.tile-after {
+  background: linear-gradient(135deg, #001a26, #003344);
+  border: 1px solid rgba(0,217,255,0.15);
+}
+.brand-mock-desc {
+  font-size: 11px; color: var(--dark); line-height: 1.5;
+  font-style: italic;
+}
+@media (max-width: 768px) {
+  .brand-split { grid-template-columns: 1fr; }
+  .brand-side.side-before { border-right: none; border-bottom: 1px solid var(--border); }
+}
+
+/* ============================================================
+   TESTIMONIALS SECTION
+============================================================ */
+#testimonials { padding: 120px 0; background: var(--surface); }
+.test-header { text-align: center; margin-bottom: 64px; }
+.test-header .section-sub { margin: 0 auto; }
+.test-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 24px; max-width: 900px; margin: 0 auto;
+}
+.test-card {
+  background: var(--bg); border: 1px solid var(--border);
+  padding: 32px 28px; position: relative;
+  transition: border-color 0.3s;
+}
+.test-card:hover { border-color: rgba(0,217,255,0.3); }
+.test-quote-mark {
+  font-family: var(--font-h); font-size: 48px;
+  color: rgba(0,217,255,0.15); line-height: 1;
+  margin-bottom: 12px;
+}
+.test-text {
+  font-size: 14px; color: var(--gray);
+  line-height: 1.7; font-style: italic;
+  margin-bottom: 20px;
+}
+.test-author {
+  display: flex; align-items: center; gap: 12px;
+  border-top: 1px solid var(--border); padding-top: 16px;
+}
+.test-av {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-h); font-weight: 800; font-size: 14px;
+  flex-shrink: 0; color: #000;
+}
+.test-info { flex: 1; }
+.test-name {
+  font-family: var(--font-h); font-weight: 700;
+  font-size: 13px; color: var(--white);
+}
+.test-role {
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--dark); letter-spacing: 0.06em;
+}
+.test-rating {
+  font-family: var(--font-m); font-size: 11px;
+  color: #FFD700; letter-spacing: 2px;
+}
+@media (max-width: 768px) {
+  .test-grid { grid-template-columns: 1fr; max-width: 480px; }
+}
+
+/* ============================================================
+   ENHANCED CTA
+============================================================ */
+.cta-trust-row {
+  display: flex; gap: 32px; justify-content: center;
+  margin-top: 48px; flex-wrap: wrap;
+}
+.cta-trust-item {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-m); font-size: 10px;
+  color: var(--dark); letter-spacing: 0.06em; text-transform: uppercase;
+}
+.cta-trust-dot {
+  width: 6px; height: 6px;
+  background: var(--green); flex-shrink: 0;
+}
+
+/* ============================================================
    SCROLL REVEAL
 ============================================================ */
 .reveal {
@@ -1066,6 +1329,8 @@ body {
   .hero-title { font-size: clamp(36px, 10vw, 64px); }
   .hero-sub { font-size: 16px; }
   .hero-stats { gap: 24px; flex-wrap: wrap; }
+  #showreel { padding: 72px 0; }
+  .showreel-stats { gap: 20px; }
   #before-after { padding: 72px 0; }
   .ba-header { margin-bottom: 48px; }
   .phones-row { flex-direction: column; align-items: center; gap: 48px; }
@@ -1074,12 +1339,18 @@ body {
   .cases-grid { grid-template-columns: 1fr; max-width: 420px; margin: 0 auto; }
   #results-grid { padding: 72px 0; }
   #stories-row { padding: 56px 0; }
+  #brand-transform { padding: 72px 0; }
+  .brand-header { margin-bottom: 48px; }
+  .brand-case { margin-bottom: 48px; }
+  #testimonials { padding: 72px 0; }
+  .test-header { margin-bottom: 40px; }
   #metrics { padding: 72px 0; }
   .metrics-header { margin-bottom: 44px; }
   #cta { padding: 72px 0; }
   .cta-btns { flex-direction: column; align-items: center; }
   .btn-primary, .btn-secondary { width: 100%; text-align: center; justify-content: center; }
   .ig-profile-grid { max-width: 100%; }
+  .cta-trust-row { flex-direction: column; align-items: center; gap: 16px; }
 }
 
 @media (max-width: 600px) {
@@ -1170,6 +1441,48 @@ body {
       <div class="hero-stat">
         <span class="hero-stat-num">8.2%</span>
         <span class="hero-stat-label">engagement promedio</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SHOWREEL — Nuestro Trabajo en Accion
+============================================================ -->
+<section id="showreel">
+  <div class="wrap">
+    <div class="showreel-header reveal">
+      <div class="section-label">Showreel 2025&ndash;2026</div>
+      <h2 class="section-title">Nuestro Trabajo <span style="color:var(--blue)">en Acci&oacute;n</span></h2>
+      <p class="section-sub">Producci&oacute;n audiovisual real para coaches fitness reales. Cada frame est&aacute; dise&ntilde;ado para convertir.</p>
+    </div>
+    <div class="showreel-card reveal reveal-delay-1" id="showreelCard">
+      <div class="showreel-bg-pattern"></div>
+      <div class="showreel-gradient"></div>
+      <div class="showreel-label-top">PROWAY LAB // SHOWREEL</div>
+      <div class="showreel-play">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+          <path d="M8 5v14l11-7z" fill="var(--white)"/>
+        </svg>
+      </div>
+      <div class="showreel-label-bottom">02:47 // Producci&oacute;n integral fitness</div>
+    </div>
+    <div class="showreel-stats reveal reveal-delay-2">
+      <div class="showreel-stat">
+        <span class="showreel-stat-num">+120</span>
+        <span class="showreel-stat-lbl">Videos producidos</span>
+      </div>
+      <div class="showreel-stat">
+        <span class="showreel-stat-num">47</span>
+        <span class="showreel-stat-lbl">Coaches atendidos</span>
+      </div>
+      <div class="showreel-stat">
+        <span class="showreel-stat-num">4K</span>
+        <span class="showreel-stat-lbl">Resoluci&oacute;n m&iacute;nima</span>
+      </div>
+      <div class="showreel-stat">
+        <span class="showreel-stat-num">48h</span>
+        <span class="showreel-stat-lbl">Tiempo de entrega</span>
       </div>
     </div>
   </div>
@@ -1356,6 +1669,24 @@ body {
               <span class="pc-eng-after">8.7% engagement</span>
             </div>
           </div>
+          <div class="case-metrics-row">
+            <div class="case-metric-cell">
+              <div class="case-metric-val">+325%</div>
+              <div class="case-metric-lbl">Seguidores<br>en 6 meses</div>
+            </div>
+            <div class="case-metric-cell">
+              <div class="case-metric-val green">8.7%</div>
+              <div class="case-metric-lbl">Engagement<br>rate</div>
+            </div>
+            <div class="case-metric-cell">
+              <div class="case-metric-val">12</div>
+              <div class="case-metric-lbl">Posts<br>por semana</div>
+            </div>
+            <div class="case-metric-cell">
+              <div class="case-metric-val green">+$2.4M</div>
+              <div class="case-metric-lbl">Revenue COP<br>nuevos clientes</div>
+            </div>
+          </div>
         </div>
         <div class="pc-engage">
           <div class="pc-eng-item">
@@ -1409,6 +1740,24 @@ body {
               <span class="pc-eng-after">6.1% engagement</span>
             </div>
           </div>
+          <div class="case-metrics-row">
+            <div class="case-metric-cell">
+              <div class="case-metric-val">+367%</div>
+              <div class="case-metric-lbl">Seguidores<br>en 60 d&iacute;as</div>
+            </div>
+            <div class="case-metric-cell">
+              <div class="case-metric-val green">6.1%</div>
+              <div class="case-metric-lbl">Engagement<br>rate</div>
+            </div>
+            <div class="case-metric-cell">
+              <div class="case-metric-val">2 &rarr; 14</div>
+              <div class="case-metric-lbl">Posts<br>por semana</div>
+            </div>
+            <div class="case-metric-cell">
+              <div class="case-metric-val green">+3</div>
+              <div class="case-metric-lbl">Clientes<br>directos IG</div>
+            </div>
+          </div>
         </div>
         <div class="pc-engage">
           <div class="pc-eng-item">
@@ -1460,6 +1809,24 @@ body {
               <span class="pc-eng-before">1.1% eng</span>
               <span class="pc-eng-arrow">&rarr;</span>
               <span class="pc-eng-after">+180K vistas acumuladas</span>
+            </div>
+          </div>
+          <div class="case-metrics-row">
+            <div class="case-metric-cell">
+              <div class="case-metric-val">+247%</div>
+              <div class="case-metric-lbl">Seguidores<br>en 4 meses</div>
+            </div>
+            <div class="case-metric-cell">
+              <div class="case-metric-val green">+180K</div>
+              <div class="case-metric-lbl">Vistas<br>acumuladas</div>
+            </div>
+            <div class="case-metric-cell">
+              <div class="case-metric-val">1 &rarr; 10</div>
+              <div class="case-metric-lbl">Posts<br>por semana</div>
+            </div>
+            <div class="case-metric-cell">
+              <div class="case-metric-val green">+$1.8M</div>
+              <div class="case-metric-lbl">Revenue COP<br>programas online</div>
             </div>
           </div>
         </div>
@@ -1695,6 +2062,175 @@ body {
 </section>
 
 <!-- ============================================================
+     BRANDING BEFORE/AFTER
+============================================================ -->
+<section id="brand-transform">
+  <div class="wrap">
+    <div class="brand-header reveal">
+      <div class="section-label">Transformaci&oacute;n de marca</div>
+      <h2 class="section-title">Antes y despu&eacute;s <span style="color:var(--blue)">del branding</span></h2>
+      <p class="section-sub">La identidad visual de un coach define su percepci&oacute;n de valor. As&iacute; transformamos marcas completas.</p>
+    </div>
+
+    <!-- Brand Case 1 -->
+    <div class="brand-case reveal">
+      <div class="brand-case-header">
+        <div class="brand-case-av" style="background:linear-gradient(135deg,#00D9FF,#0066aa);color:#000">LR</div>
+        <div class="brand-case-info">
+          <div class="brand-case-name">Laura Reyes &mdash; Coach de Nutrici&oacute;n Deportiva</div>
+          <div class="brand-case-niche">Bogot&aacute; &middot; @coach_laura.fit</div>
+        </div>
+      </div>
+      <div class="brand-split">
+        <div class="brand-side side-before">
+          <div class="brand-side-tag tag-before">ANTES</div>
+          <div class="brand-mock">
+            <div class="brand-mock-logo mock-before">coach laura</div>
+            <div class="brand-mock-feed">
+              <div class="brand-mock-tile tile-before"></div>
+              <div class="brand-mock-tile tile-before"></div>
+              <div class="brand-mock-tile tile-before"></div>
+              <div class="brand-mock-tile tile-before"></div>
+              <div class="brand-mock-tile tile-before"></div>
+              <div class="brand-mock-tile tile-before"></div>
+            </div>
+            <div class="brand-mock-desc">Sin identidad visual definida. Fotos con diferentes filtros, sin paleta de colores, bio gen&eacute;rica. Contenido sin estructura ni calendario.</div>
+          </div>
+        </div>
+        <div class="brand-side side-after">
+          <div class="brand-side-tag tag-after">DESPU&Eacute;S</div>
+          <div class="brand-mock">
+            <div class="brand-mock-logo mock-after">COACH LAURA // FIT</div>
+            <div class="brand-mock-feed">
+              <div class="brand-mock-tile tile-after"></div>
+              <div class="brand-mock-tile tile-after" style="background:linear-gradient(135deg,#0a1a0a,#002200)"></div>
+              <div class="brand-mock-tile tile-after" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"></div>
+              <div class="brand-mock-tile tile-after" style="background:linear-gradient(135deg,#001a26,#003344)"></div>
+              <div class="brand-mock-tile tile-after" style="background:linear-gradient(135deg,#111114,#1a2e1a)"></div>
+              <div class="brand-mock-tile tile-after" style="background:linear-gradient(135deg,#0d1117,#001a26)"></div>
+            </div>
+            <div class="brand-mock-desc">Marca completa: logo tipogr&aacute;fico, paleta cian/oscura, templates de reels, highlights curados, bio con propuesta de valor clara.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Brand Case 2 -->
+    <div class="brand-case reveal">
+      <div class="brand-case-header">
+        <div class="brand-case-av" style="background:linear-gradient(135deg,#E31E24,#8B1319);color:#fff">SV</div>
+        <div class="brand-case-info">
+          <div class="brand-case-name">Sebasti&aacute;n Vargas &mdash; Entrenamiento Funcional</div>
+          <div class="brand-case-niche">Medell&iacute;n &middot; @coach_seba.fit</div>
+        </div>
+      </div>
+      <div class="brand-split">
+        <div class="brand-side side-before">
+          <div class="brand-side-tag tag-before">ANTES</div>
+          <div class="brand-mock">
+            <div class="brand-mock-logo mock-before">seba fitness</div>
+            <div class="brand-mock-feed">
+              <div class="brand-mock-tile tile-before"></div>
+              <div class="brand-mock-tile tile-before"></div>
+              <div class="brand-mock-tile tile-before"></div>
+              <div class="brand-mock-tile tile-before"></div>
+              <div class="brand-mock-tile tile-before"></div>
+              <div class="brand-mock-tile tile-before"></div>
+            </div>
+            <div class="brand-mock-desc">Logo hecho en Canva, colores aleatorios, posts de solo texto con fondos blancos. Sin coherencia visual entre publicaciones.</div>
+          </div>
+        </div>
+        <div class="brand-side side-after">
+          <div class="brand-side-tag tag-after">DESPU&Eacute;S</div>
+          <div class="brand-mock">
+            <div class="brand-mock-logo mock-after" style="color:var(--red);border-color:rgba(227,30,36,0.3);background:#1a0a0a">SEBA // FIT</div>
+            <div class="brand-mock-feed">
+              <div class="brand-mock-tile tile-after" style="background:linear-gradient(135deg,#1a0a0a,#2d0000)"></div>
+              <div class="brand-mock-tile tile-after" style="background:linear-gradient(135deg,#200a00,#3d1500)"></div>
+              <div class="brand-mock-tile tile-after" style="background:linear-gradient(135deg,#1a0000,#2d0a0a)"></div>
+              <div class="brand-mock-tile tile-after" style="background:linear-gradient(135deg,#200a00,#1a0000)"></div>
+              <div class="brand-mock-tile tile-after" style="background:linear-gradient(135deg,#1a0a0a,#3d1500)"></div>
+              <div class="brand-mock-tile tile-after" style="background:linear-gradient(135deg,#2d0000,#200a00)"></div>
+            </div>
+            <div class="brand-mock-desc">Sistema visual rojo/negro, contenido en serie (Lunes de T&eacute;cnica, Mi&eacute;rcoles de WOD), reels con intro branded, carruseles educativos.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+============================================================ -->
+<section id="testimonials">
+  <div class="wrap">
+    <div class="test-header reveal">
+      <div class="section-label">Lo que dicen nuestros coaches</div>
+      <h2 class="section-title">Testimonios <span style="color:var(--blue)">reales</span></h2>
+      <p class="section-sub">Coaches que invirtieron en su marca y vieron resultados medibles en semanas, no meses.</p>
+    </div>
+
+    <div class="test-grid">
+
+      <div class="test-card reveal">
+        <div class="test-quote-mark">"</div>
+        <p class="test-text">Llevaba un a&ntilde;o publicando sin estrategia. ProWay me dise&ntilde;&oacute; un sistema de contenido completo: calendario, formatos, identidad visual. En 90 d&iacute;as pas&eacute; de 800 seguidores a 3.400 y cerr&eacute; 8 clientes nuevos directamente desde Instagram.</p>
+        <div class="test-author">
+          <div class="test-av" style="background:linear-gradient(135deg,#00D9FF,#0066aa)">LR</div>
+          <div class="test-info">
+            <div class="test-name">Laura Reyes</div>
+            <div class="test-role">Coach Nutrici&oacute;n Deportiva &middot; Bogot&aacute;</div>
+          </div>
+          <div class="test-rating">*****</div>
+        </div>
+      </div>
+
+      <div class="test-card reveal reveal-delay-1">
+        <div class="test-quote-mark">"</div>
+        <p class="test-text">Lo que m&aacute;s valor&eacute; fue que no solo hacen videos bonitos. Entienden el negocio del coaching. Me ayudaron a posicionarme como autoridad en entrenamiento funcional. Hoy cobro el doble y tengo lista de espera.</p>
+        <div class="test-author">
+          <div class="test-av" style="background:linear-gradient(135deg,#E31E24,#8B1319);color:#fff">SV</div>
+          <div class="test-info">
+            <div class="test-name">Sebasti&aacute;n Vargas</div>
+            <div class="test-role">Coach Funcional &middot; Medell&iacute;n</div>
+          </div>
+          <div class="test-rating">*****</div>
+        </div>
+      </div>
+
+      <div class="test-card reveal reveal-delay-2">
+        <div class="test-quote-mark">"</div>
+        <p class="test-text">Antes de ProWay, mi contenido era invisible. Ahora mis reels promedian 20K vistas y tengo una marca que la gente reconoce. El retorno de inversi&oacute;n fue evidente desde el primer mes.</p>
+        <div class="test-author">
+          <div class="test-av" style="background:linear-gradient(135deg,#00FF87,#00aa55)">VT</div>
+          <div class="test-info">
+            <div class="test-name">Valeria Torres</div>
+            <div class="test-role">Yoga + Bienestar &middot; Cali</div>
+          </div>
+          <div class="test-rating">*****</div>
+        </div>
+      </div>
+
+      <div class="test-card reveal reveal-delay-3">
+        <div class="test-quote-mark">"</div>
+        <p class="test-text">Trabaj&eacute; con 3 agencias antes y ninguna entend&iacute;a el fitness. ProWay Lab habla nuestro idioma. La calidad de producci&oacute;n es de nivel premium pero el trato es cercano. Recomendados al 100%.</p>
+        <div class="test-author">
+          <div class="test-av" style="background:#FFD700;color:#000">AM</div>
+          <div class="test-info">
+            <div class="test-name">Andr&eacute;s Mora</div>
+            <div class="test-role">Crossfit Coach &middot; Barranquilla</div>
+          </div>
+          <div class="test-rating">*****</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
      SECCION 6 — METRICAS AGGREGADAS (COUNT-UP)
 ============================================================ -->
 <section id="metrics">
@@ -1765,11 +2301,25 @@ body {
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
           <path d="M11.996 0C5.373 0 0 5.373 0 12c0 2.117.554 4.1 1.521 5.824L.057 23.476l5.8-1.521A11.943 11.943 0 0012 24c6.624 0 12-5.373 12-12S18.62 0 11.996 0zm.004 21.818a9.817 9.817 0 01-5.006-1.373l-.359-.214-3.72.976 1.001-3.647-.235-.376A9.818 9.818 0 012.182 12c0-5.424 4.41-9.835 9.818-9.835 5.41 0 9.819 4.411 9.819 9.835 0 5.425-4.41 9.818-9.819 9.818z"/>
         </svg>
-        Diagn&oacute;stico gratuito
+        Diagn&oacute;stico gratuito por WhatsApp
       </a>
       <a href="servicios.html" class="btn-secondary">
-        Ver servicios &rarr;
+        Ver servicios y precios &rarr;
       </a>
+    </div>
+    <div class="cta-trust-row reveal reveal-delay-4">
+      <div class="cta-trust-item">
+        <div class="cta-trust-dot"></div>
+        Respuesta en menos de 1 hora
+      </div>
+      <div class="cta-trust-item">
+        <div class="cta-trust-dot"></div>
+        Sin compromiso
+      </div>
+      <div class="cta-trust-item">
+        <div class="cta-trust-dot"></div>
+        47 coaches confian en nosotros
+      </div>
     </div>
   </div>
 </section>
