@@ -37,6 +37,7 @@ define('PAYU_TEST_MODE',      env('PAYU_TEST_MODE', 'true') === 'true');
 define('WA_PHONE_NUMBER_ID', env('WA_PHONE_NUMBER_ID', '1013772675149039'));
 define('WA_ACCESS_TOKEN',    env('WA_ACCESS_TOKEN',    'EAANNz5iZB4XYBQ7fgQtYsrkZCuVTsIVEdAKyZCBA5HZCtmZA75JSGo7MWmYoFJi7CQOp5GT81oUPDFO751wn7JRrRcyoZBpceYeR1iNZCXaAe3cKR3pDR5ngO48oEA8LONZAz8hL6WDC1PdJ0ZA69VrwaOHinJp2WE1MZCBrBcAmywuk2ME6RUPSSRx4jHkbAMmn1Q7Be4D51jC4OcgA4P'));
 define('N8N_API_KEY',        env('N8N_API_KEY',        'proway-n8n-2026'));
+define('N8N_WEBHOOK_URL',   env('N8N_WEBHOOK_URL',   'http://localhost:5678'));
 
 function getDB(): PDO {
     static $pdo = null;

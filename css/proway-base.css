@@ -208,7 +208,14 @@ body {
     .nav-links, .nav-btn, .nav-access { display: none; }
     .nav-ham { display: flex; }
     .ft-bot { flex-direction: column; text-align: center; }
+    /* Touch targets: min 44px for links and buttons */
+    .nav-mob a { min-height: 44px; display: flex; align-items: center; }
+    .ft-lnks a { min-height: 44px; display: flex; align-items: center; }
+    .btn-solid-blue, .btn-ghost, .btn-ghost-green { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+    /* Prevent iOS zoom on input focus */
+    input, select, textarea { font-size: 16px; }
 }
 @media (max-width:480px) {
     .sec-title { font-size: 28px; }
+    .wrap { padding: 0 16px; }
 }

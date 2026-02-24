@@ -10,8 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:        #0C0C0F;
-  --surface:   #111114;
+  --bg:        #0a0a0a;
+  --surface:   #111113;
   --surface-2: #191920;
   --border:    #252528;
   --blue:      #00D9FF;
@@ -31,8 +31,8 @@
   --font-m:    'Roboto Mono', monospace;
   --sidebar-w: 260px;
   --topbar-h:  60px;
-  --radius:    8px;
-  --radius-lg: 14px;
+  --radius:    2px;
+  --radius-lg: 2px;
 }
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 html { font-size:16px; }
@@ -54,7 +54,7 @@ body {
   border-right: 1px solid var(--border);
   display: flex; flex-direction: column;
   z-index: 100;
-  transition: transform 0.3s ease;
+  transition: transform 0.2s linear;
 }
 .sidebar-logo {
   padding: 20px 20px 16px;
@@ -71,7 +71,8 @@ body {
   color: var(--gray); font-family: var(--font-b);
   font-size: 0.875rem; font-weight: 500;
   border-left: 2px solid transparent;
-  transition: all 0.18s ease; user-select: none;
+  transition: color 0.1s linear, background 0.1s linear, border-color 0.1s linear;
+  user-select: none;
 }
 .nav-item:hover { color: var(--white); background: var(--surface-2); }
 .nav-item.active { color: var(--blue); background: var(--blue-dim); border-left-color: var(--blue); }
@@ -81,7 +82,7 @@ body {
 .sidebar-user { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
 .user-avatar-sm {
   width:36px; height:36px; border-radius:50%;
-  background: linear-gradient(135deg,var(--blue),#0099bb);
+  background: var(--blue);
   display:flex; align-items:center; justify-content:center;
   font-family:var(--font-h); font-weight:900; font-size:0.875rem;
   color:var(--bg); flex-shrink:0;
@@ -95,7 +96,7 @@ body {
   border-radius:var(--radius); color:var(--gray);
   font-family:var(--font-b); font-size:0.8125rem;
   cursor:pointer; display:flex; align-items:center; gap:8px;
-  transition:all 0.18s ease;
+  transition:border-color 0.1s linear, color 0.1s linear;
 }
 .btn-logout:hover { border-color:var(--red); color:var(--red); }
 .btn-logout svg { width:14px; height:14px; }
@@ -106,7 +107,7 @@ body {
 /* TOPBAR */
 #topbar {
   position:sticky; top:0; height:var(--topbar-h);
-  background:rgba(12,12,15,0.9); backdrop-filter:blur(12px);
+  background:rgba(10,10,10,0.92); backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
   display:flex; align-items:center; justify-content:space-between;
   padding:0 28px; z-index:90;
@@ -144,7 +145,7 @@ body {
 /* BADGES */
 .badge {
   display:inline-flex; align-items:center; gap:5px;
-  padding:3px 9px; border-radius:999px;
+  padding:3px 9px; border-radius:0;
   font-family:var(--font-m); font-size:0.6875rem; font-weight:600;
   letter-spacing:0.05em; text-transform:uppercase;
 }
@@ -155,21 +156,22 @@ body {
 .badge-gray   { background:rgba(82,82,91,0.15); color:var(--dark); border:1px solid rgba(82,82,91,0.25); }
 
 /* PROGRESS */
-.progress-wrap { background:var(--surface-2); border-radius:999px; height:6px; overflow:hidden; margin-top:8px; }
-.progress-fill { height:100%; border-radius:999px; transition:width 0.5s ease; }
+.progress-wrap { background:var(--surface-2); border-radius:0; height:6px; overflow:hidden; margin-top:8px; }
+.progress-fill { height:100%; border-radius:0; transition:width 0.5s linear; }
 .progress-green { background:var(--green); }
 .progress-blue  { background:var(--blue); }
 
 /* BUTTONS */
 .btn {
   display:inline-flex; align-items:center; gap:8px;
-  padding:9px 18px; border-radius:var(--radius);
+  padding:9px 18px; border-radius:0;
   font-family:var(--font-b); font-size:0.875rem; font-weight:600;
   cursor:pointer; text-decoration:none;
-  transition:all 0.18s ease; border:none;
+  transition:background 0.1s linear, color 0.1s linear, border-color 0.1s linear;
+  border:none;
 }
 .btn-primary { background:var(--blue); color:var(--bg); }
-.btn-primary:hover { background:#33e1ff; box-shadow:0 0 16px var(--blue-glow); }
+.btn-primary:hover { background:#33e1ff; }
 .btn-outline-green { background:transparent; color:var(--green); border:1px solid var(--green); }
 .btn-outline-green:hover { background:var(--green-dim); }
 .btn-outline-red { background:transparent; color:var(--red); border:1px solid var(--red); }
@@ -177,54 +179,37 @@ body {
 .btn-ghost { background:transparent; color:var(--gray); border:1px solid var(--border); }
 .btn-ghost:hover { border-color:var(--blue); color:var(--blue); }
 .btn-green { background:var(--green); color:var(--bg); }
-.btn-green:hover { background:#33ffaa; box-shadow:0 0 16px rgba(0,255,135,0.3); }
+.btn-green:hover { background:#33ffaa; }
+.btn-sm { padding:6px 14px; font-size:0.8125rem; }
 
 /* OVERLAY */
 #overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:99; }
 #overlay.visible { display:block; }
 
-/* TOAST */
-#toast {
-  position:fixed; bottom:28px; right:28px;
-  background:var(--surface); border:1px solid var(--green); color:var(--green);
-  padding:12px 20px; border-radius:var(--radius);
-  font-size:0.875rem; font-weight:600;
-  z-index:999; transform:translateY(80px); opacity:0;
-  transition:all 0.3s ease; pointer-events:none;
-}
-#toast.show { transform:translateY(0); opacity:1; }
-
 /* SCROLL REVEAL */
-.rv { opacity:0; transform:translateY(18px); transition:opacity 0.45s ease,transform 0.45s ease; }
+.rv { opacity:0; transform:translateY(18px); transition:opacity 0.45s linear,transform 0.45s linear; }
 .rv.visible { opacity:1; transform:translateY(0); }
 
 /* ---- DASHBOARD ---- */
 .greeting { font-family:var(--font-h); font-weight:900; font-size:2.25rem; line-height:1.1; margin-bottom:6px; }
 .stat-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
-.stat-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px 20px; transition:border-color 0.2s; }
+.stat-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:18px 20px; transition:border-color 0.1s linear; position:relative;
+}
 .stat-card:hover { border-color:rgba(0,217,255,0.3); }
 .stat-card-label { font-family:var(--font-m); font-size:0.6875rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--dark); margin-bottom:8px; }
 .stat-card-value { font-family:var(--font-h); font-weight:900; font-size:1.375rem; color:var(--white); margin-bottom:6px; }
 .stat-card-sub { font-size:0.8125rem; color:var(--gray); display:flex; align-items:center; gap:6px; }
-.project-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; margin-bottom:24px; }
-.project-card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; }
-.project-name { font-family:var(--font-h); font-weight:800; font-size:1.125rem; color:var(--white); margin-bottom:4px; }
-.project-meta { font-size:0.8125rem; color:var(--gray); display:flex; gap:14px; }
-.phases-track { display:flex; align-items:flex-start; gap:0; margin-bottom:20px; position:relative; }
-.phases-track::before { content:''; position:absolute; top:15px; left:0; right:0; height:2px; background:var(--border); z-index:0; }
-.phase-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; position:relative; z-index:1; }
-.phase-dot { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:700; border:2px solid var(--border); background:var(--bg); }
-.phase-dot.done  { background:var(--green); border-color:var(--green); color:var(--bg); }
-.phase-dot.active { background:var(--blue); border-color:var(--blue); color:var(--bg); animation:pulse-blue 2s infinite; }
-.phase-dot.pending { background:var(--surface-2); color:var(--dark); }
-@keyframes pulse-blue { 0%,100% { box-shadow:0 0 0 0 rgba(0,217,255,0.4); } 50% { box-shadow:0 0 0 6px rgba(0,217,255,0); } }
-.phase-label { font-size:0.6875rem; text-align:center; color:var(--gray); max-width:80px; line-height:1.3; }
-.phase-label.done { color:var(--green); }
-.phase-label.active { color:var(--blue); font-weight:600; }
-.progress-row { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
-.progress-pct { font-family:var(--font-m); font-size:0.875rem; color:var(--blue); white-space:nowrap; }
-.progress-row .progress-wrap { flex:1; }
-.date-range { display:flex; justify-content:space-between; font-family:var(--font-m); font-size:0.75rem; color:var(--dark); }
+.stat-card-icon {
+  position:absolute; top:16px; right:16px; width:32px; height:32px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--blue-dim); border-radius:0; color:var(--blue);
+}
+.stat-card-icon svg { width:16px; height:16px; }
+
+.quick-actions { display:flex; gap:10px; margin-bottom:28px; flex-wrap:wrap; }
+
 .activity-feed { display:flex; flex-direction:column; gap:0; }
 .activity-item { display:flex; align-items:flex-start; gap:14px; padding:14px 0; border-bottom:1px solid var(--border); }
 .activity-item:last-child { border-bottom:none; }
@@ -235,151 +220,127 @@ body {
 .activity-text { font-size:0.875rem; color:var(--white); }
 .activity-time { font-family:var(--font-m); font-size:0.75rem; color:var(--dark); margin-top:2px; }
 
-/* ---- MI PROYECTO ---- */
-.proyecto-header {
+/* ---- PROJECTS ---- */
+.projects-grid { display:flex; flex-direction:column; gap:16px; }
+.project-card {
   background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
-  padding:24px; margin-bottom:24px; display:flex; justify-content:space-between; align-items:center;
+  overflow:hidden; transition:border-color 0.1s linear;
 }
-.proyecto-info h2 { font-family:var(--font-h); font-weight:900; font-size:1.25rem; color:var(--white); margin-bottom:6px; }
-.proyecto-info-meta { display:flex; gap:16px; font-size:0.8125rem; color:var(--gray); margin-top:10px; }
-.info-chip { display:flex; align-items:center; gap:6px; }
-.info-chip svg { width:14px; height:14px; color:var(--blue); }
-.timeline-v { display:flex; flex-direction:column; gap:0; margin-bottom:28px; }
-.tl-item { display:flex; gap:16px; position:relative; }
-.tl-item:not(:last-child)::after { content:''; position:absolute; left:18px; top:36px; bottom:-16px; width:2px; background:var(--border); }
-.tl-marker {
-  width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-  font-family:var(--font-m); font-size:0.6875rem; font-weight:600; flex-shrink:0; margin-top:12px;
-  border:2px solid var(--border); background:var(--surface); color:var(--dark); position:relative; z-index:1;
+.project-card:hover { border-color:rgba(0,217,255,0.2); }
+.project-card-header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:20px 24px; cursor:pointer; user-select:none;
 }
-.tl-marker.done  { border-color:var(--green); color:var(--green); background:rgba(0,255,135,0.08); }
-.tl-marker.active { border-color:var(--blue); color:var(--blue); background:var(--blue-dim); }
-.tl-card { flex:1; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--border); border-radius:var(--radius); padding:16px 18px; margin-bottom:16px; }
-.tl-card.done   { border-left-color:var(--green); }
-.tl-card.active { border-left-color:var(--blue); }
-.tl-card.pending { opacity:0.6; }
-.tl-phase-id { font-family:var(--font-m); font-size:0.6875rem; color:var(--dark); margin-bottom:4px; }
-.tl-phase-name { font-family:var(--font-h); font-weight:700; font-size:1rem; color:var(--white); margin-bottom:6px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-.spinner { width:14px; height:14px; border:2px solid var(--blue-dim); border-top-color:var(--blue); border-radius:50%; animation:spin 0.8s linear infinite; flex-shrink:0; }
-@keyframes spin { to { transform:rotate(360deg); } }
-.tl-date { font-size:0.8125rem; color:var(--gray); }
-.coach-notes { display:flex; flex-direction:column; gap:12px; }
-.chat-bubble { display:flex; gap:10px; align-items:flex-start; }
-.chat-avatar { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,var(--blue),#0088aa); display:flex; align-items:center; justify-content:center; font-family:var(--font-h); font-weight:900; font-size:0.75rem; color:var(--bg); flex-shrink:0; }
-.bubble-body { background:var(--surface-2); border:1px solid var(--border); border-radius:0 12px 12px 12px; padding:12px 14px; max-width:520px; }
-.bubble-sender { font-family:var(--font-m); font-size:0.6875rem; color:var(--blue); margin-bottom:4px; }
-.bubble-text { font-size:0.875rem; color:var(--white); line-height:1.5; }
-.bubble-time { font-size:0.75rem; color:var(--dark); margin-top:4px; }
+.project-card-header:hover { background:var(--surface-2); }
+.project-card-left { display:flex; align-items:center; gap:14px; min-width:0; }
+.project-code { font-family:var(--font-m); font-size:0.6875rem; color:var(--dark); letter-spacing:0.08em; }
+.project-name { font-family:var(--font-h); font-weight:800; font-size:1rem; color:var(--white); }
+.project-card-right { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.project-chevron { width:18px; height:18px; color:var(--dark); transition:transform 0.2s linear; }
+.project-card.expanded .project-chevron { transform:rotate(180deg); }
+.project-card-body { display:none; padding:0 24px 20px; border-top:1px solid var(--border); }
+.project-card.expanded .project-card-body { display:block; padding-top:20px; }
+.project-meta-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:16px; }
+.project-meta-label { font-family:var(--font-m); font-size:0.6875rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--dark); margin-bottom:4px; }
+.project-meta-value { font-size:0.875rem; color:var(--white); font-weight:600; }
 
-/* ---- ENTREGABLES ---- */
-.pills-bar { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
-.pill { padding:7px 16px; border-radius:999px; border:1px solid var(--border); background:transparent; color:var(--gray); font-family:var(--font-b); font-size:0.8125rem; font-weight:600; cursor:pointer; transition:all 0.18s ease; }
-.pill:hover { border-color:var(--blue); color:var(--blue); }
-.pill.active { background:var(--blue); border-color:var(--blue); color:var(--bg); }
-.entregables-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-.entregable-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px; display:flex; flex-direction:column; gap:12px; transition:all 0.2s ease; }
-.entregable-card:hover { border-color:rgba(0,217,255,0.25); transform:translateY(-2px); }
-.entregable-icon { width:42px; height:42px; border-radius:var(--radius); display:flex; align-items:center; justify-content:center; }
-.entregable-icon svg { width:22px; height:22px; }
-.icon-mp4  { background:rgba(0,217,255,0.1); color:var(--blue); }
-.icon-pdf  { background:rgba(227,30,36,0.1);  color:var(--red); }
-.icon-zip  { background:rgba(255,214,10,0.1); color:var(--yellow); }
-.entregable-name { font-family:var(--font-h); font-weight:700; font-size:0.9375rem; color:var(--white); }
-.entregable-quote { font-size:0.8125rem; color:var(--gray); font-style:italic; }
-.entregable-meta { font-family:var(--font-m); font-size:0.75rem; color:var(--dark); display:flex; gap:10px; }
-.entregable-actions { display:flex; gap:8px; flex-wrap:wrap; }
-.btn-outline-yellow { border:1px solid rgba(255,214,10,0.4); color:var(--yellow); background:none; padding:6px 14px; font-family:var(--font-m); font-size:0.75rem; letter-spacing:0.05em; cursor:pointer; transition:border-color 0.1s linear,background 0.1s linear; }
-.btn-outline-yellow:hover { border-color:var(--yellow); background:var(--yellow-dim); }
-.btn-outline-yellow:disabled { opacity:0.4; cursor:not-allowed; }
+.progress-row { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+.progress-pct { font-family:var(--font-m); font-size:0.875rem; color:var(--blue); white-space:nowrap; min-width:40px; }
+.progress-row .progress-wrap { flex:1; }
 
-/* ---- NOTIFICATION TOAST ---- */
-.pw-toast { position:fixed; top:20px; right:20px; z-index:10000; background:var(--surface-2); border:1px solid var(--blue); padding:14px 20px; max-width:340px; opacity:0; transform:translateY(-12px); transition:opacity 0.2s,transform 0.2s; pointer-events:none; }
-.pw-toast.show { opacity:1; transform:translateY(0); pointer-events:all; }
-.pw-toast-title { font-family:var(--font-m); font-size:0.75rem; color:var(--blue); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px; }
-.pw-toast-msg { font-size:0.8125rem; color:var(--gray); line-height:1.4; }
-
-/* ---- HISTORIAL ---- */
-.historial-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
-.historial-table-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+/* ---- INVOICES ---- */
+.invoices-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
+.invoices-table-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
 table { width:100%; border-collapse:collapse; }
-thead th { padding:12px 16px; text-align:left; font-family:var(--font-m); font-size:0.6875rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--dark); border-bottom:1px solid var(--border); background:var(--surface-2); }
+thead th {
+  padding:12px 16px; text-align:left;
+  font-family:var(--font-m); font-size:0.6875rem; letter-spacing:0.1em;
+  text-transform:uppercase; color:var(--dark);
+  border-bottom:1px solid var(--border); background:var(--surface-2);
+}
 tbody td { padding:13px 16px; font-size:0.875rem; color:var(--gray); border-bottom:1px solid var(--border); vertical-align:middle; }
 tbody tr:last-child td { border-bottom:none; }
 tbody tr:hover td { background:var(--surface-2); }
 .td-date { font-family:var(--font-m); font-size:0.8125rem; color:var(--white); }
 .td-amount { font-family:var(--font-m); font-weight:600; color:var(--white); }
 
-/* ---- SOPORTE ---- */
-.soporte-status { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px 20px; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
-.soporte-status svg { width:18px; height:18px; color:var(--green); flex-shrink:0; }
-.soporte-status-text { font-size:0.875rem; color:var(--white); }
-.soporte-status-sub  { font-size:0.8125rem; color:var(--gray); }
-.chat-window { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; margin-bottom:20px; }
-.chat-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; background:var(--surface-2); }
-.chat-header-name { font-family:var(--font-h); font-weight:700; font-size:0.9375rem; color:var(--white); }
-.chat-header-sub { font-size:0.8125rem; color:var(--gray); }
-.chat-messages { padding:20px; display:flex; flex-direction:column; gap:16px; max-height:420px; overflow-y:auto; }
-.chat-messages::-webkit-scrollbar { width:4px; }
-.chat-messages::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
-.msg { display:flex; gap:10px; align-items:flex-start; }
-.msg.mine { flex-direction:row-reverse; }
-.msg-avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-h); font-weight:900; font-size:0.75rem; flex-shrink:0; }
-.msg-avatar.coach  { background:linear-gradient(135deg,var(--blue),#0088aa); color:var(--bg); }
-.msg-avatar.client { background:linear-gradient(135deg,#7C3AED,#5B21B6); color:var(--white); }
-.msg-bubble { padding:10px 14px; border-radius:4px 12px 12px 12px; max-width:380px; font-size:0.875rem; line-height:1.5; }
-.msg.mine .msg-bubble { border-radius:12px 4px 12px 12px; }
-.msg-bubble.coach-msg  { background:var(--surface-2); color:var(--white); border:1px solid var(--border); }
-.msg-bubble.client-msg { background:var(--blue-dim); color:var(--white); border:1px solid rgba(0,217,255,0.2); }
-.msg-time { font-family:var(--font-m); font-size:0.6875rem; color:var(--dark); margin-top:4px; }
-.chat-input-area { padding:14px 18px; border-top:1px solid var(--border); background:var(--surface-2); }
-.chat-disabled-note { font-size:0.8125rem; color:var(--dark); text-align:center; margin-bottom:10px; font-family:var(--font-m); }
-.btn-whatsapp { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:13px; background:#25D366; color:#fff; font-family:var(--font-h); font-weight:800; font-size:0.9375rem; border-radius:var(--radius); text-decoration:none; transition:all 0.18s ease; border:none; cursor:pointer; letter-spacing:0.02em; }
-.btn-whatsapp:hover { background:#1ebe59; box-shadow:0 0 20px rgba(37,211,102,0.35); }
-.btn-whatsapp svg { width:20px; height:20px; }
-.faq-list { display:flex; flex-direction:column; gap:8px; margin-top:20px; }
-.faq-item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
-.faq-q { width:100%; padding:15px 18px; display:flex; justify-content:space-between; align-items:center; background:none; border:none; color:var(--white); font-family:var(--font-b); font-size:0.9375rem; font-weight:600; cursor:pointer; text-align:left; gap:12px; }
-.faq-q:hover { background:var(--surface-2); }
-.faq-chevron { width:18px; height:18px; color:var(--blue); transition:transform 0.25s ease; flex-shrink:0; }
-.faq-item.open .faq-chevron { transform:rotate(180deg); }
-.faq-a { max-height:0; overflow:hidden; transition:max-height 0.3s ease,padding 0.3s ease; font-size:0.875rem; color:var(--gray); line-height:1.6; padding:0 18px; }
-.faq-item.open .faq-a { max-height:200px; padding:0 18px 14px; }
-
 /* ---- PERFIL ---- */
 .perfil-layout { display:grid; grid-template-columns:240px 1fr; gap:20px; }
 .perfil-left { display:flex; flex-direction:column; gap:16px; }
-.avatar-big { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,var(--blue),#0088aa); display:flex; align-items:center; justify-content:center; font-family:var(--font-h); font-weight:900; font-size:2rem; color:var(--bg); margin:0 auto 12px; border:3px solid rgba(0,217,255,0.3); }
+.avatar-big {
+  width:80px; height:80px; border-radius:50%;
+  background:var(--blue);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-h); font-weight:900; font-size:2rem;
+  color:var(--bg); margin:0 auto 12px;
+  border:3px solid rgba(0,217,255,0.3);
+}
 .perfil-name-big { font-family:var(--font-h); font-weight:900; font-size:1.125rem; color:var(--white); text-align:center; }
 .perfil-plan-chip { text-align:center; font-family:var(--font-m); font-size:0.75rem; color:var(--blue); margin-top:4px; }
 .perfil-since { text-align:center; font-size:0.8125rem; color:var(--dark); margin-top:2px; }
 .form-group { margin-bottom:16px; }
 .form-label { display:block; font-family:var(--font-m); font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--dark); margin-bottom:6px; }
-.form-input { width:100%; padding:10px 14px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius); color:var(--white); font-family:var(--font-b); font-size:0.9375rem; transition:border-color 0.18s; outline:none; }
+.form-input {
+  width:100%; padding:10px 14px;
+  background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius);
+  color:var(--white); font-family:var(--font-b); font-size:0.9375rem;
+  transition:border-color 0.1s linear; outline:none;
+}
 .form-input:focus { border-color:var(--blue); }
 .form-input::placeholder { color:var(--dark); }
+.form-input:disabled { opacity:0.5; cursor:not-allowed; }
 .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .plan-actions { display:flex; flex-direction:column; gap:8px; margin-top:16px; }
+
+/* ---- SOPORTE ---- */
+.soporte-status { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px 20px; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+.soporte-status svg { width:18px; height:18px; color:var(--green); flex-shrink:0; }
+.soporte-status-text { font-size:0.875rem; color:var(--white); }
+.soporte-status-sub  { font-size:0.8125rem; color:var(--gray); }
+.btn-whatsapp { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:13px; background:#25D366; color:#fff; font-family:var(--font-h); font-weight:800; font-size:0.9375rem; border-radius:0; text-decoration:none; transition:background 0.1s linear; border:none; cursor:pointer; letter-spacing:0.02em; }
+.btn-whatsapp:hover { background:#1ebe59; }
+.btn-whatsapp svg { width:20px; height:20px; }
+.faq-list { display:flex; flex-direction:column; gap:8px; margin-top:20px; }
+.faq-item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.faq-q { width:100%; padding:15px 18px; display:flex; justify-content:space-between; align-items:center; background:none; border:none; color:var(--white); font-family:var(--font-b); font-size:0.9375rem; font-weight:600; cursor:pointer; text-align:left; gap:12px; }
+.faq-q:hover { background:var(--surface-2); }
+.faq-chevron { width:18px; height:18px; color:var(--blue); transition:transform 0.2s linear; flex-shrink:0; }
+.faq-item.open .faq-chevron { transform:rotate(180deg); }
+.faq-a { max-height:0; overflow:hidden; transition:max-height 0.2s linear; font-size:0.875rem; color:var(--gray); line-height:1.6; padding:0 18px; }
+.faq-item.open .faq-a { max-height:200px; padding:0 18px 14px; }
 
 /* ---- DOCUMENTOS ---- */
 .docs-note { font-size:0.8125rem; color:var(--gray); padding:14px 18px; background:var(--blue-dim); border:1px solid rgba(0,217,255,0.2); border-radius:var(--radius); margin-bottom:20px; display:flex; align-items:center; gap:10px; }
 .docs-note svg { width:16px; height:16px; color:var(--blue); flex-shrink:0; }
 .docs-table-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
-.doc-row { display:flex; align-items:center; gap:14px; padding:15px 20px; border-bottom:1px solid var(--border); transition:background 0.15s; }
+.doc-row { display:flex; align-items:center; gap:14px; padding:15px 20px; border-bottom:1px solid var(--border); transition:background 0.1s linear; }
 .doc-row:last-child { border-bottom:none; }
 .doc-row:hover { background:var(--surface-2); }
-.doc-icon { width:36px; height:36px; border-radius:8px; background:var(--red-dim); display:flex; align-items:center; justify-content:center; color:var(--red); flex-shrink:0; }
+.doc-icon { width:36px; height:36px; border-radius:0; background:var(--red-dim); display:flex; align-items:center; justify-content:center; color:var(--red); flex-shrink:0; }
 .doc-icon svg { width:18px; height:18px; }
 .doc-name { flex:1; }
 .doc-name-main { font-weight:600; font-size:0.9375rem; color:var(--white); }
 .doc-sub { font-size:0.8125rem; color:var(--gray); margin-top:2px; }
 .doc-type { font-family:var(--font-m); font-size:0.75rem; color:var(--dark); padding:0 14px; white-space:nowrap; }
 
+/* TOAST */
+.pw-toast { position:fixed; top:20px; right:20px; z-index:10000; background:var(--surface-2); border:1px solid var(--blue); padding:14px 20px; max-width:340px; opacity:0; transform:translateY(-12px); transition:opacity 0.2s linear,transform 0.2s linear; pointer-events:none; border-radius:var(--radius); }
+.pw-toast.show { opacity:1; transform:translateY(0); pointer-events:all; }
+.pw-toast-title { font-family:var(--font-m); font-size:0.75rem; color:var(--blue); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px; }
+.pw-toast-msg { font-size:0.8125rem; color:var(--gray); line-height:1.4; }
+
+/* EMPTY STATE */
+.empty-state { text-align:center; padding:48px 20px; color:var(--dark); }
+.empty-state svg { width:48px; height:48px; margin-bottom:16px; opacity:0.4; }
+.empty-state-title { font-family:var(--font-h); font-weight:800; font-size:1.125rem; color:var(--gray); margin-bottom:6px; }
+.empty-state-sub { font-size:0.875rem; color:var(--dark); }
+
 /* RESPONSIVE */
 @media (max-width:1100px) {
   .stat-cards { grid-template-columns:1fr 1fr; }
-  .entregables-grid { grid-template-columns:1fr 1fr; }
+  .project-meta-grid { grid-template-columns:1fr 1fr; }
   .perfil-layout { grid-template-columns:1fr; }
-  .historial-summary { grid-template-columns:1fr 1fr; }
+  .invoices-summary { grid-template-columns:1fr 1fr; }
 }
 @media (max-width:900px) {
   #sidebar { transform:translateX(-100%); }
@@ -387,19 +348,17 @@ tbody tr:hover td { background:var(--surface-2); }
   #main { margin-left:0; }
   #hamburger { display:flex; }
   #content { padding:20px 16px; }
-  .entregables-grid { grid-template-columns:1fr; }
-  .historial-summary { grid-template-columns:1fr; }
-  .proyecto-header { flex-direction:column; gap:14px; }
+  .invoices-summary { grid-template-columns:1fr; }
 }
 @media (max-width:600px) {
   .stat-cards { grid-template-columns:1fr; }
   .greeting { font-size:1.5rem; }
-  .phases-track { overflow-x:auto; padding-bottom:8px; }
-  .phase-item { min-width:90px; }
   .perfil-layout { grid-template-columns:1fr; }
   .form-grid { grid-template-columns:1fr; }
-  .chat-messages { max-height:300px; }
   .doc-row { flex-wrap:wrap; }
+  .project-meta-grid { grid-template-columns:1fr; }
+  .quick-actions { flex-direction:column; }
+  .quick-actions .btn { justify-content:center; }
 }
 </style>
 </head>
@@ -416,17 +375,13 @@ tbody tr:hover td { background:var(--surface-2); }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       Dashboard
     </div>
-    <div class="nav-item" id="nav-proyecto" data-section="proyecto" role="button" tabindex="0">
+    <div class="nav-item" id="nav-proyectos" data-section="proyectos" role="button" tabindex="0">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-      Mi Proyecto
+      Proyectos
     </div>
-    <div class="nav-item" id="nav-entregables" data-section="entregables" role="button" tabindex="0">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      Entregables
-    </div>
-    <div class="nav-item" id="nav-historial" data-section="historial" role="button" tabindex="0">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      Historial
+    <div class="nav-item" id="nav-facturas" data-section="facturas" role="button" tabindex="0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      Facturas
     </div>
     <div class="nav-item" id="nav-soporte" data-section="soporte" role="button" tabindex="0">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -443,10 +398,10 @@ tbody tr:hover td { background:var(--surface-2); }
   </nav>
   <div class="sidebar-footer">
     <div class="sidebar-user">
-      <div class="user-avatar-sm" id="sidebar-avatar">V</div>
+      <div class="user-avatar-sm" id="sidebar-avatar">C</div>
       <div class="user-info-sm">
-        <div class="user-name-sm" id="sidebar-name">Valentina Torres</div>
-        <div class="user-plan-sm">Video Pro</div>
+        <div class="user-name-sm" id="sidebar-name">Cliente</div>
+        <div class="user-plan-sm" id="sidebar-plan">-</div>
       </div>
     </div>
     <button class="btn-logout" id="btn-logout">
@@ -469,7 +424,7 @@ tbody tr:hover td { background:var(--surface-2); }
     </div>
     <div class="topbar-right">
       <div class="online-indicator"><span class="dot-green"></span> En linea</div>
-      <div class="topbar-name" id="topbar-name">Valentina Torres</div>
+      <div class="topbar-name" id="topbar-name">Cliente</div>
     </div>
   </header>
 
@@ -478,391 +433,69 @@ tbody tr:hover td { background:var(--surface-2); }
     <!-- SEC 1: DASHBOARD -->
     <section id="sec-dashboard" class="section active">
       <div class="greeting rv">
-        <span id="greeting-text">Buenas tardes,</span><span id="greeting-name" style="color:var(--blue);"> Valentina.</span>
+        <span id="greeting-text">Hola,</span><span id="greeting-name" style="color:var(--blue);"> Cliente.</span>
       </div>
-      <p class="page-sub rv">Tu proyecto esta en fase de produccion.</p>
-
-      <div class="stat-cards">
-        <div class="stat-card rv">
-          <div class="stat-card-label">Plan Activo</div>
-          <div class="stat-card-value">Video Pro</div>
-          <div class="stat-card-sub"><span class="badge badge-blue">ACTIVO</span></div>
-        </div>
-        <div class="stat-card rv">
-          <div class="stat-card-label">Entregables</div>
-          <div class="stat-card-value">3 / 5</div>
-          <div class="stat-card-sub">completados</div>
-          <div class="progress-wrap" style="margin-top:10px;"><div class="progress-fill progress-green" style="width:60%;"></div></div>
-        </div>
-        <div class="stat-card rv">
-          <div class="stat-card-label">Proxima Entrega</div>
-          <div class="stat-card-value">4 dias</div>
-          <div class="stat-card-sub"><span class="badge badge-yellow">22 FEB 2026</span></div>
-        </div>
-        <div class="stat-card rv">
-          <div class="stat-card-label">Coach Asignado</div>
-          <div class="stat-card-value" style="font-size:1rem;">Sebastian Vargas</div>
-          <div class="stat-card-sub"><span class="dot-green" style="width:7px;height:7px;"></span> Disponible ahora</div>
-        </div>
-      </div>
-
-      <div class="project-card rv">
-        <div class="project-card-header">
-          <div>
-            <div class="project-name">Campana de Contenido Feb 2026</div>
-            <div class="project-meta"><span>Coach: Sebastian Vargas</span><span>Plan: Video Pro</span></div>
-          </div>
-          <span class="badge badge-blue">EN PRODUCCION</span>
-        </div>
-        <div class="phases-track">
-          <div class="phase-item">
-            <div class="phase-dot done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            <div class="phase-label done">Brief &amp; Diagnostico</div>
-          </div>
-          <div class="phase-item">
-            <div class="phase-dot done"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
-            <div class="phase-label done">Guion &amp; Estrategia</div>
-          </div>
-          <div class="phase-item">
-            <div class="phase-dot active"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="4"/></svg></div>
-            <div class="phase-label active">Produccion</div>
-          </div>
-          <div class="phase-item">
-            <div class="phase-dot pending">4</div>
-            <div class="phase-label">Post-produccion</div>
-          </div>
-          <div class="phase-item">
-            <div class="phase-dot pending">5</div>
-            <div class="phase-label">Revision &amp; Entrega</div>
-          </div>
-        </div>
-        <div class="progress-row">
-          <span class="progress-pct">55%</span>
-          <div class="progress-wrap"><div class="progress-fill progress-blue" style="width:55%;"></div></div>
-        </div>
-        <div class="date-range"><span>1 Feb 2026</span><span>22 Feb 2026</span></div>
-      </div>
-
-      <div class="card rv">
+      <p class="page-sub rv" id="dash-subtitle">Resumen general de tu cuenta.</p>
+      <div class="stat-cards" id="dash-stat-cards"></div>
+      <div class="quick-actions rv" id="dash-quick-actions"></div>
+      <div class="card rv" id="dash-activity-card">
         <div class="section-title" style="margin-bottom:4px;">Actividad Reciente</div>
-        <p style="font-size:0.8125rem;color:var(--gray);margin-bottom:16px;">Ultimas actualizaciones de tu proyecto</p>
-        <div class="activity-feed">
-          <div class="activity-item">
-            <div class="activity-dot activity-dot-green"></div>
-            <div><div class="activity-text">Tu coach reviso el guion y dio el visto bueno.</div><div class="activity-time">hace 2 dias</div></div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot activity-dot-blue"></div>
-            <div><div class="activity-text">Produccion iniciada para Video #2 "Rutina de Fuerza".</div><div class="activity-time">hace 3 dias</div></div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot activity-dot-green"></div>
-            <div><div class="activity-text">Entregable Video #1 disponible para descarga.</div><div class="activity-time">hace 5 dias</div></div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot activity-dot-blue"></div>
-            <div><div class="activity-text">Brief aprobado. El equipo inicio la estrategia de guion.</div><div class="activity-time">hace 8 dias</div></div>
-          </div>
-          <div class="activity-item">
-            <div class="activity-dot activity-dot-gray"></div>
-            <div><div class="activity-text">Proyecto creado. Bienvenida al portal ProWay Lab.</div><div class="activity-time">1 Feb 2026</div></div>
-          </div>
-        </div>
+        <p style="font-size:0.8125rem;color:var(--gray);margin-bottom:16px;">Ultimas actualizaciones de tu cuenta</p>
+        <div class="activity-feed" id="dash-activity-feed"></div>
       </div>
     </section>
 
-    <!-- SEC 2: MI PROYECTO -->
-    <section id="sec-proyecto" class="section">
-      <div class="proyecto-header rv">
-        <div class="proyecto-info">
-          <h2>Campana de Contenido Feb 2026</h2>
-          <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;">
-            <span class="badge badge-blue">EN PRODUCCION</span>
-            <span class="badge badge-gray">Video Pro</span>
-          </div>
-          <div class="proyecto-info-meta">
-            <div class="info-chip">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              Coach: Sebastian Vargas
-            </div>
-            <div class="info-chip">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              1 Feb 2026 - 22 Feb 2026
-            </div>
-          </div>
-        </div>
-        <a href="https://wa.me/573124904720" target="_blank" rel="noopener" class="btn btn-primary">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          Contactar coach
-        </a>
-      </div>
-
-      <div class="section-label rv">Fases del Proyecto</div>
-      <div class="timeline-v rv">
-        <div class="tl-item">
-          <div class="tl-marker done">F01</div>
-          <div class="tl-card done">
-            <div class="tl-phase-id">FASE 01</div>
-            <div class="tl-phase-name">Brief &amp; Diagnostico <span class="badge badge-green">COMPLETADO</span></div>
-            <div class="tl-date">Completado el 1 Feb 2026</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-marker done">F02</div>
-          <div class="tl-card done">
-            <div class="tl-phase-id">FASE 02</div>
-            <div class="tl-phase-name">Guion &amp; Estrategia <span class="badge badge-green">COMPLETADO</span></div>
-            <div class="tl-date">Completado el 5 Feb 2026</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-marker active">F03</div>
-          <div class="tl-card active">
-            <div class="tl-phase-id">FASE 03</div>
-            <div class="tl-phase-name">Produccion <div class="spinner"></div> <span class="badge badge-blue">EN PROGRESO</span></div>
-            <div class="tl-date">En curso - estimado 18 Feb 2026</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-marker">F04</div>
-          <div class="tl-card pending">
-            <div class="tl-phase-id">FASE 04</div>
-            <div class="tl-phase-name">Post-produccion <span class="badge badge-gray">PENDIENTE</span></div>
-            <div class="tl-date">Inicio estimado: 19 Feb 2026</div>
-          </div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-marker">F05</div>
-          <div class="tl-card pending">
-            <div class="tl-phase-id">FASE 05</div>
-            <div class="tl-phase-name">Revision &amp; Entrega <span class="badge badge-gray">PENDIENTE</span></div>
-            <div class="tl-date">Entrega final: 22 Feb 2026</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card rv">
-        <div class="section-title">Notas de tu Coach</div>
-        <div class="coach-notes">
-          <div class="chat-bubble">
-            <div class="chat-avatar">SV</div>
-            <div class="bubble-body">
-              <div class="bubble-sender">Sebastian Vargas - Coach ProWay</div>
-              <div class="bubble-text">Valentina, el brief quedo perfecto. Los angulos de camara que propusiste para el Video #1 funcionaron muy bien con la audiencia fitness. Seguimos con esa linea visual para el #2.</div>
-              <div class="bubble-time">5 Feb 2026</div>
-            </div>
-          </div>
-          <div class="chat-bubble">
-            <div class="chat-avatar">SV</div>
-            <div class="bubble-body">
-              <div class="bubble-sender">Sebastian Vargas - Coach ProWay</div>
-              <div class="bubble-text">Estamos en la fase de grabacion del Video #2. El guion de "Rutina de Fuerza" tiene una estructura solida: hook de 3 segundos, desarrollo de 90s y CTA claro. Deberia estar en edicion el jueves.</div>
-              <div class="bubble-time">13 Feb 2026</div>
-            </div>
-          </div>
-          <div class="chat-bubble">
-            <div class="chat-avatar">SV</div>
-            <div class="bubble-body">
-              <div class="bubble-sender">Sebastian Vargas - Coach ProWay</div>
-              <div class="bubble-text">Recuerda que tienes 2 rondas de revision incluidas por video. Si necesitas cambios en el #1 que ya entregamos, avisame esta semana para incluirlos antes del cierre del paquete.</div>
-              <div class="bubble-time">15 Feb 2026</div>
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- SEC 2: PROYECTOS -->
+    <section id="sec-proyectos" class="section">
+      <div class="rv"><h1 class="page-title">Proyectos</h1><p class="page-sub">Todos tus proyectos activos y anteriores.</p></div>
+      <div class="projects-grid rv" id="projects-container"></div>
     </section>
 
-    <!-- SEC 3: ENTREGABLES -->
-    <section id="sec-entregables" class="section">
-      <div class="rv"><h1 class="page-title">Entregables</h1><p class="page-sub">Gestiona, revisa y descarga los archivos de tu proyecto.</p></div>
-      <div class="pills-bar rv">
-        <button class="pill active" data-filter="all">TODOS</button>
-        <button class="pill" data-filter="disponible">DISPONIBLES</button>
-        <button class="pill" data-filter="revision">EN REVISION</button>
-        <button class="pill" data-filter="pendiente">PENDIENTES</button>
-      </div>
-      <div class="entregables-grid rv">
-        <!-- Disponibles -->
-        <div class="entregable-card" data-status="disponible">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="entregable-icon icon-mp4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-            <div><div class="entregable-name">Video #1</div><div class="entregable-quote">"Hook de Nutricion"</div></div>
-          </div>
-          <div class="entregable-meta"><span>MP4</span><span>847 MB</span><span>13 Feb 2026</span></div>
-          <span class="badge badge-green">DISPONIBLE</span>
-          <div class="entregable-actions"><button class="btn btn-primary" onclick="alert('Descarga iniciada...')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>DESCARGAR</button><button class="btn btn-outline-yellow btn-revision" onclick="solicitarRevision(this)">SOLICITAR REVISION</button></div>
-        </div>
-        <div class="entregable-card" data-status="disponible">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="entregable-icon icon-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-            <div><div class="entregable-name">Brief Aprobado</div><div class="entregable-quote">Documento estrategico</div></div>
-          </div>
-          <div class="entregable-meta"><span>PDF</span><span>2.4 MB</span><span>5 Feb 2026</span></div>
-          <span class="badge badge-green">DISPONIBLE</span>
-          <div class="entregable-actions"><button class="btn btn-primary" onclick="alert('Descarga iniciada...')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>DESCARGAR</button><button class="btn btn-outline-yellow btn-revision" onclick="solicitarRevision(this)">SOLICITAR REVISION</button></div>
-        </div>
-        <div class="entregable-card" data-status="disponible">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="entregable-icon icon-pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-            <div><div class="entregable-name">Guiones x5</div><div class="entregable-quote">Pack completo de guiones</div></div>
-          </div>
-          <div class="entregable-meta"><span>PDF</span><span>856 KB</span><span>8 Feb 2026</span></div>
-          <span class="badge badge-green">DISPONIBLE</span>
-          <div class="entregable-actions"><button class="btn btn-primary" onclick="alert('Descarga iniciada...')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>DESCARGAR</button><button class="btn btn-outline-yellow btn-revision" onclick="solicitarRevision(this)">SOLICITAR REVISION</button></div>
-        </div>
-        <!-- En revision -->
-        <div class="entregable-card" data-status="revision">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="entregable-icon icon-mp4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-            <div><div class="entregable-name">Video #2</div><div class="entregable-quote">"Rutina de Fuerza"</div></div>
-          </div>
-          <div class="entregable-meta"><span>MP4</span><span>1.2 GB</span><span>16 Feb 2026</span></div>
-          <span class="badge badge-yellow">EN REVISION</span>
-          <div class="entregable-actions">
-            <button class="btn btn-outline-green" onclick="alert('Entregable aprobado. Tu coach sera notificado.')">APROBAR</button>
-            <button class="btn btn-outline-red" onclick="alert('Solicitud enviada. Tu coach revisara los cambios.')">SOLICITAR CAMBIOS</button>
-          </div>
-        </div>
-        <div class="entregable-card" data-status="revision">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="entregable-icon icon-zip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
-            <div><div class="entregable-name">Thumbnail Pack x5</div><div class="entregable-quote">Miniaturas para YouTube</div></div>
-          </div>
-          <div class="entregable-meta"><span>ZIP</span><span>45 MB</span><span>17 Feb 2026</span></div>
-          <span class="badge badge-yellow">EN REVISION</span>
-          <div class="entregable-actions">
-            <button class="btn btn-outline-green" onclick="alert('Entregable aprobado. Tu coach sera notificado.')">APROBAR</button>
-            <button class="btn btn-outline-red" onclick="alert('Solicitud enviada. Tu coach revisara los cambios.')">SOLICITAR CAMBIOS</button>
-          </div>
-        </div>
-        <!-- Pendientes -->
-        <div class="entregable-card" data-status="pendiente">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="entregable-icon icon-mp4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-            <div><div class="entregable-name">Video #3</div><div class="entregable-quote">"Mentalidad Fitness"</div></div>
-          </div>
-          <div class="entregable-meta"><span>MP4</span><span>-</span><span>Est. 19 Feb 2026</span></div>
-          <span class="badge badge-blue">EN PRODUCCION</span>
-          <div class="entregable-actions"><button class="btn btn-ghost" disabled style="opacity:0.4;cursor:not-allowed;">Disponible pronto</button></div>
-        </div>
-        <div class="entregable-card" data-status="pendiente">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="entregable-icon icon-mp4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-            <div><div class="entregable-name">Video #4</div><div class="entregable-quote">"Errores Comunes"</div></div>
-          </div>
-          <div class="entregable-meta"><span>MP4</span><span>-</span><span>Est. 21 Feb 2026</span></div>
-          <span class="badge badge-gray">PENDIENTE</span>
-          <div class="entregable-actions"><button class="btn btn-ghost" disabled style="opacity:0.4;cursor:not-allowed;">Disponible pronto</button></div>
-        </div>
-        <div class="entregable-card" data-status="pendiente">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="entregable-icon icon-mp4"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
-            <div><div class="entregable-name">Video #5</div><div class="entregable-quote">"Resultados Reales"</div></div>
-          </div>
-          <div class="entregable-meta"><span>MP4</span><span>-</span><span>Est. 22 Feb 2026</span></div>
-          <span class="badge badge-gray">PENDIENTE</span>
-          <div class="entregable-actions"><button class="btn btn-ghost" disabled style="opacity:0.4;cursor:not-allowed;">Disponible pronto</button></div>
-        </div>
-      </div>
+    <!-- SEC 3: FACTURAS -->
+    <section id="sec-facturas" class="section">
+      <div class="rv"><h1 class="page-title">Facturas</h1><p class="page-sub">Registro de pagos y servicios contratados.</p></div>
+      <div class="invoices-summary rv" id="invoices-summary"></div>
+      <div class="invoices-table-wrap rv" id="invoices-table-wrap"></div>
     </section>
 
-    <!-- SEC 4: HISTORIAL -->
-    <section id="sec-historial" class="section">
-      <div class="rv"><h1 class="page-title">Historial</h1><p class="page-sub">Registro de pagos y servicios contratados.</p></div>
-      <div class="historial-summary rv">
-        <div class="card">
-          <div class="stat-card-label">Total Invertido</div>
-          <div class="card-value" style="font-size:1.75rem;">$150.000</div>
-          <div style="font-size:0.8125rem;color:var(--gray);">COP</div>
-        </div>
-        <div class="card">
-          <div class="stat-card-label">Servicios Activos</div>
-          <div class="card-value" style="font-size:1.75rem;">1</div>
-          <div style="font-size:0.8125rem;color:var(--gray);">Video Pro - Feb 2026</div>
-        </div>
-        <div class="card">
-          <div class="stat-card-label">Estado de Cuenta</div>
-          <div class="card-value" style="font-size:1.375rem;color:var(--green);">AL DIA</div>
-          <span class="badge badge-green">Sin deudas pendientes</span>
-        </div>
-      </div>
-      <div class="historial-table-wrap rv">
-        <table>
-          <thead><tr><th>Fecha</th><th>Servicio</th><th>Monto</th><th>Metodo</th><th>Estado</th><th></th></tr></thead>
-          <tbody>
-            <tr><td class="td-date">1 Feb 2026</td><td>Video Pro - Mes 1</td><td class="td-amount">$150.000</td><td>Tarjeta</td><td><span class="badge badge-green">PAGADO</span></td><td><button class="btn btn-ghost" style="padding:5px 12px;font-size:0.8125rem;" onclick="alert('Comprobante de pago - Feb 2026')">Comprobante</button></td></tr>
-            <tr><td class="td-date">15 Ene 2026</td><td>Diagnostico de Marca</td><td class="td-amount">$0</td><td>-</td><td><span class="badge badge-green">COMPLETADO</span></td><td><button class="btn btn-ghost" style="padding:5px 12px;font-size:0.8125rem;" onclick="alert('Diagnostico gratuito completado')">Comprobante</button></td></tr>
-            <tr><td class="td-date">10 Ene 2026</td><td>Consultoria inicial</td><td class="td-amount">$0</td><td>-</td><td><span class="badge badge-green">COMPLETADO</span></td><td><button class="btn btn-ghost" style="padding:5px 12px;font-size:0.8125rem;" onclick="alert('Consultoria gratuita completada')">Comprobante</button></td></tr>
-            <tr><td class="td-date">5 Ene 2026</td><td>Onboarding ProWay Lab</td><td class="td-amount">$0</td><td>-</td><td><span class="badge badge-blue">COMPLETADO</span></td><td><button class="btn btn-ghost" style="padding:5px 12px;font-size:0.8125rem;" onclick="alert('Onboarding completado')">Comprobante</button></td></tr>
-            <tr><td class="td-date" style="color:var(--dark);">-</td><td style="color:var(--dark);">Sin registros anteriores</td><td style="color:var(--dark);">-</td><td>-</td><td><span class="badge badge-gray">-</span></td><td></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- SEC 5: SOPORTE -->
+    <!-- SEC 4: SOPORTE -->
     <section id="sec-soporte" class="section">
-      <div class="rv"><h1 class="page-title">Soporte</h1><p class="page-sub">Comunicacion directa con tu coach asignado.</p></div>
+      <div class="rv"><h1 class="page-title">Soporte</h1><p class="page-sub">Comunicacion directa con tu equipo asignado.</p></div>
       <div class="soporte-status rv">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.17 6.17l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         <div>
-          <div class="soporte-status-text">Tu coach responde en menos de 2 horas en horario laboral</div>
+          <div class="soporte-status-text">Nuestro equipo responde en menos de 2 horas en horario laboral</div>
           <div class="soporte-status-sub">Lunes a Viernes - 8:00am a 6:00pm (Colombia, GMT-5)</div>
         </div>
       </div>
-      <div class="chat-window rv">
-        <div class="chat-header">
-          <div class="msg-avatar coach" style="width:36px;height:36px;font-size:0.8125rem;">SV</div>
-          <div><div class="chat-header-name">Sebastian Vargas</div><div class="chat-header-sub">Coach ProWay Lab</div></div>
-          <span class="badge badge-green" style="margin-left:auto;">DISPONIBLE</span>
-        </div>
-        <div class="chat-messages">
-          <div class="msg"><div class="msg-avatar coach">SV</div><div><div class="msg-bubble coach-msg">Hola! Bienvenida al portal ProWay Lab. Soy Sebastian, tu coach asignado. Cualquier duda sobre tu proyecto, escribe aqui.</div><div class="msg-time">1 Feb 2026 - 09:15am</div></div></div>
-          <div class="msg mine"><div class="msg-avatar client" id="chat-avatar-1">V</div><div><div class="msg-bubble client-msg">Hola Sebastian! Perfecto, muchas gracias. Tengo algunas ideas para el estilo visual de los videos.</div><div class="msg-time" style="text-align:right;">1 Feb 2026 - 10:02am</div></div></div>
-          <div class="msg"><div class="msg-avatar coach">SV</div><div><div class="msg-bubble coach-msg">Me encanta que tengas ideas claras. Mandame referencias visuales para alinear el estilo con tu marca personal. Tambien podemos revisar el brief esta tarde.</div><div class="msg-time">1 Feb 2026 - 10:18am</div></div></div>
-          <div class="msg mine"><div class="msg-avatar client" id="chat-avatar-2">V</div><div><div class="msg-bubble client-msg">El estilo que busco es oscuro, con colores vibrantes tipo cyan y rojo. Quiero que mis videos se vean muy profesionales.</div><div class="msg-time" style="text-align:right;">1 Feb 2026 - 10:35am</div></div></div>
-          <div class="msg"><div class="msg-avatar coach">SV</div><div><div class="msg-bubble coach-msg">Excelente, ese estilo oscuro con acentos de color queda brutal para fitness. Funciona muy bien en YouTube y Reels. Ya lo incluyo en el brief.</div><div class="msg-time">1 Feb 2026 - 11:00am</div></div></div>
-          <div class="msg"><div class="msg-avatar coach">SV</div><div><div class="msg-bubble coach-msg">El Video #1 ya esta listo. Revisa la seccion de Entregables y cuentame que te parece. Queda fenomenal el hook inicial.</div><div class="msg-time">13 Feb 2026 - 02:45pm</div></div></div>
-          <div class="msg mine"><div class="msg-avatar client" id="chat-avatar-3">V</div><div><div class="msg-bubble client-msg">Lo vi y esta increible! Solo quiero ajustar un poco la musica del fondo, creo que puede sonar mas energica.</div><div class="msg-time" style="text-align:right;">13 Feb 2026 - 04:10pm</div></div></div>
-          <div class="msg"><div class="msg-avatar coach">SV</div><div><div class="msg-bubble coach-msg">Perfecto, cambio la musica a algo con mas BPM. En 24 horas te mando la version revisada. Solo tienes que aprobarla en el portal.</div><div class="msg-time">13 Feb 2026 - 04:30pm</div></div></div>
-          <div class="msg mine"><div class="msg-avatar client" id="chat-avatar-4">V</div><div><div class="msg-bubble client-msg">Genial! Y como va el Video #2? Estoy muy emocionada con el de rutina de fuerza.</div><div class="msg-time" style="text-align:right;">15 Feb 2026 - 11:20am</div></div></div>
-          <div class="msg"><div class="msg-avatar coach">SV</div><div><div class="msg-bubble coach-msg">Va excelente! Esta en etapa de edicion. La estructura es clara y el call to action es contundente. Lo tendras el sabado para tu revision.</div><div class="msg-time">15 Feb 2026 - 11:45am</div></div></div>
-        </div>
-        <div class="chat-input-area">
-          <div class="chat-disabled-note">Chat activo via WhatsApp - Continua la conversacion directamente con tu coach</div>
-          <a href="https://wa.me/573124904720" target="_blank" rel="noopener" class="btn-whatsapp">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
-            ABRIR WHATSAPP - CONTINUAR CONVERSACION
-          </a>
-        </div>
+      <div class="card rv" style="margin-bottom:20px;">
+        <div class="section-title">Contacto Directo</div>
+        <p style="font-size:0.875rem;color:var(--gray);margin-bottom:16px;line-height:1.5;">Para soporte rapido y directo, usa nuestro canal de WhatsApp. Tu consulta sera atendida por el equipo ProWay Lab.</p>
+        <a href="https://wa.me/573124904720" target="_blank" rel="noopener" class="btn-whatsapp">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          ABRIR WHATSAPP
+        </a>
       </div>
       <div class="card rv">
         <div class="section-title">Preguntas Frecuentes</div>
-        <div class="faq-list">
-          <div class="faq-item"><button class="faq-q">Cuantas revisiones tengo incluidas?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="faq-a">El plan Video Pro incluye 2 rondas de revision por entregable. Cada ronda cubre ajustes de corte, musica y subtitulos. Cambios estructurales o de guion fuera del alcance original se cotizan por separado.</div></div>
-          <div class="faq-item"><button class="faq-q">Como recibo mis archivos finales?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="faq-a">Los archivos finales se cargan directamente en este portal en la seccion Entregables. Desde ahi puedes descargarlos en formato MP4 o PDF. Los archivos permanecen disponibles por 90 dias.</div></div>
-          <div class="faq-item"><button class="faq-q">Puedo agregar videos a mi paquete?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="faq-a">Si, puedes agregar videos adicionales fuera del paquete base. El costo por video adicional se cotiza segun duracion y complejidad. Contacta a tu coach para solicitar una cotizacion.</div></div>
-          <div class="faq-item"><button class="faq-q">Cuanto tiempo tarda la produccion de un video?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="faq-a">El tiempo promedio es de 5 a 7 dias habiles por video, incluyendo edicion y una ronda de revision. Videos con animaciones o motion graphics pueden requerir 2 a 3 dias adicionales.</div></div>
-          <div class="faq-item"><button class="faq-q">Que pasa si no me gusta el resultado?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button><div class="faq-a">Primero utilizas las 2 rondas de revision incluidas para ajustar el resultado. Si despues de las revisiones el entregable no cumple lo acordado en el brief original, escala el caso con tu coach para buscar una solucion satisfactoria.</div></div>
-        </div>
+        <div class="faq-list" id="faq-list"></div>
       </div>
     </section>
 
-    <!-- SEC 6: MI PERFIL -->
+    <!-- SEC 5: MI PERFIL -->
     <section id="sec-perfil" class="section">
       <div class="rv"><h1 class="page-title">Mi Perfil</h1><p class="page-sub">Administra tu informacion personal y configuracion de cuenta.</p></div>
       <div class="perfil-layout rv">
         <div class="perfil-left">
           <div class="card" style="text-align:center;padding:28px 20px;">
-            <div class="avatar-big" id="perfil-avatar">V</div>
-            <div class="perfil-name-big" id="perfil-name-display">Valentina Torres</div>
-            <div class="perfil-plan-chip">Plan: Video Pro</div>
-            <div class="perfil-since">Cliente desde: 1 Feb 2026</div>
+            <div class="avatar-big" id="perfil-avatar">C</div>
+            <div class="perfil-name-big" id="perfil-name-display">Cliente</div>
+            <div class="perfil-plan-chip" id="perfil-plan-chip">-</div>
+            <div class="perfil-since" id="perfil-since">-</div>
           </div>
-          <div class="card">
+          <div class="card" id="perfil-plan-card">
             <div class="stat-card-label">Plan Activo</div>
-            <div class="card-title" style="font-size:1rem;margin-top:8px;">Video Pro</div>
-            <p style="font-size:0.8125rem;color:var(--gray);margin-top:6px;line-height:1.5;">5 videos mensuales, 2 revisiones por entregable, soporte WhatsApp prioritario.</p>
+            <div class="card-title" id="perfil-plan-name" style="font-size:1rem;margin-top:8px;">-</div>
             <div class="plan-actions">
               <a href="servicios.html" class="btn btn-outline-green" style="justify-content:center;">Actualizar Plan</a>
               <a href="contacto.html" class="btn btn-ghost" style="justify-content:center;">Agregar Servicio</a>
@@ -872,14 +505,17 @@ tbody tr:hover td { background:var(--surface-2); }
         <div>
           <div class="card">
             <div class="section-title">Informacion Personal</div>
-            <p style="font-size:0.8125rem;color:var(--gray);margin-bottom:20px;">Los cambios se guardan localmente. Contacta a tu coach si necesitas actualizar tu email o plan.</p>
+            <p style="font-size:0.8125rem;color:var(--gray);margin-bottom:20px;">Actualiza tu informacion. Contacta a soporte si necesitas cambiar tu email.</p>
             <div class="form-grid">
-              <div class="form-group"><label class="form-label" for="inp-nombre">Nombre Completo</label><input class="form-input" id="inp-nombre" type="text" placeholder="Valentina Torres"></div>
-              <div class="form-group"><label class="form-label" for="inp-email">Email</label><input class="form-input" id="inp-email" type="email" placeholder="valentina@correo.com"></div>
-              <div class="form-group"><label class="form-label" for="inp-whatsapp">WhatsApp</label><input class="form-input" id="inp-whatsapp" type="tel" placeholder="+57 300 000 0000"></div>
-              <div class="form-group"><label class="form-label" for="inp-ciudad">Ciudad</label><input class="form-input" id="inp-ciudad" type="text" placeholder="Bogota, Colombia"></div>
+              <div class="form-group"><label class="form-label" for="inp-nombre">Nombre Completo</label><input class="form-input" id="inp-nombre" type="text" placeholder="Tu nombre completo"></div>
+              <div class="form-group"><label class="form-label" for="inp-email">Email</label><input class="form-input" id="inp-email" type="email" placeholder="tu@email.com" disabled></div>
+              <div class="form-group"><label class="form-label" for="inp-phone">Telefono</label><input class="form-input" id="inp-phone" type="tel" placeholder="+57 300 000 0000"></div>
+              <div class="form-group"><label class="form-label" for="inp-company">Empresa / Marca</label><input class="form-input" id="inp-company" type="text" placeholder="Nombre de tu empresa"></div>
             </div>
-            <div class="form-group"><label class="form-label" for="inp-instagram">Instagram</label><input class="form-input" id="inp-instagram" type="text" placeholder="@valentina.fitness"></div>
+            <div class="form-grid">
+              <div class="form-group"><label class="form-label" for="inp-instagram">Instagram</label><input class="form-input" id="inp-instagram" type="text" placeholder="@tucuenta"></div>
+              <div class="form-group"><label class="form-label" for="inp-brand-name">Nombre de Marca</label><input class="form-input" id="inp-brand-name" type="text" placeholder="Tu marca"></div>
+            </div>
             <button class="btn btn-primary" id="btn-save-perfil" style="margin-top:8px;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13"/><polyline points="7 3 7 8 15 8"/></svg>
               GUARDAR CAMBIOS
@@ -889,376 +525,712 @@ tbody tr:hover td { background:var(--surface-2); }
       </div>
     </section>
 
-    <!-- SEC 7: DOCUMENTOS -->
+    <!-- SEC 6: DOCUMENTOS -->
     <section id="sec-documentos" class="section">
       <div class="rv"><h1 class="page-title">Documentos</h1><p class="page-sub">Contratos, politicas y guias de tu proyecto.</p></div>
       <div class="docs-note rv">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Todos los documentos estan disponibles por 12 meses desde la fecha de contratacion (hasta 1 Feb 2027).
+        Todos los documentos estan disponibles por 12 meses desde la fecha de contratacion.
       </div>
-      <div class="docs-table-wrap rv">
-        <div class="doc-row">
-          <div class="doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-          <div class="doc-name"><div class="doc-name-main">Contrato de Servicios ProWay</div><div class="doc-sub">Acuerdo de prestacion de servicios de produccion de contenido</div></div>
-          <div class="doc-type">PDF - Feb 2026</div>
-          <div style="display:flex;gap:8px;"><button class="btn btn-ghost" style="padding:6px 14px;font-size:0.8125rem;" onclick="alert('Visualizando: Contrato de Servicios ProWay')">Ver</button><button class="btn btn-primary" style="padding:6px 14px;font-size:0.8125rem;" onclick="alert('Descarga iniciada...')">Descargar</button></div>
-        </div>
-        <div class="doc-row">
-          <div class="doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-          <div class="doc-name"><div class="doc-name-main">Politica de Revisiones</div><div class="doc-sub">Numero de revisiones, plazos y proceso de aprobacion de entregables</div></div>
-          <div class="doc-type">PDF - Feb 2026</div>
-          <div style="display:flex;gap:8px;"><button class="btn btn-ghost" style="padding:6px 14px;font-size:0.8125rem;" onclick="alert('Visualizando: Politica de Revisiones')">Ver</button><button class="btn btn-primary" style="padding:6px 14px;font-size:0.8125rem;" onclick="alert('Descarga iniciada...')">Descargar</button></div>
-        </div>
-        <div class="doc-row">
-          <div class="doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-          <div class="doc-name"><div class="doc-name-main">Guia de Entrega de Archivos</div><div class="doc-sub">Formatos, resoluciones y especificaciones tecnicas para la entrega de materiales</div></div>
-          <div class="doc-type">PDF - Feb 2026</div>
-          <div style="display:flex;gap:8px;"><button class="btn btn-ghost" style="padding:6px 14px;font-size:0.8125rem;" onclick="alert('Visualizando: Guia de Entrega de Archivos')">Ver</button><button class="btn btn-primary" style="padding:6px 14px;font-size:0.8125rem;" onclick="alert('Descarga iniciada...')">Descargar</button></div>
-        </div>
-        <div class="doc-row">
-          <div class="doc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div>
-          <div class="doc-name"><div class="doc-name-main">NDA / Acuerdo de Confidencialidad</div><div class="doc-sub">Proteccion de informacion confidencial, estrategia de marca y datos del cliente</div></div>
-          <div class="doc-type">PDF - Feb 2026</div>
-          <div style="display:flex;gap:8px;"><button class="btn btn-ghost" style="padding:6px 14px;font-size:0.8125rem;" onclick="alert('Visualizando: NDA / Confidencialidad')">Ver</button><button class="btn btn-primary" style="padding:6px 14px;font-size:0.8125rem;" onclick="alert('Descarga iniciada...')">Descargar</button></div>
-        </div>
-      </div>
+      <div class="docs-table-wrap rv" id="docs-container"></div>
     </section>
 
   </main>
 </div>
 </div>
 
-<div id="toast"></div>
-
 <script>
-/* 1. AUTH GUARD */
+/* ===================================================================
+   PROWAY LAB - PORTAL CLIENTE v2
+   Enhanced client portal with dynamic API integration.
+   All DOM built with createElement/textContent (no innerHTML).
+   =================================================================== */
+
+/* -- 1. AUTH GUARD -------------------------------------------------- */
 (function(){
-  if(!localStorage.getItem('pw_client_auth')){
-    window.location.href='login-cliente.html';
+  var hasAuth = localStorage.getItem('pw_client_auth') === 'true';
+  var hasToken = localStorage.getItem('pw_token');
+  if (!hasAuth && !hasToken) {
+    window.location.href = 'login-cliente.html';
+    return;
   }
 })();
 
-/* 2. CLIENT NAME */
-var clientName=localStorage.getItem('pw_client_name')||'Valentina Torres';
-var clientInitial=clientName.trim().charAt(0).toUpperCase();
-
-document.getElementById('topbar-name').textContent=clientName;
-document.getElementById('sidebar-name').textContent=clientName;
-document.getElementById('sidebar-avatar').textContent=clientInitial;
-document.getElementById('perfil-avatar').textContent=clientInitial;
-document.getElementById('perfil-name-display').textContent=clientName;
-['chat-avatar-1','chat-avatar-2','chat-avatar-3','chat-avatar-4'].forEach(function(id){
-  var el=document.getElementById(id);
-  if(el) el.textContent=clientInitial;
-});
-
-/* 3. GREETING */
-(function(){
-  var h=new Date().getHours();
-  var g=h<12?'Buenos dias,':h<19?'Buenas tardes,':'Buenas noches,';
-  document.getElementById('greeting-text').textContent=g;
-  document.getElementById('greeting-name').textContent=' '+clientName.split(' ')[0]+'.';
-})();
-
-/* 4. SPA NAVIGATION */
-var sectionMap={
-  'dashboard':'Dashboard',
-  'proyecto':'Mi Proyecto',
-  'entregables':'Entregables',
-  'historial':'Historial',
-  'soporte':'Soporte',
-  'perfil':'Mi Perfil',
-  'documentos':'Documentos'
+/* -- 2. GLOBAL STATE ------------------------------------------------ */
+var PW = {
+  clientName:  localStorage.getItem('pw_client_name')  || 'Cliente',
+  clientEmail: localStorage.getItem('pw_client_email') || '',
+  clientPlan:  localStorage.getItem('pw_client_plan')  || '',
+  token:       localStorage.getItem('pw_token')        || '',
+  profile:     null,
+  projects:    [],
+  invoices:    []
 };
 
-function activateSection(key){
-  Object.keys(sectionMap).forEach(function(k){
-    var s=document.getElementById('sec-'+k);
-    var n=document.getElementById('nav-'+k);
-    if(s) s.classList.remove('active');
-    if(n) n.classList.remove('active');
-  });
-  var sec=document.getElementById('sec-'+key);
-  var nav=document.getElementById('nav-'+key);
-  if(sec) sec.classList.add('active');
-  if(nav) nav.classList.add('active');
-  document.getElementById('breadcrumb-text').textContent=sectionMap[key]||key;
-  closeSidebar();
-  window.scrollTo(0,0);
-  setTimeout(triggerReveal,80);
+/* -- 3. DOM HELPERS ------------------------------------------------- */
+function el(tag, className, text) {
+  var node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined && text !== null) node.textContent = String(text);
+  return node;
 }
 
-document.querySelectorAll('.nav-item[data-section]').forEach(function(el){
-  el.addEventListener('click',function(){ activateSection(el.getAttribute('data-section')); });
-  el.addEventListener('keydown',function(e){
-    if(e.key==='Enter'||e.key===' '){ e.preventDefault(); activateSection(el.getAttribute('data-section')); }
+function makeSVG(pathsArray, w) {
+  var ns = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '1.75');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  if (w) { svg.style.width = w + 'px'; svg.style.height = w + 'px'; }
+  pathsArray.forEach(function(d) {
+    var p = document.createElementNS(ns, 'path');
+    p.setAttribute('d', d);
+    svg.appendChild(p);
+  });
+  return svg;
+}
+
+function makeChevronSVG(cls) {
+  var ns = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('class', cls || 'project-chevron');
+  svg.setAttribute('viewBox', '0 0 24 24');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '2.5');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  var poly = document.createElementNS(ns, 'polyline');
+  poly.setAttribute('points', '6 9 12 15 18 9');
+  svg.appendChild(poly);
+  return svg;
+}
+
+function formatCOP(amount) {
+  var n = parseFloat(amount) || 0;
+  return '$' + n.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+function fmtDate(dateStr) {
+  if (!dateStr) return '-';
+  var d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  var mm = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return d.getDate() + ' ' + mm[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+/* -- 4. API FETCH --------------------------------------------------- */
+function apiFetch(path, opts) {
+  var headers = { 'Accept': 'application/json' };
+  if (PW.token) headers['Authorization'] = 'Bearer ' + PW.token;
+  opts = opts || {};
+  opts.headers = Object.assign(headers, opts.headers || {});
+  return fetch('/api' + path, opts).then(function(r) {
+    if (r.status === 401) {
+      localStorage.removeItem('pw_client_auth');
+      localStorage.removeItem('pw_token');
+      window.location.href = 'login-cliente.html';
+      throw new Error('Unauthorized');
+    }
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(json) {
+    return json.data !== undefined ? json.data : json;
+  });
+}
+
+/* -- 5. UI NAME/PLAN UPDATES --------------------------------------- */
+function updateUI(name, plan) {
+  if (name) {
+    PW.clientName = name;
+    document.getElementById('topbar-name').textContent = name;
+    document.getElementById('sidebar-name').textContent = name;
+    document.getElementById('sidebar-avatar').textContent = name.charAt(0).toUpperCase();
+    document.getElementById('perfil-avatar').textContent = name.charAt(0).toUpperCase();
+    document.getElementById('perfil-name-display').textContent = name;
+    document.getElementById('greeting-name').textContent = ' ' + name.split(' ')[0] + '.';
+  }
+  if (plan) {
+    PW.clientPlan = plan;
+    var display = plan.replace(/_/g, ' ');
+    display = display.charAt(0).toUpperCase() + display.slice(1);
+    document.getElementById('sidebar-plan').textContent = display;
+    document.getElementById('perfil-plan-chip').textContent = 'Plan: ' + display;
+    document.getElementById('perfil-plan-name').textContent = display;
+  }
+}
+updateUI(PW.clientName, PW.clientPlan);
+
+// Greeting
+(function(){
+  var h = new Date().getHours();
+  var g = h < 12 ? 'Buenos dias,' : h < 19 ? 'Buenas tardes,' : 'Buenas noches,';
+  document.getElementById('greeting-text').textContent = g;
+})();
+
+/* -- 6. SPA NAVIGATION --------------------------------------------- */
+var sectionMap = {
+  'dashboard':'Dashboard', 'proyectos':'Proyectos', 'facturas':'Facturas',
+  'soporte':'Soporte', 'perfil':'Mi Perfil', 'documentos':'Documentos'
+};
+
+function activateSection(key) {
+  Object.keys(sectionMap).forEach(function(k) {
+    var s = document.getElementById('sec-' + k);
+    var n = document.getElementById('nav-' + k);
+    if (s) s.classList.remove('active');
+    if (n) n.classList.remove('active');
+  });
+  var sec = document.getElementById('sec-' + key);
+  var nav = document.getElementById('nav-' + key);
+  if (sec) sec.classList.add('active');
+  if (nav) nav.classList.add('active');
+  document.getElementById('breadcrumb-text').textContent = sectionMap[key] || key;
+  closeSidebar();
+  window.scrollTo(0, 0);
+  setTimeout(triggerReveal, 80);
+}
+
+document.querySelectorAll('.nav-item[data-section]').forEach(function(navEl) {
+  navEl.addEventListener('click', function() { activateSection(navEl.getAttribute('data-section')); });
+  navEl.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activateSection(navEl.getAttribute('data-section')); }
   });
 });
 
-/* 5. MOBILE SIDEBAR */
-var sidebar=document.getElementById('sidebar');
-var overlay=document.getElementById('overlay');
-var hamburger=document.getElementById('hamburger');
-function openSidebar(){ sidebar.classList.add('open'); overlay.classList.add('visible'); }
-function closeSidebar(){ sidebar.classList.remove('open'); overlay.classList.remove('visible'); }
-hamburger.addEventListener('click',function(){ sidebar.classList.contains('open')?closeSidebar():openSidebar(); });
-overlay.addEventListener('click',closeSidebar);
+/* -- 7. MOBILE SIDEBAR ---------------------------------------------- */
+var sidebar = document.getElementById('sidebar');
+var overlay = document.getElementById('overlay');
+var hamburger = document.getElementById('hamburger');
+function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('visible'); }
+function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('visible'); }
+hamburger.addEventListener('click', function() { sidebar.classList.contains('open') ? closeSidebar() : openSidebar(); });
+overlay.addEventListener('click', closeSidebar);
 
-/* 6. LOGOUT */
-document.getElementById('btn-logout').addEventListener('click',function(){
+/* -- 8. LOGOUT ------------------------------------------------------ */
+document.getElementById('btn-logout').addEventListener('click', function() {
   localStorage.removeItem('pw_client_auth');
   localStorage.removeItem('pw_client_name');
-  window.location.href='login-cliente.html';
+  localStorage.removeItem('pw_client_email');
+  localStorage.removeItem('pw_client_plan');
+  localStorage.removeItem('pw_token');
+  window.location.href = 'login-cliente.html';
 });
 
-/* 7. ENTREGABLES FILTER */
-document.querySelectorAll('.pill').forEach(function(pill){
-  pill.addEventListener('click',function(){
-    document.querySelectorAll('.pill').forEach(function(p){ p.classList.remove('active'); });
-    pill.classList.add('active');
-    var filter=pill.getAttribute('data-filter');
-    document.querySelectorAll('.entregable-card').forEach(function(card){
-      var status=card.getAttribute('data-status');
-      var show=filter==='all'||status===filter;
-      if(show){
-        card.style.display='flex';
-        card.style.opacity='0';
-        card.style.transform='translateY(10px)';
-        requestAnimationFrame(function(){
-          requestAnimationFrame(function(){
-            card.style.transition='opacity 0.25s ease,transform 0.25s ease';
-            card.style.opacity='1';
-            card.style.transform='translateY(0)';
-          });
-        });
-      } else {
-        card.style.display='none';
-      }
-    });
-  });
-});
-
-/* 8. FAQ ACCORDION */
-document.querySelectorAll('.faq-q').forEach(function(btn){
-  btn.addEventListener('click',function(){
-    var item=btn.closest('.faq-item');
-    var isOpen=item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(function(i){ i.classList.remove('open'); });
-    if(!isOpen) item.classList.add('open');
-  });
-});
-
-/* 9. PERFIL */
-(function(){
-  var fields=['nombre','email','whatsapp','ciudad','instagram'];
-  fields.forEach(function(f){
-    var val=localStorage.getItem('pw_perfil_'+f);
-    var el=document.getElementById('inp-'+f);
-    if(el&&val) el.value=val;
-  });
-})();
-
-document.getElementById('btn-save-perfil').addEventListener('click',function(){
-  var fields=['nombre','email','whatsapp','ciudad','instagram'];
-  fields.forEach(function(f){
-    var el=document.getElementById('inp-'+f);
-    if(el) localStorage.setItem('pw_perfil_'+f,el.value);
-  });
-  var newName=document.getElementById('inp-nombre').value.trim();
-  if(newName){
-    localStorage.setItem('pw_client_name',newName);
-    document.getElementById('perfil-name-display').textContent=newName;
-    document.getElementById('perfil-avatar').textContent=newName.charAt(0).toUpperCase();
-  }
-  showToast('Perfil actualizado correctamente.');
-});
-
-function showToast(msg){
-  var t=document.getElementById('toast');
-  t.textContent=msg;
-  t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); },3200);
-}
-
-/* 10. SCROLL REVEAL */
-function triggerReveal(){
-  var els=document.querySelectorAll('.section.active .rv:not(.visible)');
-  if(!els.length) return;
-  var obs=new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting){ entry.target.classList.add('visible'); obs.unobserve(entry.target); }
-    });
-  },{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
-  els.forEach(function(el){ obs.observe(el); });
-}
-triggerReveal();
-
-/* ─── API INTEGRATION ────────────────────────────────────
-   Carga datos reales del backend. Si la API no responde o
-   pw_token no existe, el contenido demo del HTML persiste.
-   ──────────────────────────────────────────────────────── */
-
-function apiBearerFetch(path, opts) {
-  var token = localStorage.getItem('pw_token') || '';
-  var defaultHeaders = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' };
-  opts = opts || {};
-  opts.headers = Object.assign(defaultHeaders, opts.headers || {});
-  return fetch('/api' + path, opts);
-}
-
-// Actualizar plan display desde datos de login (disponible de inmediato)
-(function() {
-  var plan = localStorage.getItem('pw_client_plan') || '';
-  if (!plan) return;
-  var planDisplay = plan.replace(/_/g, ' ').toUpperCase();
-  var planEl = document.querySelector('.user-plan-sm');
-  if (planEl) planEl.textContent = planDisplay;
-  var statCards = document.querySelectorAll('.stat-card-value');
-  if (statCards[0]) statCards[0].textContent = planDisplay;
-})();
-
-// Cargar proyectos activos y actualizar KPIs del dashboard
-function loadClientProjects() {
-  var token = localStorage.getItem('pw_token');
-  if (!token) return;
-
-  apiBearerFetch('/clients/projects')
-    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function(projects) {
-      if (!projects || !projects.length) return;
-
-      var active = null;
-      for (var i = 0; i < projects.length; i++) {
-        if (projects[i].status === 'en_progreso' || projects[i].status === 'revision') {
-          active = projects[i]; break;
-        }
-      }
-      if (!active) active = projects[0];
-
-      var title = active.title || active.description || '';
-      if (title) {
-        var nameEl = document.querySelector('.project-name');
-        if (nameEl) nameEl.textContent = title;
-        var h2El = document.querySelector('#sec-proyecto .proyecto-info h2');
-        if (h2El) h2El.textContent = title;
-      }
-
-      var statusSubMap = {
-        'en_progreso': 'en fase de produccion',
-        'revision':    'en revision',
-        'entregado':   'entregado',
-        'pendiente':   'pendiente de inicio',
-        'pagado':      'completado'
-      };
-      var subEl = document.querySelector('#sec-dashboard .page-sub');
-      if (subEl && active.status) {
-        subEl.textContent = 'Tu proyecto esta ' + (statusSubMap[active.status] || 'activo') + '.';
-      }
-
-      var totalDeli = active.deliverables_count || 0;
-      var statCards = document.querySelectorAll('.stat-card-value');
-      if (statCards[1] && totalDeli > 0) {
-        statCards[1].textContent = totalDeli + ' total';
-      }
-    })
-    .catch(function() {}); // Silently fail — mantiene HTML demo
-}
-
-// Cargar perfil del cliente y pre-rellenar el formulario de perfil
-function loadClientProfile() {
-  var token = localStorage.getItem('pw_token');
-  if (!token) return;
-
-  apiBearerFetch('/clients/profile')
-    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function(profile) {
-      if (!profile) return;
-      if (profile.brand_name && !localStorage.getItem('pw_perfil_nombre')) {
-        var inpNombre = document.getElementById('inp-nombre');
-        if (inpNombre) inpNombre.value = profile.brand_name;
-      }
-    })
-    .catch(function() {}); // Silently fail
-}
-
-// Adicional al guardar perfil: también enviar al backend
-document.getElementById('btn-save-perfil').addEventListener('click', function() {
-  var token = localStorage.getItem('pw_token');
-  if (!token) return;
-  var brandName = (document.getElementById('inp-nombre') || {}).value || '';
-  fetch('/api/clients/profile', {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ' + token
-    },
-    body: JSON.stringify({ brand_name: brandName })
-  }).catch(function() {}); // fire-and-forget
-});
-
-loadClientProjects();
-loadClientProfile();
-
-/* ─── SOLICITAR REVISION ─────────────────────────────────── */
-function solicitarRevision(btn) {
-  var card = btn.closest('.entregable-card');
-  var name = card ? card.querySelector('.entregable-name') : null;
-  var entregableName = name ? name.textContent : 'este entregable';
-  btn.disabled = true;
-  btn.textContent = 'REVISION SOLICITADA';
-  showToast('REVISION SOLICITADA', 'Se ha notificado al equipo ProWay sobre tu solicitud de revision para "' + entregableName + '". Te contactaremos en menos de 48h.');
-}
-
-/* ─── TOAST NOTIFICATIONS ────────────────────────────────── */
+/* -- 9. TOAST ------------------------------------------------------- */
 var toastEl = null;
 var toastTimeout = null;
-
 function showToast(title, msg, duration) {
-  duration = duration || 5000;
+  duration = duration || 4000;
   if (!toastEl) {
-    toastEl = document.createElement('div');
-    toastEl.className = 'pw-toast';
-    var t = document.createElement('div');
-    t.className = 'pw-toast-title';
-    t.id = 'pw-toast-title';
-    var m = document.createElement('div');
-    m.className = 'pw-toast-msg';
-    m.id = 'pw-toast-msg';
-    toastEl.appendChild(t);
-    toastEl.appendChild(m);
+    toastEl = el('div', 'pw-toast');
+    var t = el('div', 'pw-toast-title'); t.id = 'pw-toast-title';
+    var m = el('div', 'pw-toast-msg');   m.id = 'pw-toast-msg';
+    toastEl.appendChild(t); toastEl.appendChild(m);
     document.body.appendChild(toastEl);
   }
-  document.getElementById('pw-toast-title').textContent = title;
-  document.getElementById('pw-toast-msg').textContent = msg;
+  document.getElementById('pw-toast-title').textContent = title || '';
+  document.getElementById('pw-toast-msg').textContent   = msg || '';
   toastEl.classList.add('show');
   if (toastTimeout) clearTimeout(toastTimeout);
   toastTimeout = setTimeout(function() { toastEl.classList.remove('show'); }, duration);
 }
 
-/* ─── CHECK FOR NEW DELIVERABLES ─────────────────────────── */
-(function() {
-  var token = localStorage.getItem('pw_token');
-  if (!token) return;
-  var lastCheck = localStorage.getItem('pw_last_deliverable_check') || '0';
+/* -- 10. SCROLL REVEAL ---------------------------------------------- */
+function triggerReveal() {
+  var els = document.querySelectorAll('.section.active .rv:not(.visible)');
+  if (!els.length) return;
+  var obs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) { entry.target.classList.add('visible'); obs.unobserve(entry.target); }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+  els.forEach(function(e) { obs.observe(e); });
+}
 
-  apiBearerFetch('/clients/projects')
-    .then(function(r) { return r.ok ? r.json() : []; })
-    .then(function(projects) {
-      if (!projects || !projects.length) return;
-      var totalDeliverables = 0;
-      for (var i = 0; i < projects.length; i++) {
-        totalDeliverables += (projects[i].deliverables_count || 0);
-      }
-      var prevCount = parseInt(lastCheck, 10);
-      if (totalDeliverables > prevCount && prevCount > 0) {
-        var newCount = totalDeliverables - prevCount;
-        showToast('NUEVOS ENTREGABLES', 'Tienes ' + newCount + ' nuevo(s) entregable(s) disponible(s). Revisa la seccion Entregables.', 8000);
-      }
-      localStorage.setItem('pw_last_deliverable_check', String(totalDeliverables));
-    })
-    .catch(function() {});
+/* ===================================================================
+   BADGE HELPERS
+   =================================================================== */
+function projectBadge(status) {
+  var m = {
+    'en_progreso': { c: 'badge badge-blue',   t: 'EN PROGRESO' },
+    'revision':    { c: 'badge badge-yellow',  t: 'REVISION' },
+    'entregado':   { c: 'badge badge-green',   t: 'ENTREGADO' },
+    'pendiente':   { c: 'badge badge-gray',    t: 'PENDIENTE' },
+    'pagado':      { c: 'badge badge-green',   t: 'COMPLETADO' },
+    'cancelado':   { c: 'badge badge-red',     t: 'CANCELADO' }
+  };
+  var s = m[status] || { c: 'badge badge-gray', t: (status || '-').toUpperCase() };
+  return el('span', s.c, s.t);
+}
+
+function invoiceBadge(status) {
+  var m = {
+    'pagada':    { c: 'badge badge-green',  t: 'PAGADA' },
+    'pendiente': { c: 'badge badge-yellow', t: 'PENDIENTE' },
+    'vencida':   { c: 'badge badge-red',    t: 'VENCIDA' },
+    'cancelada': { c: 'badge badge-gray',   t: 'CANCELADA' }
+  };
+  var s = m[status] || { c: 'badge badge-gray', t: (status || '-').toUpperCase() };
+  return el('span', s.c, s.t);
+}
+
+/* ===================================================================
+   DASHBOARD
+   =================================================================== */
+function renderDashStats() {
+  var c = document.getElementById('dash-stat-cards');
+  c.textContent = '';
+
+  var activeProjects = 0;
+  var totalDeliverables = 0;
+  PW.projects.forEach(function(p) {
+    if (p.status === 'en_progreso' || p.status === 'revision') activeProjects++;
+    totalDeliverables += (p.deliverables_count || 0);
+  });
+
+  var pendingInvs = PW.invoices.filter(function(i) { return i.status === 'pendiente' || i.status === 'vencida'; });
+  var nextPay = pendingInvs.length > 0 ? fmtDate(pendingInvs[0].due_date || pendingInvs[0].created_at) : '-';
+  var nextPaySub = pendingInvs.length > 0 ? formatCOP(pendingInvs[0].total || pendingInvs[0].amount || 0) : 'Sin pagos pendientes';
+  var acctStatus = pendingInvs.some(function(i) { return i.status === 'vencida'; }) ? 'Pago Pendiente' : 'Activa';
+
+  var cards = [
+    { label:'PROYECTOS ACTIVOS', value: String(activeProjects), sub: activeProjects === 1 ? 'proyecto en curso' : 'proyectos en curso',
+      icon: 'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5' },
+    { label:'ENTREGABLES', value: String(totalDeliverables), sub: 'total entregables',
+      icon: 'M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3' },
+    { label:'PROXIMO PAGO', value: nextPay, sub: nextPaySub,
+      icon: 'M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6' },
+    { label:'ESTADO DE CUENTA', value: acctStatus, sub: acctStatus === 'Activa' ? 'Todo al dia' : 'Revisar facturas',
+      icon: 'M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3' }
+  ];
+
+  cards.forEach(function(d) {
+    var card = el('div', 'stat-card rv');
+    var iconW = el('div', 'stat-card-icon');
+    iconW.appendChild(makeSVG([d.icon], 16));
+    card.appendChild(iconW);
+    card.appendChild(el('div', 'stat-card-label', d.label));
+    card.appendChild(el('div', 'stat-card-value', d.value));
+    card.appendChild(el('div', 'stat-card-sub', d.sub));
+    c.appendChild(card);
+  });
+}
+
+function renderDashActions() {
+  var c = document.getElementById('dash-quick-actions');
+  c.textContent = '';
+  var acts = [
+    { text:'Ver Proyectos', sec:'proyectos', cls:'btn btn-primary' },
+    { text:'Descargar Entregables', sec:'proyectos', cls:'btn btn-ghost' },
+    { text:'Contactar Soporte', sec:'soporte', cls:'btn btn-ghost' }
+  ];
+  acts.forEach(function(a) {
+    var b = el('button', a.cls, a.text);
+    b.addEventListener('click', function() { activateSection(a.sec); });
+    c.appendChild(b);
+  });
+}
+
+function renderDashActivity() {
+  var c = document.getElementById('dash-activity-feed');
+  c.textContent = '';
+  var items = [];
+
+  PW.projects.forEach(function(p) {
+    var title = p.title || p.project_code || 'Proyecto';
+    var st = { en_progreso:'en progreso', revision:'en revision', entregado:'entregado', pendiente:'pendiente', pagado:'completado' };
+    items.push({ text:'Proyecto "' + title + '" esta ' + (st[p.status] || p.status || 'activo') + '.',
+                 time: fmtDate(p.updated_at || p.created_at),
+                 color: p.status === 'entregado' || p.status === 'pagado' ? 'green' : p.status === 'en_progreso' ? 'blue' : 'gray' });
+  });
+
+  PW.invoices.slice(0, 3).forEach(function(inv) {
+    var desc = inv.description || inv.project_title || 'Factura';
+    if (inv.status === 'pagada') {
+      items.push({ text:'Pago registrado: ' + desc + ' - ' + formatCOP(inv.total || inv.amount || 0),
+                   time: fmtDate(inv.paid_at || inv.created_at), color:'green' });
+    } else if (inv.status === 'pendiente') {
+      items.push({ text:'Factura pendiente: ' + desc + ' - ' + formatCOP(inv.total || inv.amount || 0),
+                   time: fmtDate(inv.due_date || inv.created_at), color:'blue' });
+    } else if (inv.status === 'vencida') {
+      items.push({ text:'Factura vencida: ' + desc, time: fmtDate(inv.due_date), color:'gray' });
+    }
+  });
+
+  if (items.length === 0) {
+    items.push({ text:'Bienvenido al portal ProWay Lab.', time:'Ahora', color:'blue' });
+  }
+
+  items.slice(0, 6).forEach(function(a) {
+    var row = el('div', 'activity-item');
+    row.appendChild(el('div', 'activity-dot activity-dot-' + a.color));
+    var w = el('div');
+    w.appendChild(el('div', 'activity-text', a.text));
+    w.appendChild(el('div', 'activity-time', a.time));
+    row.appendChild(w);
+    c.appendChild(row);
+  });
+}
+
+/* ===================================================================
+   PROJECTS
+   =================================================================== */
+function renderProjects() {
+  var c = document.getElementById('projects-container');
+  c.textContent = '';
+
+  if (PW.projects.length === 0) {
+    var empty = el('div', 'empty-state');
+    empty.appendChild(makeSVG(['M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'], 48));
+    empty.lastChild.style.opacity = '0.4';
+    empty.lastChild.style.marginBottom = '16px';
+    empty.appendChild(el('div', 'empty-state-title', 'Sin proyectos'));
+    empty.appendChild(el('div', 'empty-state-sub', 'Aun no tienes proyectos registrados. Contacta a ProWay Lab para iniciar.'));
+    c.appendChild(empty);
+    return;
+  }
+
+  PW.projects.forEach(function(proj) {
+    var card = el('div', 'project-card');
+
+    // Header
+    var hdr = el('div', 'project-card-header');
+    var left = el('div', 'project-card-left');
+    var leftI = el('div');
+    if (proj.project_code) leftI.appendChild(el('div', 'project-code', proj.project_code));
+    leftI.appendChild(el('div', 'project-name', proj.title || proj.description || 'Proyecto'));
+    left.appendChild(leftI);
+    hdr.appendChild(left);
+
+    var right = el('div', 'project-card-right');
+    right.appendChild(projectBadge(proj.status));
+    right.appendChild(makeChevronSVG('project-chevron'));
+    hdr.appendChild(right);
+
+    hdr.addEventListener('click', function() { card.classList.toggle('expanded'); });
+    card.appendChild(hdr);
+
+    // Body
+    var body = el('div', 'project-card-body');
+    var grid = el('div', 'project-meta-grid');
+    var meta = [
+      { l:'TIPO DE SERVICIO', v: proj.service_type || '-' },
+      { l:'ENTREGABLES',      v: String(proj.deliverables_count || 0) },
+      { l:'FECHA INICIO',     v: fmtDate(proj.start_date || proj.created_at) },
+      { l:'FECHA ENTREGA',    v: fmtDate(proj.end_date || proj.deadline) }
+    ];
+    meta.forEach(function(m) {
+      var item = el('div');
+      item.appendChild(el('div', 'project-meta-label', m.l));
+      item.appendChild(el('div', 'project-meta-value', m.v));
+      grid.appendChild(item);
+    });
+    body.appendChild(grid);
+
+    // Progress
+    var pct = parseInt(proj.progress, 10) || 0;
+    if (proj.status === 'entregado' || proj.status === 'pagado') pct = 100;
+    var pRow = el('div', 'progress-row');
+    pRow.appendChild(el('span', 'progress-pct', pct + '%'));
+    var pWrap = el('div', 'progress-wrap');
+    var pFill = el('div', 'progress-fill progress-blue');
+    pFill.style.width = pct + '%';
+    pWrap.appendChild(pFill);
+    pRow.appendChild(pWrap);
+    body.appendChild(pRow);
+
+    if (proj.description) {
+      var desc = el('p', null, proj.description);
+      desc.style.cssText = 'font-size:0.875rem;color:var(--gray);margin-top:12px;line-height:1.5;';
+      body.appendChild(desc);
+    }
+
+    if (proj.notes) {
+      var nw = el('div');
+      nw.style.cssText = 'margin-top:12px;padding:12px 14px;background:var(--blue-dim);border:1px solid rgba(0,217,255,0.2);border-radius:var(--radius);';
+      var nl = el('div', 'stat-card-label', 'NOTAS');
+      nl.style.marginBottom = '6px';
+      nw.appendChild(nl);
+      var nt = el('p', null, proj.notes);
+      nt.style.cssText = 'font-size:0.8125rem;color:var(--gray);line-height:1.5;';
+      nw.appendChild(nt);
+      body.appendChild(nw);
+    }
+
+    card.appendChild(body);
+    c.appendChild(card);
+  });
+}
+
+/* ===================================================================
+   INVOICES
+   =================================================================== */
+function renderInvoices() {
+  var sc = document.getElementById('invoices-summary');
+  var tc = document.getElementById('invoices-table-wrap');
+  sc.textContent = '';
+  tc.textContent = '';
+
+  var totalPaid = 0, totalPending = 0, paidN = 0, pendN = 0;
+  PW.invoices.forEach(function(inv) {
+    var amt = parseFloat(inv.total || inv.amount || 0);
+    if (inv.status === 'pagada') { totalPaid += amt; paidN++; }
+    else if (inv.status === 'pendiente' || inv.status === 'vencida') { totalPending += amt; pendN++; }
+  });
+
+  // Summary cards
+  var sCards = [
+    { l:'TOTAL PAGADO', v: formatCOP(totalPaid), s: paidN + ' factura' + (paidN !== 1 ? 's' : '') + ' pagada' + (paidN !== 1 ? 's' : '') },
+    { l:'PENDIENTE',    v: formatCOP(totalPending), s: pendN + ' factura' + (pendN !== 1 ? 's' : '') + ' pendiente' + (pendN !== 1 ? 's' : '') },
+    { l:'ESTADO',       v: pendN === 0 ? 'AL DIA' : 'PENDIENTE', s: pendN === 0 ? 'Sin deudas' : 'Revisar facturas pendientes' }
+  ];
+  sCards.forEach(function(d, i) {
+    var card = el('div', 'card');
+    card.appendChild(el('div', 'stat-card-label', d.l));
+    var val = el('div', 'card-value', d.v);
+    val.style.fontSize = '1.75rem';
+    if (i === 2) { val.style.fontSize = '1.375rem'; val.style.color = pendN === 0 ? 'var(--green)' : 'var(--yellow)'; }
+    card.appendChild(val);
+    card.appendChild(el('div', 'stat-card-sub', d.s));
+    sc.appendChild(card);
+  });
+
+  // Table
+  if (PW.invoices.length === 0) {
+    var empty = el('div', 'empty-state');
+    empty.appendChild(el('div', 'empty-state-title', 'Sin facturas'));
+    empty.appendChild(el('div', 'empty-state-sub', 'No tienes facturas registradas.'));
+    tc.appendChild(empty);
+    return;
+  }
+
+  var table = document.createElement('table');
+  var thead = document.createElement('thead');
+  var hRow = document.createElement('tr');
+  ['Fecha', 'Descripcion', 'Monto', 'Estado', ''].forEach(function(h) {
+    var th = document.createElement('th');
+    th.textContent = h;
+    hRow.appendChild(th);
+  });
+  thead.appendChild(hRow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement('tbody');
+  PW.invoices.forEach(function(inv) {
+    var tr = document.createElement('tr');
+
+    var td1 = document.createElement('td');
+    td1.className = 'td-date';
+    td1.textContent = fmtDate(inv.created_at || inv.issue_date);
+    tr.appendChild(td1);
+
+    var td2 = document.createElement('td');
+    td2.textContent = inv.description || inv.project_title || inv.invoice_number || 'Factura';
+    tr.appendChild(td2);
+
+    var td3 = document.createElement('td');
+    td3.className = 'td-amount';
+    td3.textContent = formatCOP(inv.total || inv.amount || 0);
+    tr.appendChild(td3);
+
+    var td4 = document.createElement('td');
+    td4.appendChild(invoiceBadge(inv.status));
+    tr.appendChild(td4);
+
+    var td5 = document.createElement('td');
+    if (inv.pdf_url || inv.download_url) {
+      var dlBtn = el('button', 'btn btn-ghost btn-sm', 'Descargar');
+      dlBtn.addEventListener('click', function() { window.open(inv.pdf_url || inv.download_url, '_blank'); });
+      td5.appendChild(dlBtn);
+    } else {
+      var vBtn = el('button', 'btn btn-ghost btn-sm', 'Ver');
+      vBtn.addEventListener('click', function() {
+        showToast('FACTURA', (inv.invoice_number || inv.description || '-') + ' - ' + formatCOP(inv.total || inv.amount || 0));
+      });
+      td5.appendChild(vBtn);
+    }
+    tr.appendChild(td5);
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  tc.appendChild(table);
+}
+
+/* ===================================================================
+   PROFILE
+   =================================================================== */
+function populateProfile(profile) {
+  if (!profile) return;
+  PW.profile = profile;
+  var fields = {
+    'inp-nombre':     profile.name || '',
+    'inp-email':      profile.email || '',
+    'inp-phone':      profile.phone || '',
+    'inp-company':    profile.company || '',
+    'inp-instagram':  profile.instagram || '',
+    'inp-brand-name': profile.brand_name || ''
+  };
+  Object.keys(fields).forEach(function(id) {
+    var inp = document.getElementById(id);
+    if (inp && fields[id]) inp.value = fields[id];
+  });
+  updateUI(profile.name, profile.plan_type);
+  if (profile.created_at) {
+    document.getElementById('perfil-since').textContent = 'Cliente desde: ' + fmtDate(profile.created_at);
+  }
+}
+
+document.getElementById('btn-save-perfil').addEventListener('click', function() {
+  var payload = {
+    name:       (document.getElementById('inp-nombre') || {}).value || '',
+    phone:      (document.getElementById('inp-phone') || {}).value || '',
+    company:    (document.getElementById('inp-company') || {}).value || '',
+    instagram:  (document.getElementById('inp-instagram') || {}).value || '',
+    brand_name: (document.getElementById('inp-brand-name') || {}).value || ''
+  };
+
+  if (payload.name) {
+    localStorage.setItem('pw_client_name', payload.name);
+    updateUI(payload.name, null);
+  }
+
+  if (PW.token) {
+    apiFetch('/clients/profile', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function(data) {
+      showToast('PERFIL', 'Informacion actualizada correctamente.');
+      if (data) populateProfile(data);
+    }).catch(function() {
+      showToast('PERFIL', 'Cambios guardados localmente.');
+    });
+  } else {
+    showToast('PERFIL', 'Cambios guardados localmente.');
+  }
+});
+
+/* ===================================================================
+   SOPORTE - FAQ
+   =================================================================== */
+(function() {
+  var faqs = [
+    { q:'Cuantas revisiones tengo incluidas?', a:'Depende de tu plan. Cada entregable incluye rondas de revision segun lo acordado en el contrato. Cambios fuera del alcance original se cotizan por separado.' },
+    { q:'Como recibo mis archivos finales?', a:'Los archivos finales se entregan a traves del portal o por enlace de descarga. Los archivos permanecen disponibles por 90 dias.' },
+    { q:'Puedo agregar servicios a mi paquete?', a:'Si, puedes agregar servicios adicionales. Contacta a tu equipo ProWay para solicitar una cotizacion.' },
+    { q:'Cuanto tiempo tarda un proyecto?', a:'El tiempo varia segun el tipo de servicio. Los tiempos estimados se definen en el brief inicial y se actualizan en la seccion de Proyectos.' },
+    { q:'Que pasa si no me gusta el resultado?', a:'Primero utilizas las rondas de revision incluidas. Si el entregable no cumple lo acordado, contacta a soporte para buscar una solucion.' }
+  ];
+  var c = document.getElementById('faq-list');
+  faqs.forEach(function(faq) {
+    var item = el('div', 'faq-item');
+    var btn = document.createElement('button');
+    btn.className = 'faq-q';
+    btn.textContent = faq.q;
+    btn.appendChild(makeChevronSVG('faq-chevron'));
+    var ans = el('div', 'faq-a', faq.a);
+    btn.addEventListener('click', function() {
+      var open = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(function(i) { i.classList.remove('open'); });
+      if (!open) item.classList.add('open');
+    });
+    item.appendChild(btn);
+    item.appendChild(ans);
+    c.appendChild(item);
+  });
 })();
+
+/* ===================================================================
+   DOCUMENTOS
+   =================================================================== */
+(function() {
+  var docs = [
+    { name:'Contrato de Servicios ProWay', sub:'Acuerdo de prestacion de servicios', type:'PDF' },
+    { name:'Politica de Revisiones', sub:'Numero de revisiones, plazos y proceso de aprobacion', type:'PDF' },
+    { name:'Guia de Entrega de Archivos', sub:'Formatos, resoluciones y especificaciones tecnicas', type:'PDF' },
+    { name:'NDA / Acuerdo de Confidencialidad', sub:'Proteccion de informacion y datos del cliente', type:'PDF' }
+  ];
+  var c = document.getElementById('docs-container');
+  docs.forEach(function(doc) {
+    var row = el('div', 'doc-row');
+
+    var icon = el('div', 'doc-icon');
+    icon.appendChild(makeSVG(['M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z'], 18));
+    row.appendChild(icon);
+
+    var nw = el('div', 'doc-name');
+    nw.appendChild(el('div', 'doc-name-main', doc.name));
+    nw.appendChild(el('div', 'doc-sub', doc.sub));
+    row.appendChild(nw);
+
+    row.appendChild(el('div', 'doc-type', doc.type));
+
+    var acts = el('div');
+    acts.style.cssText = 'display:flex;gap:8px;';
+    var vb = el('button', 'btn btn-ghost btn-sm', 'Ver');
+    vb.addEventListener('click', function() { showToast('DOCUMENTO', doc.name); });
+    var db = el('button', 'btn btn-primary btn-sm', 'Descargar');
+    db.addEventListener('click', function() { showToast('DESCARGA', 'Descarga iniciada: ' + doc.name); });
+    acts.appendChild(vb);
+    acts.appendChild(db);
+    row.appendChild(acts);
+    c.appendChild(row);
+  });
+})();
+
+/* ===================================================================
+   API DATA LOADING
+   =================================================================== */
+function loadAllData() {
+  if (PW.token) {
+    apiFetch('/clients/profile')
+      .then(function(data) { if (data) populateProfile(data); })
+      .catch(function() {});
+
+    apiFetch('/clients/projects')
+      .then(function(data) {
+        PW.projects = Array.isArray(data) ? data : [];
+        renderProjects();
+        renderDashStats();
+        renderDashActivity();
+      })
+      .catch(function() {
+        PW.projects = [];
+        renderProjects();
+        renderDashStats();
+        renderDashActivity();
+      });
+
+    apiFetch('/clients/invoices')
+      .then(function(data) {
+        PW.invoices = Array.isArray(data) ? data : [];
+        renderInvoices();
+        renderDashStats();
+        renderDashActivity();
+      })
+      .catch(function() {
+        PW.invoices = [];
+        renderInvoices();
+      });
+  }
+}
+
+// Initial render with empty data
+renderDashStats();
+renderDashActions();
+renderDashActivity();
+renderProjects();
+renderInvoices();
+
+// Load from API
+loadAllData();
+
+// Trigger reveal
+triggerReveal();
 </script>
 </body>
 </html>

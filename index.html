@@ -852,6 +852,12 @@
             .cta-t { font-size:clamp(28px,9vw,48px); }
         }
 
+        /* Touch devices wider than 768px (tablets) */
+        @media (hover: none) {
+            #cur, #cur-ring { display: none; }
+            body { cursor: auto; }
+        }
+
         /* === GRAIN OVERLAY === */
         body::before {
             content: '';
@@ -1929,6 +1935,7 @@ document.querySelectorAll('.btn-p, .btn-g, .nav-btn, .btn-wa, .btn-em').forEach(
 
 <!-- ProWay Chat Widget -->
 <script src="/js/chat-widget.js" defer></script>
+    <script src="/js/analytics.js" defer></script>
     <script src="/js/wa-widget.js" defer></script>
 </body>
 </html>
