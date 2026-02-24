@@ -20,7 +20,7 @@ if (file_exists($envFile)) {
 define('DB_HOST',    env('DB_HOST',    'proway-lab_mysql-db'));
 define('DB_NAME',    env('DB_NAME',    'prowaylab_db'));
 define('DB_USER',    env('DB_USER',    'proway'));
-define('DB_PASS',    env('DB_PASS'));
+define('DB_PASS',    env('DB_PASS',    '7a818f448ee3ce4bc0d0'));
 define('DB_CHARSET', env('DB_CHARSET', 'utf8mb4'));
 
 define('TOKEN_EXPIRY_CLIENT', (int) env('TOKEN_EXPIRY_CLIENT', '168'));
