@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/cors.php';
 require_once __DIR__ . '/../includes/response.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/mailer.php';
 require_once __DIR__ . '/../config/database.php';
 
 $method = requireMethods(['GET', 'PUT']);
@@ -70,13 +71,24 @@ if ($method === 'PUT') {
     $db->prepare("UPDATE projects SET $set WHERE id = ?")->execute($values);
 
     $updStmt = $db->prepare(
-        'SELECT p.*, c.name AS client_name, c.code AS client_code
+        'SELECT p.*, c.name AS client_name, c.code AS client_code, c.email AS client_email
          FROM projects p JOIN clients c ON c.id = p.client_id
          WHERE p.id = ?'
     );
     $updStmt->execute([$projectId]);
     $project = $updStmt->fetch();
     if (!$project) respondError('Proyecto no encontrado', 404);
+
+    // Notify client on status change
+    if (isset($update['status'])) {
+        sendNotification('project_status', [
+            'client_name'  => $project['client_name'],
+            'client_email' => $project['client_email'],
+            'project_code' => $project['project_code'],
+            'title'        => $project['title'],
+            'status'       => $update['status'],
+        ]);
+    }
 
     respond($project);
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/cors.php';
 require_once __DIR__ . '/../includes/response.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/mailer.php';
 require_once __DIR__ . '/../config/database.php';
 
 $method = requireMethods(['GET', 'PUT']);
@@ -66,13 +67,36 @@ if ($method === 'PUT') {
     $db->prepare("UPDATE invoices SET $set WHERE id = ?")->execute($values);
 
     $updStmt = $db->prepare(
-        'SELECT i.*, c.name AS client_name, c.code AS client_code
+        'SELECT i.*, c.name AS client_name, c.code AS client_code, c.email AS client_email
          FROM invoices i JOIN clients c ON c.id = i.client_id
          WHERE i.id = ?'
     );
     $updStmt->execute([$invoiceId]);
     $invoice = $updStmt->fetch();
     if (!$invoice) respondError('Factura no encontrada', 404);
+
+    // Notify on invoice sent
+    if (isset($update['status']) && $update['status'] === 'enviada') {
+        sendNotification('invoice_sent', [
+            'client_name'    => $invoice['client_name'],
+            'client_email'   => $invoice['client_email'],
+            'invoice_number' => $invoice['invoice_number'],
+            'total_cop'      => $invoice['total_cop'],
+            'due_date'       => $invoice['due_date'],
+        ]);
+    }
+
+    // Notify on payment marked as received
+    if (isset($update['status']) && $update['status'] === 'pagada') {
+        sendNotification('payment_received', [
+            'client_name'    => $invoice['client_name'],
+            'client_email'   => $invoice['client_email'],
+            'invoice_number' => $invoice['invoice_number'],
+            'total_cop'      => $invoice['total_cop'],
+            'payment_method' => $invoice['payment_method'] ?? 'Manual',
+            'reference'      => $invoice['payu_reference'] ?? '—',
+        ]);
+    }
 
     respond($invoice);
 }

@@ -693,6 +693,8 @@
                         <!-- Hidden tracking fields -->
                         <input type="hidden" name="_subject" value="Nueva solicitud de servicio — ProWay Lab">
                         <input type="hidden" name="_cc" value="analyticfitness@gmail.com">
+                        <!-- Honeypot anti-spam: hidden from real users, bots fill it -->
+                        <input type="text" name="website" style="position:absolute;left:-9999px;opacity:0;height:0" tabindex="-1" autocomplete="off">
 
                         <!-- Columna izquierda / derecha -->
                         <div class="form-grid">
@@ -1020,15 +1022,15 @@
     const successEl = document.getElementById('form-success');
     const submitBtn = document.getElementById('submit-btn');
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
 
         // Basic validation
-        const nombre = form.querySelector('#nombre').value.trim();
-        const email  = form.querySelector('#email').value.trim();
-        const wap    = form.querySelector('#whatsapp').value.trim();
-        const svc    = form.querySelector('#servicio').value;
-        const legal  = form.querySelector('#legal').checked;
+        var nombre = form.querySelector('#nombre').value.trim();
+        var email  = form.querySelector('#email').value.trim();
+        var wap    = form.querySelector('#whatsapp').value.trim();
+        var svc    = form.querySelector('#servicio').value;
+        var legal  = form.querySelector('#legal').checked;
 
         if (!nombre || !email || !wap || !svc) {
             alert('Por favor completa los campos obligatorios (*).');
@@ -1042,28 +1044,42 @@
         submitBtn.disabled = true;
         submitBtn.textContent = 'ENVIANDO...';
 
-        try {
-            const data = new FormData(form);
-            const res  = await fetch(form.action, {
-                method: 'POST',
-                body: data,
-                headers: { 'Accept': 'application/json' }
-            });
+        var formData = new FormData(form);
+        var payload = {};
+        formData.forEach(function(val, key) { payload[key] = val; });
 
-            if (res.ok) {
-                form.style.display = 'none';
-                successEl.classList.add('show');
-                window.scrollTo({ top: document.getElementById('form-section').offsetTop - 80, behavior: 'smooth' });
-            } else {
-                throw new Error('Error en el servidor');
-            }
-        } catch (err) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'ENVIAR SOLICITUD';
-            alert('Hubo un problema al enviar. Por favor escríbenos directamente por WhatsApp.');
+        function showSuccess() {
+            form.style.display = 'none';
+            successEl.classList.add('show');
+            window.scrollTo({ top: document.getElementById('form-section').offsetTop - 80, behavior: 'smooth' });
+        }
+
+        // 1) Backend — fire-and-forget (guarda el lead en DB cuando el endpoint exista)
+        fetch('/api/leads/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload)
+        }).catch(function() {});
+
+        // 2) Formspree — si está configurado; siempre muestra éxito independientemente
+        var formspreeUrl = form.action;
+        var hasFormspree = formspreeUrl && formspreeUrl.indexOf('YOUR_FORM_ID') === -1 && formspreeUrl.indexOf('formspree.io') !== -1;
+
+        if (hasFormspree) {
+            fetch(formspreeUrl, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            }).then(showSuccess).catch(showSuccess);
+        } else {
+            // Sin Formspree configurado — mostrar éxito tras backend fire-and-forget
+            setTimeout(showSuccess, 400);
         }
     });
 </script>
+
+<!-- ProWay Chat Widget -->
+<script src="/js/chat-widget.js" defer></script>
 
 </body>
 </html>

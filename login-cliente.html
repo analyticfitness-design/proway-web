@@ -245,8 +245,12 @@ body::before{
     </form>
 
     <div class="card-footer">
-      <a href="https://wa.me/573000000000" target="_blank" rel="noopener noreferrer" class="footer-link">
-        &iquest;Primer acceso? Contacta a tu coach &rarr;
+      <a href="reset-password.html" class="footer-link">
+        &iquest;Olvidaste tu contrase&ntilde;a?
+      </a>
+      <div class="footer-sep">&middot;</div>
+      <a href="https://wa.me/573124904720" target="_blank" rel="noopener noreferrer" class="footer-link">
+        &iquest;Primer acceso? Contacta a ProWay &rarr;
       </a>
       <div class="footer-sep">&middot;</div>
       <a href="index.html" class="footer-link">
@@ -285,7 +289,7 @@ body::before{
     eyeOff.style.display  = visible ? ''     : 'none';
   });
 
-  // Login submit
+  // Login submit — API real + fallback a credenciales hardcoded
   document.getElementById('loginForm').addEventListener('submit', function(e){
     e.preventDefault();
 
@@ -297,33 +301,52 @@ body::before{
 
     errEl.classList.remove('show');
     sucEl.classList.remove('show');
+    btn.classList.add('loading');
 
-    var matched = null;
-    for(var i=0; i<USERS.length; i++){
-      if(USERS[i].email===email && USERS[i].pass===pass){
-        matched = USERS[i];
-        break;
-      }
+    function grantClientAccess(name, plan, token) {
+      localStorage.setItem('pw_client_auth',  'true');
+      localStorage.setItem('pw_client_name',   name);
+      localStorage.setItem('pw_client_email',  email);
+      localStorage.setItem('pw_client_plan',   plan);
+      if (token) { localStorage.setItem('pw_token', token); }
+      sucEl.classList.add('show');
+      setTimeout(function(){
+        document.getElementById('page').classList.add('fade-out');
+        setTimeout(function(){ window.location.href='cliente.html'; }, 400);
+      }, 800);
     }
 
-    if(!matched){
+    function denyClientAccess() {
+      btn.classList.remove('loading');
       errEl.classList.add('show');
       document.getElementById('email').focus();
-      return;
     }
 
-    btn.classList.add('loading');
-    localStorage.setItem('pw_client_auth',  'true');
-    localStorage.setItem('pw_client_name',   matched.name);
-    localStorage.setItem('pw_client_email',  matched.email);
-    localStorage.setItem('pw_client_plan',   matched.plan);
-
-    sucEl.classList.add('show');
-
-    setTimeout(function(){
-      document.getElementById('page').classList.add('fade-out');
-      setTimeout(function(){ window.location.href='cliente.html'; }, 400);
-    }, 800);
+    fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ type: 'client', email: email, password: pass })
+    })
+    .then(function(r) { if (!r.ok) throw new Error('invalid'); return r.json(); })
+    .then(function(data) {
+      if (!data.token) throw new Error('no token');
+      var u = data.user || {};
+      grantClientAccess(u.name || email, u.plan_type || '', data.token);
+    })
+    .catch(function() {
+      // Fallback a USERS hardcoded
+      var matched = null;
+      for(var i=0; i<USERS.length; i++){
+        if(USERS[i].email===email && USERS[i].pass===pass){
+          matched = USERS[i]; break;
+        }
+      }
+      if(matched){
+        grantClientAccess(matched.name, matched.plan, null);
+      } else {
+        denyClientAccess();
+      }
+    });
   });
 })();
 </script>

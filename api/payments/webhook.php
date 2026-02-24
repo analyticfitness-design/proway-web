@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/cors.php';
 require_once __DIR__ . '/../includes/response.php';
+require_once __DIR__ . '/../includes/mailer.php';
 require_once __DIR__ . '/../config/database.php';
 
 requireMethod('POST');
@@ -62,6 +63,16 @@ if ($client) {
              payment_method = 'PayU', payu_reference = ?
              WHERE id = ?"
         )->execute([$reference, $invoice['id']]);
+
+        // Notify payment received
+        sendNotification('payment_received', [
+            'client_name'    => $client['name'],
+            'client_email'   => $client['email'],
+            'invoice_number' => $invoice['invoice_number'],
+            'total_cop'      => $invoice['total_cop'],
+            'payment_method' => 'PayU',
+            'reference'      => $reference,
+        ]);
     }
 
     // Activate client if they were a prospect

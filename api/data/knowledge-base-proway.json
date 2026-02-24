@@ -1,0 +1,104 @@
+[
+  {
+    "topic": "saludo",
+    "keywords": ["hola", "buenas", "buenos dias", "buenas tardes", "hey", "hi", "hello", "saludos"],
+    "answer": "Hola! Soy el asistente de ProWay Lab. Puedo ayudarte con informacion sobre nuestros servicios de produccion audiovisual para fitness. Que necesitas saber?",
+    "quick": ["Que servicios ofrecen?", "Cuanto cuesta?", "Como funciona?"]
+  },
+  {
+    "topic": "que_es_proway",
+    "keywords": ["que es proway", "proway", "quienes son", "que hacen", "de que trata", "a que se dedican"],
+    "answer": "ProWay Lab es una productora audiovisual especializada en fitness. Ayudamos a coaches y creadores de contenido fitness a construir marcas profesionales con produccion de video, branding, estrategia de contenido y gestion de redes.\n\nNo somos gym ni coaching — somos el equipo de produccion detras de las marcas fitness que crecen con metodologia.",
+    "quick": ["Que servicios ofrecen?", "Como funciona el metodo?", "Ver precios"]
+  },
+  {
+    "topic": "servicios",
+    "keywords": ["servicio", "servicios", "que ofrecen", "produccion", "que hacen", "video", "contenido", "oferta"],
+    "answer": "Nuestros servicios principales:\n\n// PRODUCCION DE VIDEO\nReels, shorts, videos largos, showreels\n\n// BRANDING\nLogos, paletas, identidad visual completa\n\n// ESTRATEGIA DE CONTENIDO\nCalendarios, guiones, analisis de tendencias\n\n// GESTION DE MARCA\nPaquetes mensuales con produccion continua\n\nTodo orientado exclusivamente al nicho fitness.",
+    "quick": ["Ver precios", "Como funciona?", "Ver portafolio"]
+  },
+  {
+    "topic": "precios",
+    "keywords": ["precio", "costo", "cuanto", "cuanto cuesta", "valor", "tarifa", "plan", "paquete", "inversion"],
+    "answer": "Tenemos 4 opciones:\n\n// VIDEO INDIVIDUAL\nProyecto unico — cotizacion segun alcance\n\n// STARTER — $1.200.000 COP/mes\n4 reels/mes + edicion + calendario basico\n\n// GROWTH — $1.600.000 COP/mes\n8 videos + branding + estrategia de contenido\n\n// AUTHORITY — $2.200.000 COP/mes\n12 videos + marca completa + gestion de redes + analytics\n\nQuieres cotizar un proyecto o conocer mas de algun paquete?",
+    "quick": ["Que incluye Starter?", "Que incluye Growth?", "Que incluye Authority?"]
+  },
+  {
+    "topic": "starter",
+    "keywords": ["starter", "basico", "1200", "1.200", "primer plan", "empezar"],
+    "answer": "STARTER — $1.200.000 COP/mes:\n\n>> 4 reels/shorts por mes\n>> Edicion profesional\n>> Calendario de publicacion basico\n>> 1 ronda de revisiones por video\n>> Entrega en formatos para IG + TikTok\n\nIdeal para coaches que estan empezando a profesionalizar su contenido.",
+    "quick": ["Que incluye Growth?", "Quiero cotizar", "Contactar"]
+  },
+  {
+    "topic": "growth",
+    "keywords": ["growth", "crecimiento", "1600", "1.600", "intermedio", "popular"],
+    "answer": "GROWTH — $1.600.000 COP/mes:\n\n>> 8 videos/mes (reels + contenido largo)\n>> Branding basico (paleta + tipografia)\n>> Estrategia de contenido mensual\n>> Guiones optimizados para engagement\n>> 2 rondas de revisiones\n>> Analisis de metricas basico\n\nEl mas elegido — combina produccion con estrategia.",
+    "quick": ["Que incluye Authority?", "Quiero cotizar", "Contactar"]
+  },
+  {
+    "topic": "authority",
+    "keywords": ["authority", "premium", "completo", "2200", "2.200", "todo incluido", "agencia"],
+    "answer": "AUTHORITY — $2.200.000 COP/mes:\n\n>> 12 videos/mes (todos los formatos)\n>> Identidad de marca completa\n>> Estrategia de contenido + calendario\n>> Gestion de redes sociales\n>> Analytics mensual con reporte\n>> Guiones + copywriting\n>> Soporte prioritario\n\nPara coaches que quieren posicionarse como autoridad en su nicho.",
+    "quick": ["Quiero cotizar", "Ver portafolio", "Contactar"]
+  },
+  {
+    "topic": "metodo",
+    "keywords": ["metodo", "proceso", "como funciona", "fases", "pasos", "metodologia", "como trabajan"],
+    "answer": "Trabajamos con el Metodo ProWay de 6 fases:\n\nF01 // DIAGNOSTICO\nAnalisis de tu marca actual y competencia\n\nF02 // ARQUITECTURA\nDiseno de identidad y estrategia\n\nF03 // PLANIFICACION\nCalendario, guiones, preproduccion\n\nF04 // PRODUCCION\nGrabacion y edicion profesional\n\nF05 // DISTRIBUCION\nPublicacion optimizada por plataforma\n\nF06 // MEDICION\nAnalisis de resultados y ajustes\n\nCada fase tiene entregables claros y tiempos definidos.",
+    "quick": ["Ver precios", "Quiero cotizar", "Ver portafolio"]
+  },
+  {
+    "topic": "portafolio",
+    "keywords": ["portafolio", "ejemplo", "trabajo", "muestra", "casos", "resultados", "antes despues"],
+    "answer": "Puedes ver nuestro portafolio completo en prowaylab.com/portafolio con ejemplos de:\n\n>> Produccion de reels para coaches\n>> Branding completo de marcas fitness\n>> Thumbnails y diseno grafico\n>> Casos de exito con metricas\n\nTambien tenemos un portafolio especializado de diseno grafico.",
+    "quick": ["Ver precios", "Contactar", "Como funciona?"]
+  },
+  {
+    "topic": "tiempos",
+    "keywords": ["tiempo", "cuanto tarda", "entrega", "plazo", "cuando", "rapido", "urgente", "deadline"],
+    "answer": "Tiempos de entrega tipicos:\n\n>> Video individual: 5-7 dias habiles\n>> Paquete mensual: entregas semanales\n>> Branding completo: 10-15 dias\n>> Proyecto de marca: 3-4 semanas\n\nTodo con fechas claras desde el inicio. Las revisiones tienen turnaround de 48h.",
+    "quick": ["Ver precios", "Quiero cotizar", "Contactar"]
+  },
+  {
+    "topic": "formatos",
+    "keywords": ["formato", "reel", "reels", "short", "shorts", "tiktok", "youtube", "instagram", "vertical", "horizontal"],
+    "answer": "Producimos para todas las plataformas:\n\n>> Instagram: Reels 9:16, carruseles, stories\n>> TikTok: Videos verticales optimizados\n>> YouTube: Shorts + videos largos 16:9\n>> LinkedIn: Contenido profesional\n\nCada video se exporta en los formatos y resoluciones correctas para cada plataforma.",
+    "quick": ["Ver precios", "Quiero cotizar", "Ver portafolio"]
+  },
+  {
+    "topic": "contacto",
+    "keywords": ["contacto", "contactar", "escribir", "whatsapp", "email", "telefono", "reunir", "reunion", "agendar", "llamar"],
+    "answer": "Puedes contactarnos por:\n\n>> WhatsApp: +57 312 490 4720\n>> Email: info@prowaylab.com\n>> Web: prowaylab.com/contacto\n\nLa primera reunion de briefing es gratuita. Te explicamos todo el proceso y hacemos una cotizacion personalizada.",
+    "quick": ["Abrir WhatsApp", "Ver precios", "Como funciona?"]
+  },
+  {
+    "topic": "equipo",
+    "keywords": ["equipo", "quien", "quienes", "fundador", "team", "experiencia", "certificado"],
+    "answer": "ProWay Lab es un equipo especializado en produccion audiovisual para el nicho fitness:\n\n>> Editores de video con experiencia en fitness content\n>> Disenadores graficos especializados en marcas deportivas\n>> Estrategas de contenido con conocimiento del mercado LATAM\n\nEntendemos el nicho porque vivimos en el. No somos una agencia generica.",
+    "quick": ["Ver portafolio", "Contactar", "Ver precios"]
+  },
+  {
+    "topic": "ubicacion",
+    "keywords": ["donde", "ubicacion", "ciudad", "pais", "colombia", "latam", "remoto", "presencial"],
+    "answer": "Operamos desde Colombia con alcance en todo LATAM.\n\nTodo nuestro flujo es 100% remoto — trabajamos con coaches en Colombia, Mexico, Argentina, Chile y toda la region.\n\nLas reuniones son por videollamada y los entregables se comparten en tu portal de cliente.",
+    "quick": ["Como funciona?", "Contactar", "Ver precios"]
+  },
+  {
+    "topic": "diferencial",
+    "keywords": ["por que", "diferencia", "diferencial", "mejor", "ventaja", "comparar", "vs", "otro", "agencia"],
+    "answer": "Por que elegir ProWay Lab?\n\n01 // ESPECIALIZACION\nSolo trabajamos con fitness. Conocemos el nicho, las tendencias y lo que funciona.\n\n02 // METODOLOGIA\nNo improvisamos. 6 fases estructuradas con entregables claros.\n\n03 // RESULTADOS\nMedimos todo. Analytics mensual para que veas el ROI de tu inversion.\n\n04 // LATAM\nEntendemos el mercado hispanohablante. Contenido que conecta con tu audiencia.",
+    "quick": ["Ver portafolio", "Ver precios", "Contactar"]
+  },
+  {
+    "topic": "despedida",
+    "keywords": ["gracias", "ok", "perfecto", "genial", "listo", "bye", "adios", "chao", "hasta luego", "entendido"],
+    "answer": "Con gusto! Si necesitas mas informacion o quieres agendar una reunion, estamos disponibles en WhatsApp. El primer briefing es gratis.",
+    "quick": ["Abrir WhatsApp", "Ver precios"]
+  },
+  {
+    "topic": "fallback",
+    "keywords": ["__fallback__"],
+    "answer": "No tengo esa informacion especifica, pero el equipo ProWay puede ayudarte directamente. Quieres que te conectemos?",
+    "quick": ["Abrir WhatsApp", "Ver servicios", "Ver precios"]
+  }
+]

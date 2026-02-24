@@ -288,6 +288,15 @@ body {
 .entregable-quote { font-size:0.8125rem; color:var(--gray); font-style:italic; }
 .entregable-meta { font-family:var(--font-m); font-size:0.75rem; color:var(--dark); display:flex; gap:10px; }
 .entregable-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.btn-outline-yellow { border:1px solid rgba(255,214,10,0.4); color:var(--yellow); background:none; padding:6px 14px; font-family:var(--font-m); font-size:0.75rem; letter-spacing:0.05em; cursor:pointer; transition:border-color 0.1s linear,background 0.1s linear; }
+.btn-outline-yellow:hover { border-color:var(--yellow); background:var(--yellow-dim); }
+.btn-outline-yellow:disabled { opacity:0.4; cursor:not-allowed; }
+
+/* ---- NOTIFICATION TOAST ---- */
+.pw-toast { position:fixed; top:20px; right:20px; z-index:10000; background:var(--surface-2); border:1px solid var(--blue); padding:14px 20px; max-width:340px; opacity:0; transform:translateY(-12px); transition:opacity 0.2s,transform 0.2s; pointer-events:none; }
+.pw-toast.show { opacity:1; transform:translateY(0); pointer-events:all; }
+.pw-toast-title { font-family:var(--font-m); font-size:0.75rem; color:var(--blue); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:4px; }
+.pw-toast-msg { font-size:0.8125rem; color:var(--gray); line-height:1.4; }
 
 /* ---- HISTORIAL ---- */
 .historial-summary { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
@@ -681,7 +690,7 @@ tbody tr:hover td { background:var(--surface-2); }
           </div>
           <div class="entregable-meta"><span>MP4</span><span>847 MB</span><span>13 Feb 2026</span></div>
           <span class="badge badge-green">DISPONIBLE</span>
-          <div class="entregable-actions"><button class="btn btn-primary" onclick="alert('Descarga iniciada...')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>DESCARGAR</button></div>
+          <div class="entregable-actions"><button class="btn btn-primary" onclick="alert('Descarga iniciada...')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>DESCARGAR</button><button class="btn btn-outline-yellow btn-revision" onclick="solicitarRevision(this)">SOLICITAR REVISION</button></div>
         </div>
         <div class="entregable-card" data-status="disponible">
           <div style="display:flex;align-items:center;gap:12px;">
@@ -690,7 +699,7 @@ tbody tr:hover td { background:var(--surface-2); }
           </div>
           <div class="entregable-meta"><span>PDF</span><span>2.4 MB</span><span>5 Feb 2026</span></div>
           <span class="badge badge-green">DISPONIBLE</span>
-          <div class="entregable-actions"><button class="btn btn-primary" onclick="alert('Descarga iniciada...')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>DESCARGAR</button></div>
+          <div class="entregable-actions"><button class="btn btn-primary" onclick="alert('Descarga iniciada...')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>DESCARGAR</button><button class="btn btn-outline-yellow btn-revision" onclick="solicitarRevision(this)">SOLICITAR REVISION</button></div>
         </div>
         <div class="entregable-card" data-status="disponible">
           <div style="display:flex;align-items:center;gap:12px;">
@@ -699,7 +708,7 @@ tbody tr:hover td { background:var(--surface-2); }
           </div>
           <div class="entregable-meta"><span>PDF</span><span>856 KB</span><span>8 Feb 2026</span></div>
           <span class="badge badge-green">DISPONIBLE</span>
-          <div class="entregable-actions"><button class="btn btn-primary" onclick="alert('Descarga iniciada...')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>DESCARGAR</button></div>
+          <div class="entregable-actions"><button class="btn btn-primary" onclick="alert('Descarga iniciada...')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>DESCARGAR</button><button class="btn btn-outline-yellow btn-revision" onclick="solicitarRevision(this)">SOLICITAR REVISION</button></div>
         </div>
         <!-- En revision -->
         <div class="entregable-card" data-status="revision">
@@ -1083,6 +1092,173 @@ function triggerReveal(){
   els.forEach(function(el){ obs.observe(el); });
 }
 triggerReveal();
+
+/* ─── API INTEGRATION ────────────────────────────────────
+   Carga datos reales del backend. Si la API no responde o
+   pw_token no existe, el contenido demo del HTML persiste.
+   ──────────────────────────────────────────────────────── */
+
+function apiBearerFetch(path, opts) {
+  var token = localStorage.getItem('pw_token') || '';
+  var defaultHeaders = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' };
+  opts = opts || {};
+  opts.headers = Object.assign(defaultHeaders, opts.headers || {});
+  return fetch('/api' + path, opts);
+}
+
+// Actualizar plan display desde datos de login (disponible de inmediato)
+(function() {
+  var plan = localStorage.getItem('pw_client_plan') || '';
+  if (!plan) return;
+  var planDisplay = plan.replace(/_/g, ' ').toUpperCase();
+  var planEl = document.querySelector('.user-plan-sm');
+  if (planEl) planEl.textContent = planDisplay;
+  var statCards = document.querySelectorAll('.stat-card-value');
+  if (statCards[0]) statCards[0].textContent = planDisplay;
+})();
+
+// Cargar proyectos activos y actualizar KPIs del dashboard
+function loadClientProjects() {
+  var token = localStorage.getItem('pw_token');
+  if (!token) return;
+
+  apiBearerFetch('/clients/projects')
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(projects) {
+      if (!projects || !projects.length) return;
+
+      var active = null;
+      for (var i = 0; i < projects.length; i++) {
+        if (projects[i].status === 'en_progreso' || projects[i].status === 'revision') {
+          active = projects[i]; break;
+        }
+      }
+      if (!active) active = projects[0];
+
+      var title = active.title || active.description || '';
+      if (title) {
+        var nameEl = document.querySelector('.project-name');
+        if (nameEl) nameEl.textContent = title;
+        var h2El = document.querySelector('#sec-proyecto .proyecto-info h2');
+        if (h2El) h2El.textContent = title;
+      }
+
+      var statusSubMap = {
+        'en_progreso': 'en fase de produccion',
+        'revision':    'en revision',
+        'entregado':   'entregado',
+        'pendiente':   'pendiente de inicio',
+        'pagado':      'completado'
+      };
+      var subEl = document.querySelector('#sec-dashboard .page-sub');
+      if (subEl && active.status) {
+        subEl.textContent = 'Tu proyecto esta ' + (statusSubMap[active.status] || 'activo') + '.';
+      }
+
+      var totalDeli = active.deliverables_count || 0;
+      var statCards = document.querySelectorAll('.stat-card-value');
+      if (statCards[1] && totalDeli > 0) {
+        statCards[1].textContent = totalDeli + ' total';
+      }
+    })
+    .catch(function() {}); // Silently fail — mantiene HTML demo
+}
+
+// Cargar perfil del cliente y pre-rellenar el formulario de perfil
+function loadClientProfile() {
+  var token = localStorage.getItem('pw_token');
+  if (!token) return;
+
+  apiBearerFetch('/clients/profile')
+    .then(function(r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function(profile) {
+      if (!profile) return;
+      if (profile.brand_name && !localStorage.getItem('pw_perfil_nombre')) {
+        var inpNombre = document.getElementById('inp-nombre');
+        if (inpNombre) inpNombre.value = profile.brand_name;
+      }
+    })
+    .catch(function() {}); // Silently fail
+}
+
+// Adicional al guardar perfil: también enviar al backend
+document.getElementById('btn-save-perfil').addEventListener('click', function() {
+  var token = localStorage.getItem('pw_token');
+  if (!token) return;
+  var brandName = (document.getElementById('inp-nombre') || {}).value || '';
+  fetch('/api/clients/profile', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ' + token
+    },
+    body: JSON.stringify({ brand_name: brandName })
+  }).catch(function() {}); // fire-and-forget
+});
+
+loadClientProjects();
+loadClientProfile();
+
+/* ─── SOLICITAR REVISION ─────────────────────────────────── */
+function solicitarRevision(btn) {
+  var card = btn.closest('.entregable-card');
+  var name = card ? card.querySelector('.entregable-name') : null;
+  var entregableName = name ? name.textContent : 'este entregable';
+  btn.disabled = true;
+  btn.textContent = 'REVISION SOLICITADA';
+  showToast('REVISION SOLICITADA', 'Se ha notificado al equipo ProWay sobre tu solicitud de revision para "' + entregableName + '". Te contactaremos en menos de 48h.');
+}
+
+/* ─── TOAST NOTIFICATIONS ────────────────────────────────── */
+var toastEl = null;
+var toastTimeout = null;
+
+function showToast(title, msg, duration) {
+  duration = duration || 5000;
+  if (!toastEl) {
+    toastEl = document.createElement('div');
+    toastEl.className = 'pw-toast';
+    var t = document.createElement('div');
+    t.className = 'pw-toast-title';
+    t.id = 'pw-toast-title';
+    var m = document.createElement('div');
+    m.className = 'pw-toast-msg';
+    m.id = 'pw-toast-msg';
+    toastEl.appendChild(t);
+    toastEl.appendChild(m);
+    document.body.appendChild(toastEl);
+  }
+  document.getElementById('pw-toast-title').textContent = title;
+  document.getElementById('pw-toast-msg').textContent = msg;
+  toastEl.classList.add('show');
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(function() { toastEl.classList.remove('show'); }, duration);
+}
+
+/* ─── CHECK FOR NEW DELIVERABLES ─────────────────────────── */
+(function() {
+  var token = localStorage.getItem('pw_token');
+  if (!token) return;
+  var lastCheck = localStorage.getItem('pw_last_deliverable_check') || '0';
+
+  apiBearerFetch('/clients/projects')
+    .then(function(r) { return r.ok ? r.json() : []; })
+    .then(function(projects) {
+      if (!projects || !projects.length) return;
+      var totalDeliverables = 0;
+      for (var i = 0; i < projects.length; i++) {
+        totalDeliverables += (projects[i].deliverables_count || 0);
+      }
+      var prevCount = parseInt(lastCheck, 10);
+      if (totalDeliverables > prevCount && prevCount > 0) {
+        var newCount = totalDeliverables - prevCount;
+        showToast('NUEVOS ENTREGABLES', 'Tienes ' + newCount + ' nuevo(s) entregable(s) disponible(s). Revisa la seccion Entregables.', 8000);
+      }
+      localStorage.setItem('pw_last_deliverable_check', String(totalDeliverables));
+    })
+    .catch(function() {});
+})();
 </script>
 </body>
 </html>

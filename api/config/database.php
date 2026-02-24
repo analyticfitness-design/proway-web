@@ -1,23 +1,37 @@
 <?php
 declare(strict_types=1);
 
-define('DB_HOST',    'proway-lab_mysql-db');
-define('DB_NAME',    'prowaylab_db');
-define('DB_USER',    'proway');
-define('DB_PASS',    '7a818f448ee3ce4bc0d0');
-define('DB_CHARSET', 'utf8mb4');
+// Helper: check $_ENV, getenv(), then fallback
+function env(string $key, string $fallback = ''): string {
+    return $_ENV[$key] ?? (getenv($key) ?: $fallback);
+}
 
-// Token expiry in hours
-define('TOKEN_EXPIRY_CLIENT', 168);  // 7 días
-define('TOKEN_EXPIRY_ADMIN',  8);    // 8 horas
+// Load .env file (local dev). In Docker/EasyPanel, env vars come from container config.
+$envFile = __DIR__ . '/../.env';
+if (file_exists($envFile)) {
+    $env = parse_ini_file($envFile);
+    if ($env !== false) {
+        foreach ($env as $key => $value) {
+            $_ENV[$key] = $value;
+        }
+    }
+}
 
-define('API_SECRET', 'prowaylab_secret_key_change_this');
+define('DB_HOST',    env('DB_HOST',    'proway-lab_mysql-db'));
+define('DB_NAME',    env('DB_NAME',    'prowaylab_db'));
+define('DB_USER',    env('DB_USER',    'proway'));
+define('DB_PASS',    env('DB_PASS'));
+define('DB_CHARSET', env('DB_CHARSET', 'utf8mb4'));
 
-// PayU Colombia (COP)
-define('PAYU_MERCHANT_ID',    'YOUR_MERCHANT_ID');
-define('PAYU_API_KEY',        'YOUR_API_KEY');
-define('PAYU_ACCOUNT_ID_COP', 'YOUR_ACCOUNT_ID');
-define('PAYU_TEST_MODE',      true);
+define('TOKEN_EXPIRY_CLIENT', (int) env('TOKEN_EXPIRY_CLIENT', '168'));
+define('TOKEN_EXPIRY_ADMIN',  (int) env('TOKEN_EXPIRY_ADMIN',  '8'));
+
+define('API_SECRET', env('API_SECRET', 'prowaylab_secret_key_change_this'));
+
+define('PAYU_MERCHANT_ID',    env('PAYU_MERCHANT_ID',    'YOUR_MERCHANT_ID'));
+define('PAYU_API_KEY',        env('PAYU_API_KEY',        'YOUR_API_KEY'));
+define('PAYU_ACCOUNT_ID_COP', env('PAYU_ACCOUNT_ID_COP', 'YOUR_ACCOUNT_ID'));
+define('PAYU_TEST_MODE',      env('PAYU_TEST_MODE', 'true') === 'true');
 
 function getDB(): PDO {
     static $pdo = null;

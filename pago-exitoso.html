@@ -347,6 +347,72 @@
     </div>
 </main>
 
+<script>
+/* Lee parámetros de PayU en la URL y ajusta el mensaje según el estado.
+   Usa solo textContent — sin innerHTML con datos del servidor. */
+(function() {
+    'use strict';
+    var params    = new URLSearchParams(window.location.search);
+    var txState   = params.get('transactionState') || params.get('lapTransactionState') || '';
+    var reference = params.get('referenceCode')    || params.get('reference_pol')    || '';
+
+    if (reference) sessionStorage.setItem('pw_last_payu_ref', reference);
+
+    // Estado DECLINED o ERROR
+    if (txState === '6' || txState === 'DECLINED' || txState === 'ERROR') {
+        var titleEl = document.querySelector('.success-title');
+        var textEl  = document.querySelector('.success-text');
+        var labelEl = document.querySelector('.success-label');
+
+        if (labelEl) labelEl.textContent = 'Pago rechazado';
+        if (titleEl) {
+            titleEl.textContent = '';
+            var word1 = document.createTextNode('PAGO ');
+            var word2 = document.createElement('span');
+            word2.style.color = 'var(--red, #E31E24)';
+            word2.textContent = 'RECHAZADO';
+            titleEl.appendChild(word1);
+            titleEl.appendChild(word2);
+        }
+        if (textEl) {
+            textEl.textContent = '';
+            var line1 = document.createTextNode('Tu pago no pudo ser procesado. ');
+            var strong = document.createElement('strong');
+            strong.textContent = 'Verifica los datos de tu tarjeta';
+            var line2 = document.createTextNode(' e intenta nuevamente. Si el problema persiste, escríbenos a contacto@prowaylab.com');
+            textEl.appendChild(line1);
+            textEl.appendChild(strong);
+            textEl.appendChild(line2);
+        }
+        // Cambiar ícono a X via DOM API
+        var inner = document.querySelector('.check-inner');
+        if (inner) {
+            while (inner.firstChild) inner.removeChild(inner.firstChild);
+            var xIcon = document.createElement('span');
+            xIcon.style.cssText = 'color:var(--red,#E31E24);font-size:28px;font-weight:700;font-family:sans-serif;';
+            xIcon.textContent = '\u2715';
+            inner.style.borderColor = 'var(--red,#E31E24)';
+            inner.style.background  = 'rgba(227,30,36,0.08)';
+            inner.appendChild(xIcon);
+        }
+        return;
+    }
+
+    // Estado PENDING
+    if (txState === '7' || txState === 'PENDING') {
+        var labelEl2 = document.querySelector('.success-label');
+        var textEl2  = document.querySelector('.success-text');
+        if (labelEl2) labelEl2.textContent = 'Pago pendiente';
+        if (textEl2) {
+            textEl2.textContent = '';
+            var msg = document.createTextNode('Tu pago está siendo procesado. Si elegiste Efecty o PSE puede tomar hasta 24 horas. Te contactaremos por WhatsApp cuando se confirme.');
+            textEl2.appendChild(msg);
+        }
+    }
+    // Estado APPROVED (4) — UI por defecto ya es correcta, no se modifica
+})();
+</script>
+
 <!-- Footer minimal -->
 <footer id="footer">
     <div class="ft-bot">

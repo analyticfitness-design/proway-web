@@ -911,30 +911,47 @@
         showError(false);
         setBtnLoading(true);
 
-        setTimeout(function() {
+        function grantAccess(token, username) {
+            localStorage.setItem('pw_admin_auth', token);
+            localStorage.setItem('pw_admin_user', username);
+            localStorage.setItem('pw_token', token);
+            if (keep) { localStorage.setItem('pw_admin_keep', '1'); }
+            submitBtn.disabled = true;
+            submitBtn.className = 'btn-login success';
+            setBtnText('ACCESO CONCEDIDO');
+            setTimeout(function() { window.location.href = 'admin.html'; }, 400);
+        }
+
+        function denyAccess() {
+            setBtnLoading(false);
+            showError(true);
+            loginForm.classList.add('shake');
+            setTimeout(function() { loginForm.classList.remove('shake'); }, 500);
+            passwordEl.value = '';
+            passwordEl.focus();
+        }
+
+        // API real + fallback a credenciales hardcoded
+        fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ type: 'admin', email: user, password: pass })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (!data.token) { throw new Error('no token'); }
+            var uname = (data.user && data.user.username) ? data.user.username : user;
+            grantAccess(data.token, uname);
+        })
+        .catch(function() {
+            // Fallback: credenciales hardcoded
             if (CREDENTIALS.hasOwnProperty(user) && CREDENTIALS[user] === pass) {
                 var token = btoa(user + ':' + Date.now());
-                localStorage.setItem('pw_admin_auth', token);
-                localStorage.setItem('pw_admin_user', user);
-                if (keep) { localStorage.setItem('pw_admin_keep', '1'); }
-
-                submitBtn.disabled = true;
-                submitBtn.className = 'btn-login success';
-                setBtnText('ACCESO CONCEDIDO');
-
-                setTimeout(function() {
-                    window.location.href = 'admin.html';
-                }, 400);
-
+                grantAccess(token, user);
             } else {
-                setBtnLoading(false);
-                showError(true);
-                loginForm.classList.add('shake');
-                setTimeout(function() { loginForm.classList.remove('shake'); }, 500);
-                passwordEl.value = '';
-                passwordEl.focus();
+                denyAccess();
             }
-        }, 220);
+        });
     });
 
     /* Tab from usuario to password */
