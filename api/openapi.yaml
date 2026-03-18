@@ -1,0 +1,500 @@
+openapi: 3.1.0
+info:
+  title: ProWay Lab API
+  version: 1.0.0
+  description: |
+    REST API for ProWay Lab — client portal, project management, invoices, and AI services.
+    All authenticated endpoints require a Bearer token (or httpOnly cookie `pw_access`).
+  contact:
+    name: ProWay Lab
+    url: https://prowaylab.com
+
+servers:
+  - url: /api/v1
+    description: Current environment
+
+tags:
+  - name: Auth
+    description: Authentication and session management
+  - name: Clients
+    description: Client profile management
+  - name: Projects
+    description: Project tracking and status updates
+  - name: Invoices
+    description: Invoice retrieval and payment processing
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Token obtained from POST /auth/login, or sent via httpOnly cookie pw_access.
+
+  schemas:
+    Meta:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-03-18T20:00:00Z"
+        version:
+          type: string
+          example: "1.0"
+
+    SuccessEnvelope:
+      type: object
+      required: [success, data, meta]
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+        meta:
+          $ref: '#/components/schemas/Meta'
+        error:
+          type: "null"
+
+    ErrorEnvelope:
+      type: object
+      required: [success, error, meta]
+      properties:
+        success:
+          type: boolean
+          example: false
+        data:
+          type: "null"
+        meta:
+          $ref: '#/components/schemas/Meta'
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              example: UNAUTHENTICATED
+            message:
+              type: string
+              example: Invalid or expired token
+
+    UserDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 42
+        email:
+          type: string
+          format: email
+          example: cliente@ejemplo.com
+        name:
+          type: string
+          example: "María García"
+        type:
+          type: string
+          enum: [client, admin]
+        plan_type:
+          type: string
+          example: mensual
+        code:
+          type: string
+          example: PW042
+
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        status:
+          type: string
+          enum: [pendiente, en_progreso, revision, completado]
+        client_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: integer
+        invoice_number:
+          type: string
+          example: INV-2026-042
+        amount:
+          type: number
+          format: float
+        status:
+          type: string
+          enum: [pendiente, enviada, pagada, vencida]
+        due_date:
+          type: string
+          format: date
+        client_id:
+          type: integer
+
+security:
+  - BearerAuth: []
+
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login (client or admin)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Required for client login
+                username:
+                  type: string
+                  description: Required for admin login
+                password:
+                  type: string
+                  format: password
+              required: [password]
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          token:
+                            type: string
+                          user:
+                            $ref: '#/components/schemas/UserDTO'
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout — revokes token and clears cookie
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          user:
+                            $ref: '#/components/schemas/UserDTO'
+        "401":
+          description: Unauthenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /clients/me:
+    get:
+      tags: [Clients]
+      summary: Get authenticated client's own profile
+      responses:
+        "200":
+          description: Client profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  /clients:
+    get:
+      tags: [Clients]
+      summary: List all active clients (admin only)
+      responses:
+        "200":
+          description: List of active clients
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+
+  /clients/{id}:
+    put:
+      tags: [Clients]
+      summary: Update a client profile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                telefono:
+                  type: string
+                objetivo:
+                  type: string
+                notas:
+                  type: string
+      responses:
+        "200":
+          description: Update result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        "403":
+          $ref: '#/components/responses/Forbidden'
+
+  /projects:
+    get:
+      tags: [Projects]
+      summary: List projects for the authenticated client
+      responses:
+        "200":
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          projects:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/Project'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  /projects/{id}:
+    get:
+      tags: [Projects]
+      summary: Get a single project by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Project detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        "404":
+          $ref: '#/components/responses/NotFound'
+
+  /projects/{id}/status:
+    patch:
+      tags: [Projects]
+      summary: Update project status (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [pendiente, en_progreso, revision, completado]
+      responses:
+        "200":
+          description: Status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        "422":
+          $ref: '#/components/responses/ValidationError'
+
+  /invoices:
+    get:
+      tags: [Invoices]
+      summary: List all invoices for the authenticated client
+      responses:
+        "200":
+          description: Invoice list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/SuccessEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          invoices:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/Invoice'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  /invoices/pending:
+    get:
+      tags: [Invoices]
+      summary: List only pending invoices for the authenticated client
+      responses:
+        "200":
+          description: Pending invoices
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        "401":
+          $ref: '#/components/responses/Unauthorized'
+
+  /invoices/{id}/pay:
+    post:
+      tags: [Invoices]
+      summary: Mark an invoice as paid
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [method]
+              properties:
+                method:
+                  type: string
+                  example: PayU
+                reference:
+                  type: string
+                  example: REF-20260318-001
+      responses:
+        "200":
+          description: Payment recorded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        "422":
+          $ref: '#/components/responses/ValidationError'
+
+  /invoices/{id}/status:
+    patch:
+      tags: [Invoices]
+      summary: Update invoice status (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [pendiente, enviada, pagada, vencida]
+      responses:
+        "200":
+          description: Status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessEnvelope'
+        "422":
+          $ref: '#/components/responses/ValidationError'
+
+components:
+  responses:
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    ValidationError:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'

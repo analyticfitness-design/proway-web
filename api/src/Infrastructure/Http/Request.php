@@ -54,13 +54,22 @@ class Request
         return $this->resolveAccessToken();
     }
 
-    public function method(): string
+    public function httpMethod(): string
     {
         return strtoupper($_SERVER['REQUEST_METHOD'] ?? 'GET');
     }
 
+    public function uri(): string
+    {
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        if (false !== $pos = strpos($uri, '?')) {
+            $uri = substr($uri, 0, $pos);
+        }
+        return rawurldecode($uri);
+    }
+
     public function isMethod(string $method): bool
     {
-        return $this->method() === strtoupper($method);
+        return $this->httpMethod() === strtoupper($method);
     }
 }

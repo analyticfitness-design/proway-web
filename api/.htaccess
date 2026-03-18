@@ -31,9 +31,10 @@ Options -Indexes
     # Block direct access to setup/
     RewriteRule ^setup/ - [F,L]
 
-    # If the requested file does not exist, return 404 (no directory listing)
+    # Route all non-file requests to the front controller (FastRoute)
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule . - [R=404,L]
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
 </IfModule>
 
 # Security headers
