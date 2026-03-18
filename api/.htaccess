@@ -35,6 +35,13 @@ Options -Indexes
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "DENY"
+    # X-XSS-Protection is deprecated (Chrome removed auditor 2019) but kept for older browsers.
+    # The real XSS protection is Content-Security-Policy below.
     Header always set X-XSS-Protection "1; mode=block"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    # HSTS: env=HTTPS ensures this header is only sent on HTTPS connections, not plain HTTP
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" env=HTTPS
+    Header always set Content-Security-Policy "default-src 'none'; frame-ancestors 'none'"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+    Header always set X-Permitted-Cross-Domain-Policies "none"
 </IfModule>
