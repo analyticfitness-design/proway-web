@@ -1,0 +1,50 @@
+{% extends "layouts/app.njk" %}
+
+{% block title %}Mi Portal — ProWay Lab{% endblock %}
+{% block page_title %}Mi Portal{% endblock %}
+
+{% block sidebar_nav %}
+<span class="sidebar__section-title">Cliente</span>
+<a href="/portal" class="sidebar__link sidebar__link--active">
+    <span class="sidebar__link-icon">▦</span> Dashboard
+</a>
+<a href="/proyectos" class="sidebar__link">
+    <span class="sidebar__link-icon">▶</span> Mis Proyectos
+</a>
+<a href="/facturas" class="sidebar__link">
+    <span class="sidebar__link-icon">◈</span> Facturas
+</a>
+<a href="/perfil" class="sidebar__link">
+    <span class="sidebar__link-icon">◉</span> Mi Perfil
+</a>
+{% endblock %}
+
+{% block sidebar_footer %}
+<button class="btn btn--ghost btn--full"
+        hx-post="/api/auth/logout.php"
+        hx-on::after-request="window.location.href='/login'">
+    ↩ Cerrar Sesión
+</button>
+{% endblock %}
+
+{% block content %}
+<!-- Stats row loaded via HTMX -->
+<div hx-get="/api/clients/stats.php" hx-trigger="load" hx-swap="innerHTML"
+     style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--pw-space-4); margin-bottom: var(--pw-space-8);">
+    <div class="stat-card">
+        <div class="stat-card__value" style="color:var(--pw-text-muted)">—</div>
+        <div class="stat-card__label">Cargando...</div>
+    </div>
+</div>
+
+<!-- Projects -->
+<div class="card">
+    <div class="card__header">
+        <h2 class="card__title">Proyectos Activos</h2>
+    </div>
+    <div hx-get="/api/projects/index.php" hx-trigger="load" hx-swap="innerHTML"
+         id="projects-list">
+        <p class="text-muted">Cargando proyectos...</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "layouts/app.njk" %}
+
+{% block title %}Admin Dashboard — ProWay Lab{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block sidebar_nav %}
+<span class="sidebar__section-title">Admin</span>
+<a href="/admin" class="sidebar__link sidebar__link--active">
+    <span class="sidebar__link-icon">▦</span> Dashboard
+</a>
+<a href="/admin/clientes" class="sidebar__link">
+    <span class="sidebar__link-icon">◉</span> Clientes
+</a>
+<a href="/admin/proyectos" class="sidebar__link">
+    <span class="sidebar__link-icon">▶</span> Proyectos
+</a>
+<a href="/admin/facturas" class="sidebar__link">
+    <span class="sidebar__link-icon">◈</span> Facturas
+</a>
+{% endblock %}
+
+{% block content %}
+<div id="admin-stats"
+     hx-get="/api/admin/stats.php" hx-trigger="load, refresh"
+     hx-swap="innerHTML"
+     style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--pw-space-4); margin-bottom: var(--pw-space-8);">
+    <div class="stat-card"><div class="stat-card__value text-muted">—</div><div class="stat-card__label">Cargando...</div></div>
+</div>
+
+<div class="card">
+    <div class="card__header">
+        <h2 class="card__title">Clientes Recientes</h2>
+        <a href="/admin/clientes" class="btn btn--ghost btn--sm">Ver todos →</a>
+    </div>
+    <div class="table-wrapper">
+        <table class="table" hx-get="/api/admin/clients.php?limit=10" hx-trigger="load">
+            <thead><tr><th>Cliente</th><th>Plan</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody id="clients-tbody">
+                <tr><td colspan="4" class="text-muted" style="padding:var(--pw-space-8); text-align:center;">Cargando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module" src="/dist/assets/admin.js"></script>
+{% endblock %}

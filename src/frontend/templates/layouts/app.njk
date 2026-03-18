@@ -1,0 +1,31 @@
+{% extends "layouts/base.njk" %}
+
+{% block body %}
+<div class="page flex">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar" x-data="{ open: false }" :class="{ 'is-open': open }">
+        <div class="sidebar__logo">
+            <img src="/images/logo-mark.png" alt="PW" width="28" height="28">
+            <span class="sidebar__logo-text">ProWay</span>
+        </div>
+
+        <nav class="sidebar__nav">
+            {% block sidebar_nav %}{% endblock %}
+        </nav>
+
+        <div class="sidebar__footer">
+            {% block sidebar_footer %}{% endblock %}
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-with-sidebar page-content" id="main-content">
+        <div class="page-header">
+            <h1 class="page-title">{% block page_title %}{% endblock %}</h1>
+            <div class="flex gap-4">{% block page_actions %}{% endblock %}</div>
+        </div>
+
+        {% block content %}{% endblock %}
+    </main>
+</div>
+{% endblock %}

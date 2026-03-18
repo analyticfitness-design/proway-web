@@ -1,0 +1,15 @@
+{% extends "layouts/base.njk" %}
+
+{% block body %}
+<div class="page" style="display:flex; align-items:center; justify-content:center; min-height:100vh; padding: var(--pw-space-6);">
+    <div style="width:100%; max-width:420px;">
+        <div style="text-align:center; margin-bottom: var(--pw-space-8);">
+            <a href="/">
+                <img src="/images/logo.png" alt="ProWay Lab" height="40" style="margin:0 auto;">
+            </a>
+        </div>
+
+        {% block content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

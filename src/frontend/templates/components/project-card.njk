@@ -1,0 +1,15 @@
+<div class="project-card"
+     hx-get="/api/projects/index.php?id={{ project.id }}"
+     hx-target="#project-detail"
+     hx-push-url="true">
+    <div class="flex items-center justify-between mb-4">
+        <span class="badge badge--{{ project.status }}">{{ project.status | title }}</span>
+        {% if project.deadline %}
+        <span class="text-sm text-muted">{{ project.deadline }}</span>
+        {% endif %}
+    </div>
+    <h3 class="project-card__title">{{ project.title }}</h3>
+    {% if project.description %}
+    <p class="project-card__meta mt-4">{{ project.description | truncate(100) }}</p>
+    {% endif %}
+</div>
