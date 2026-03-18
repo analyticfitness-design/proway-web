@@ -10,6 +10,11 @@
     Require all denied
 </FilesMatch>
 
+# Block setup entrypoint explicitly
+<Files "setup.php">
+    Require all denied
+</Files>
+
 # Disable directory listings
 Options -Indexes
 
