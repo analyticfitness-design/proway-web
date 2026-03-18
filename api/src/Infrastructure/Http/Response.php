@@ -37,6 +37,10 @@ class Response
 
     public static function buildPaginated(array $items, int $total, int $page, int $perPage): array
     {
+        if ($perPage <= 0) {
+            throw new \InvalidArgumentException('$perPage must be greater than zero.');
+        }
+
         return [
             'success' => true,
             'data'    => $items,

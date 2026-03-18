@@ -46,4 +46,10 @@ class ResponseTest extends TestCase
         $this->assertArrayHasKey('timestamp', $result['meta']);
         $this->assertSame('1.0', $result['meta']['version']);
     }
+
+    public function test_paginated_rejects_zero_per_page(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        Response::buildPaginated([], 10, 1, 0);
+    }
 }

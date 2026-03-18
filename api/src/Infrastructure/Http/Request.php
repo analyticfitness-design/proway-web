@@ -34,13 +34,24 @@ class Request
         return $this->headers[$name] ?? $this->headers[strtolower($name)] ?? $default;
     }
 
-    public function bearerToken(): ?string
+    /**
+     * Resolve the access token from the current request.
+     * Checks the Authorization header (Bearer) first, then falls back
+     * to the httpOnly cookie set by the login endpoint (SEC-001).
+     */
+    public function resolveAccessToken(): ?string
     {
         $auth = $this->header('Authorization', '');
         if (str_starts_with($auth, 'Bearer ')) {
             return substr($auth, 7);
         }
         return $_COOKIE['pw_access'] ?? null;
+    }
+
+    /** @deprecated Use resolveAccessToken() */
+    public function bearerToken(): ?string
+    {
+        return $this->resolveAccessToken();
     }
 
     public function method(): string
