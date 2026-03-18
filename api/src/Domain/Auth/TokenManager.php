@@ -38,10 +38,11 @@ class TokenManager
         return $row ?: null;
     }
 
-    /** Revoke a specific token */
+    /** Revoke a specific token. PDO ERRMODE_EXCEPTION ensures failures are not swallowed silently. */
     public function revoke(string $token): void
     {
         $hash = hash('sha256', $token);
-        $this->db->prepare('DELETE FROM auth_tokens WHERE token_hash = ?')->execute([$hash]);
+        $stmt = $this->db->prepare('DELETE FROM auth_tokens WHERE token_hash = ?');
+        $stmt->execute([$hash]);
     }
 }

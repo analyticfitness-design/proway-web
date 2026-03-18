@@ -43,7 +43,7 @@ class AuthService
     public function loginAdmin(string $username, string $password): ?array
     {
         $stmt = $this->db->prepare(
-            'SELECT id, name, email, password_hash FROM admin_users WHERE username = ?'
+            'SELECT id, name, email, password_hash FROM admin_users WHERE username = ? AND active = 1'
         );
         $stmt->execute([$username]);
         $row = $stmt->fetch();
