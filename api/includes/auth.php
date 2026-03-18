@@ -38,10 +38,17 @@ function revokeToken(string $token): void {
 }
 
 /**
- * Extract Bearer token from Authorization header.
+ * Extract token: cookie first (browser clients), then Authorization header (API/mobile clients).
  */
 function getBearerToken(): ?string {
-    $header = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+    // Try cookie first (browser clients) — httpOnly so JS cannot read or steal it
+    $token = $_COOKIE['pw_access'] ?? null;
+    if ($token) {
+        return $token;
+    }
+
+    // Fall back to Authorization header (API clients, mobile apps)
+    $header = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['HTTP_X_AUTHORIZATION'] ?? '';
     if (preg_match('/^Bearer\s+(\S+)$/i', $header, $m)) {
         return $m[1];
     }

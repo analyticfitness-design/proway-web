@@ -31,6 +31,16 @@ if ($userType === 'admin') {
 
     $token = createToken('admin', (int) $admin['id']);
 
+    // Set httpOnly cookie (browser clients use this instead of storing token in localStorage)
+    $isSecure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    setcookie('pw_access', $token, [
+        'expires'  => 0,
+        'path'     => '/api',
+        'secure'   => $isSecure,
+        'httponly' => true,
+        'samesite' => 'Strict',
+    ]);
+
     respond([
         'token'      => $token,
         'expires_in' => TOKEN_EXPIRY_ADMIN * 3600,
@@ -75,6 +85,16 @@ $pjStmt->execute([$client['id']]);
 $activeProjects = (int) $pjStmt->fetch()['cnt'];
 
 $token = createToken('client', (int) $client['id']);
+
+// Set httpOnly cookie (browser clients use this instead of storing token in localStorage)
+$isSecure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+setcookie('pw_access', $token, [
+    'expires'  => 0,
+    'path'     => '/api',
+    'secure'   => $isSecure,
+    'httponly' => true,
+    'samesite' => 'Strict',
+]);
 
 respond([
     'token'      => $token,

@@ -7,6 +7,15 @@ require_once __DIR__ . '/../includes/auth.php';
 
 requireMethod('POST');
 
+// Clear the httpOnly cookie
+setcookie('pw_access', '', [
+    'expires'  => time() - 3600,
+    'path'     => '/api',
+    'secure'   => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+    'httponly' => true,
+    'samesite' => 'Strict',
+]);
+
 $token = getBearerToken();
 if (!$token) {
     respondError('No token provided', 400);

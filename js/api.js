@@ -13,7 +13,9 @@ const PW_API = (() => {
     if (_token) headers['Authorization'] = 'Bearer ' + _token;
     try {
       const res = await fetch(BASE + path, {
-        method, headers,
+        method,
+        headers,
+        credentials: 'include', // sends httpOnly pw_access cookie automatically
         body: body ? JSON.stringify(body) : null
       });
       const json = await res.json();
