@@ -1,0 +1,8 @@
+/* ProWay Lab — Main CSS Entry Point */
+/* Design tokens and components are imported here */
+/* Will be populated in Task 3.2 */
+
+/* Placeholder: ensure build works */
+:root {
+    --pw-accent: #6c63ff;
+}

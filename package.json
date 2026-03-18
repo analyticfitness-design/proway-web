@@ -1,0 +1,20 @@
+{
+    "name": "prowaylab-frontend",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev":     "vite",
+        "build":   "vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "htmx.org": "^2.0",
+        "alpinejs": "^3.14"
+    },
+    "devDependencies": {
+        "vite": "^6.0",
+        "postcss": "^8.4",
+        "autoprefixer": "^10.4"
+    }
+}
