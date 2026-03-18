@@ -3,28 +3,20 @@ declare(strict_types=1);
 
 namespace ProWay\Domain\Project;
 
-use PDO;
-
 class ProjectService
 {
     private const VALID_STATUSES = ['pendiente', 'en_progreso', 'revision', 'completado'];
 
-    public function __construct(private readonly PDO $db) {}
+    public function __construct(private readonly ProjectRepository $repo) {}
 
     public function listForClient(int $clientId): array
     {
-        $stmt = $this->db->prepare(
-            'SELECT * FROM projects WHERE client_id = ? ORDER BY created_at DESC'
-        );
-        $stmt->execute([$clientId]);
-        return $stmt->fetchAll();
+        return $this->repo->findAllForClient($clientId);
     }
 
     public function get(int $id): ?array
     {
-        $stmt = $this->db->prepare('SELECT * FROM projects WHERE id = ?');
-        $stmt->execute([$id]);
-        return $stmt->fetch() ?: null;
+        return $this->repo->findById($id);
     }
 
     public function updateStatus(int $id, string $status): bool
@@ -33,10 +25,6 @@ class ProjectService
             throw new \InvalidArgumentException("Invalid project status: $status");
         }
 
-        $stmt = $this->db->prepare(
-            'UPDATE projects SET status = ?, updated_at = NOW() WHERE id = ?'
-        );
-        $stmt->execute([$status, $id]);
-        return $stmt->rowCount() > 0;
+        return $this->repo->updateStatus($id, $status);
     }
 }

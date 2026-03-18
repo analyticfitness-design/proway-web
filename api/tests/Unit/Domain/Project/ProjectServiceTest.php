@@ -5,19 +5,18 @@ namespace ProWay\Tests\Unit\Domain\Project;
 
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use ProWay\Domain\Project\ProjectRepository;
 use ProWay\Domain\Project\ProjectService;
-use PDO;
-use PDOStatement;
 
 class ProjectServiceTest extends TestCase
 {
-    private PDO&MockObject     $pdo;
-    private ProjectService     $service;
+    private ProjectRepository&MockObject $repo;
+    private ProjectService               $service;
 
     protected function setUp(): void
     {
-        $this->pdo     = $this->createMock(PDO::class);
-        $this->service = new ProjectService($this->pdo);
+        $this->repo    = $this->createMock(ProjectRepository::class);
+        $this->service = new ProjectService($this->repo);
     }
 
     public function test_update_status_throws_on_invalid_status(): void
@@ -28,27 +27,18 @@ class ProjectServiceTest extends TestCase
 
     public function test_update_status_accepts_valid_statuses(): void
     {
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('rowCount')->willReturn(1);
-        $this->pdo->method('prepare')->willReturn($stmt);
+        $this->repo->method('updateStatus')->willReturn(true);
 
         foreach (['pendiente', 'en_progreso', 'revision', 'completado'] as $status) {
-            $result = $this->service->updateStatus(1, $status);
-            $this->assertTrue($result);
+            $this->assertTrue($this->service->updateStatus(1, $status));
         }
     }
 
-    public function test_list_for_client_returns_array(): void
+    public function test_list_for_client_delegates_to_repo(): void
     {
         $rows = [['id' => 10, 'title' => 'Video A']];
-        $stmt = $this->createMock(PDOStatement::class);
-        $stmt->method('execute')->willReturn(true);
-        $stmt->method('fetchAll')->willReturn($rows);
-        $this->pdo->method('prepare')->willReturn($stmt);
+        $this->repo->method('findAllForClient')->with(1)->willReturn($rows);
 
-        $result = $this->service->listForClient(1);
-
-        $this->assertSame($rows, $result);
+        $this->assertSame($rows, $this->service->listForClient(1));
     }
 }
