@@ -15,20 +15,27 @@ function setCorsHeaders(): void {
     ];
 
     $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    $appEnv = $_ENV['APP_ENV'] ?? (getenv('APP_ENV') ?: 'production');
 
     if (in_array($origin, $allowed, true)) {
         header('Access-Control-Allow-Origin: ' . $origin);
+        header('Vary: Origin');
+    } elseif ($origin === '' && $appEnv !== 'production') {
+        // Direct server-to-server or curl without Origin header — allow in dev only
     } else {
-        // Allow all in dev / test mode
-        header('Access-Control-Allow-Origin: *');
+        error_log('[CORS] Rejected origin: ' . $origin);
+        http_response_code(403);
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['error' => 'Origin not allowed']);
+        exit;
     }
 
     header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+    header('Access-Control-Allow-Credentials: true');
     header('Access-Control-Max-Age: 86400');
     header('Content-Type: application/json; charset=utf-8');
 
-    // Handle preflight
     if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
         http_response_code(204);
         exit;
