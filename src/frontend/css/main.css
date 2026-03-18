@@ -1,8 +1,62 @@
-/* ProWay Lab — Main CSS Entry Point */
-/* Design tokens and components are imported here */
-/* Will be populated in Task 3.2 */
+/* ProWay Design System v1 — Main Entry Point */
+@import './tokens.css';
+@import './base.css';
+@import './components/card.css';
+@import './components/button.css';
+@import './components/form.css';
+@import './components/badge.css';
+@import './components/modal.css';
+@import './components/table.css';
+@import './components/sidebar.css';
+@import './components/toast.css';
 
-/* Placeholder: ensure build works */
-:root {
-    --pw-accent: #6c63ff;
+/* ── Layout Utilities ────────────────────────────── */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--pw-space-6);
+}
+
+.flex   { display: flex; }
+.grid   { display: grid; }
+.hidden { display: none; }
+
+.items-center  { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-4  { gap: var(--pw-space-4); }
+.gap-6  { gap: var(--pw-space-6); }
+
+.text-muted { color: var(--pw-text-muted); }
+.text-accent { color: var(--pw-accent); }
+.text-teal   { color: var(--pw-accent-2); }
+.text-sm     { font-size: var(--pw-text-sm); }
+
+.mt-4  { margin-top: var(--pw-space-4); }
+.mt-6  { margin-top: var(--pw-space-6); }
+.mb-4  { margin-bottom: var(--pw-space-4); }
+.mb-6  { margin-bottom: var(--pw-space-6); }
+
+/* Page wrapper */
+.page { min-height: 100vh; background: var(--pw-black); }
+.page-content {
+    padding: var(--pw-space-8);
+    max-width: 1400px;
+}
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--pw-space-8);
+}
+.page-title {
+    font-size: var(--pw-text-2xl);
+    font-weight: var(--pw-weight-bold);
+}
+
+/* Divider */
+.divider {
+    border: none;
+    border-top: 1px solid var(--pw-border);
+    margin: var(--pw-space-6) 0;
 }

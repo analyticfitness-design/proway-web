@@ -1,0 +1,80 @@
+/* ProWay DS — Button Component */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--pw-space-2);
+    padding: var(--pw-space-3) var(--pw-space-5);
+    font-size: var(--pw-text-sm);
+    font-weight: var(--pw-weight-medium);
+    border-radius: var(--pw-radius);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all var(--pw-transition);
+    white-space: nowrap;
+    text-decoration: none;
+    user-select: none;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn--primary {
+    background: var(--pw-accent);
+    color: #fff;
+    border-color: var(--pw-accent);
+}
+.btn--primary:hover:not(:disabled) {
+    background: #7d75ff;
+    box-shadow: var(--pw-glow);
+}
+
+.btn--secondary {
+    background: transparent;
+    color: var(--pw-text);
+    border-color: var(--pw-border-2);
+}
+.btn--secondary:hover:not(:disabled) {
+    border-color: var(--pw-accent);
+    color: var(--pw-accent);
+}
+
+.btn--ghost {
+    background: transparent;
+    color: var(--pw-text-muted);
+    border-color: transparent;
+}
+.btn--ghost:hover:not(:disabled) { color: var(--pw-text); background: var(--pw-surface); }
+
+.btn--teal {
+    background: var(--pw-accent-2);
+    color: #0a0a0f;
+    border-color: var(--pw-accent-2);
+    font-weight: var(--pw-weight-semi);
+}
+.btn--teal:hover:not(:disabled) {
+    background: #00e8bb;
+    box-shadow: var(--pw-glow-teal);
+}
+
+.btn--danger {
+    background: transparent;
+    color: var(--pw-danger);
+    border-color: var(--pw-danger);
+}
+.btn--danger:hover:not(:disabled) { background: rgba(255,71,87,0.1); }
+
+.btn--sm { padding: var(--pw-space-2) var(--pw-space-4); font-size: var(--pw-text-xs); }
+.btn--lg { padding: var(--pw-space-4) var(--pw-space-8); font-size: var(--pw-text-lg); }
+.btn--full { width: 100%; }
+
+/* HTMX loading state */
+.btn.htmx-request { opacity: 0.7; pointer-events: none; }
+.btn.htmx-request::after {
+    content: '';
+    width: 14px; height: 14px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: pw-spin 0.6s linear infinite;
+    margin-left: var(--pw-space-2);
+}
+@keyframes pw-spin { to { transform: rotate(360deg); } }

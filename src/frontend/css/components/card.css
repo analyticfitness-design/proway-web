@@ -1,0 +1,64 @@
+/* ProWay DS — Card Component */
+.card {
+    background: var(--pw-panel);
+    border: 1px solid var(--pw-border);
+    border-radius: var(--pw-radius-md);
+    padding: var(--pw-space-6);
+    box-shadow: var(--pw-shadow);
+    transition: border-color var(--pw-transition), box-shadow var(--pw-transition);
+}
+.card:hover { border-color: var(--pw-border-2); }
+.card--accent { border-top: 2px solid var(--pw-accent); }
+.card--teal   { border-top: 2px solid var(--pw-accent-2); }
+
+.card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--pw-space-4);
+}
+.card__title {
+    font-size: var(--pw-text-lg);
+    font-weight: var(--pw-weight-semi);
+}
+.card__body { font-size: var(--pw-text-base); color: var(--pw-text-muted); }
+
+/* Stat card */
+.stat-card {
+    background: var(--pw-panel);
+    border: 1px solid var(--pw-border);
+    border-radius: var(--pw-radius-md);
+    padding: var(--pw-space-5) var(--pw-space-6);
+}
+.stat-card__value {
+    font-size: var(--pw-text-3xl);
+    font-weight: var(--pw-weight-bold);
+    color: var(--pw-accent);
+    line-height: 1;
+}
+.stat-card__label {
+    font-size: var(--pw-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--pw-text-muted);
+    margin-top: var(--pw-space-2);
+}
+
+/* Project card */
+.project-card {
+    background: var(--pw-panel);
+    border: 1px solid var(--pw-border);
+    border-radius: var(--pw-radius-md);
+    padding: var(--pw-space-5);
+    cursor: pointer;
+    transition: border-color var(--pw-transition), transform var(--pw-transition);
+}
+.project-card:hover {
+    border-color: var(--pw-accent);
+    transform: translateY(-2px);
+}
+.project-card__title {
+    font-weight: var(--pw-weight-semi);
+    margin-bottom: var(--pw-space-2);
+}
+.project-card__meta { font-size: var(--pw-text-sm); color: var(--pw-text-muted); }

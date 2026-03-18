@@ -1,0 +1,75 @@
+/* ProWay Design System v1 — Base Reset + Typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap');
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: var(--pw-font-body);
+    font-size: var(--pw-text-base);
+    font-weight: var(--pw-weight-normal);
+    color: var(--pw-text);
+    background: var(--pw-black);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--pw-font-display);
+    font-weight: var(--pw-weight-bold);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--pw-text);
+}
+
+h1 { font-size: var(--pw-text-4xl); }
+h2 { font-size: var(--pw-text-3xl); }
+h3 { font-size: var(--pw-text-2xl); }
+h4 { font-size: var(--pw-text-xl); }
+h5 { font-size: var(--pw-text-lg); }
+h6 { font-size: var(--pw-text-base); }
+
+a {
+    color: var(--pw-accent);
+    text-decoration: none;
+    transition: color var(--pw-transition);
+}
+a:hover { color: #8b84ff; }
+
+code, pre {
+    font-family: var(--pw-font-mono);
+    font-size: 0.9em;
+}
+
+img, video { max-width: 100%; display: block; }
+
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+:focus-visible {
+    outline: 2px solid var(--pw-accent);
+    outline-offset: 2px;
+    border-radius: var(--pw-radius-sm);
+}
+
+::selection {
+    background: var(--pw-accent-dim);
+    color: var(--pw-text);
+}
+
+/* HTMX loading indicator */
+.htmx-indicator { opacity: 0; transition: opacity var(--pw-transition); }
+.htmx-request .htmx-indicator { opacity: 1; }
+.htmx-request.htmx-indicator { opacity: 1; }

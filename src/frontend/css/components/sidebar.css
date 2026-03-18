@@ -1,0 +1,85 @@
+/* ProWay DS — Sidebar Navigation */
+.sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background: var(--pw-dark);
+    border-right: 1px solid var(--pw-border);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0; left: 0;
+    z-index: 50;
+    transition: transform var(--pw-transition-lg);
+}
+
+.sidebar__logo {
+    padding: var(--pw-space-6);
+    border-bottom: 1px solid var(--pw-border);
+    display: flex;
+    align-items: center;
+    gap: var(--pw-space-3);
+}
+.sidebar__logo-text {
+    font-family: var(--pw-font-display);
+    font-size: var(--pw-text-lg);
+    font-weight: var(--pw-weight-bold);
+    background: linear-gradient(135deg, var(--pw-accent), var(--pw-accent-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.sidebar__nav {
+    flex: 1;
+    padding: var(--pw-space-4) var(--pw-space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--pw-space-1);
+    overflow-y: auto;
+}
+
+.sidebar__link {
+    display: flex;
+    align-items: center;
+    gap: var(--pw-space-3);
+    padding: var(--pw-space-3) var(--pw-space-4);
+    border-radius: var(--pw-radius);
+    color: var(--pw-text-muted);
+    font-size: var(--pw-text-sm);
+    font-weight: var(--pw-weight-medium);
+    transition: all var(--pw-transition);
+    cursor: pointer;
+    text-decoration: none;
+}
+.sidebar__link:hover {
+    background: var(--pw-accent-dim);
+    color: var(--pw-text);
+}
+.sidebar__link--active {
+    background: var(--pw-accent-dim);
+    color: var(--pw-accent);
+    font-weight: var(--pw-weight-semi);
+}
+.sidebar__link-icon { width: 18px; text-align: center; flex-shrink: 0; }
+
+.sidebar__section-title {
+    font-size: var(--pw-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--pw-text-dim);
+    padding: var(--pw-space-4) var(--pw-space-4) var(--pw-space-2);
+}
+
+.sidebar__footer {
+    padding: var(--pw-space-4);
+    border-top: 1px solid var(--pw-border);
+}
+
+/* Main content area offset */
+.main-with-sidebar { margin-left: 240px; }
+
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.is-open { transform: translateX(0); }
+    .main-with-sidebar { margin-left: 0; }
+}

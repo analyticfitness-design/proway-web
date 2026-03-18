@@ -1,0 +1,52 @@
+/* ProWay DS — Form Component */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--pw-space-2);
+    margin-bottom: var(--pw-space-5);
+}
+
+.form-label {
+    font-size: var(--pw-text-sm);
+    font-weight: var(--pw-weight-medium);
+    color: var(--pw-text-muted);
+    letter-spacing: 0.02em;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: var(--pw-space-3) var(--pw-space-4);
+    background: var(--pw-dark);
+    border: 1px solid var(--pw-border-2);
+    border-radius: var(--pw-radius);
+    color: var(--pw-text);
+    font-size: var(--pw-text-base);
+    transition: border-color var(--pw-transition), box-shadow var(--pw-transition);
+}
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--pw-accent);
+    box-shadow: 0 0 0 3px var(--pw-accent-dim);
+}
+.form-input::placeholder { color: var(--pw-text-dim); }
+
+.form-textarea { resize: vertical; min-height: 100px; }
+
+.form-input--error,
+.form-select--error { border-color: var(--pw-danger); }
+.form-input--error:focus,
+.form-select--error:focus { box-shadow: 0 0 0 3px rgba(255,71,87,0.15); }
+
+.form-error {
+    font-size: var(--pw-text-xs);
+    color: var(--pw-danger);
+}
+
+.form-hint {
+    font-size: var(--pw-text-xs);
+    color: var(--pw-text-dim);
+}
