@@ -53,8 +53,16 @@ class ClientController
             Response::error('FORBIDDEN', 'Forbidden', 403);
         }
 
-        $allowed = ['nombre', 'telefono', 'objetivo', 'notas'];
-        $data    = array_intersect_key($request->getBody(), array_flip($allowed));
+        // Map frontend field names to DB column names
+        $body = $request->getBody();
+        $data = [];
+        if (isset($body['nombre']))   $data['name']  = $body['nombre'];
+        if (isset($body['telefono'])) $data['phone'] = $body['telefono'];
+        if (isset($body['notas']))    $data['notes'] = $body['notas'];
+        // 'objetivo' is stored in notes when present and notes is not explicitly set
+        if (isset($body['objetivo']) && !isset($body['notas'])) {
+            $data['notes'] = $body['objetivo'];
+        }
 
         if (empty($data)) {
             Response::error('VALIDATION', 'No valid fields provided', 422);

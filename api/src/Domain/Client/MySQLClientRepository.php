@@ -50,7 +50,7 @@ class MySQLClientRepository implements ClientRepository
         $values = array_values($fields);
         $values[] = $id;
 
-        $stmt = $this->db->prepare("UPDATE clients SET $set, updated_at = NOW() WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE clients SET $set WHERE id = ?");
         $stmt->execute($values);
         return $stmt->rowCount() > 0;
     }

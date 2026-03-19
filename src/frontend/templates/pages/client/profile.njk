@@ -261,10 +261,10 @@ function profileForm() {
                 const data = await res.json();
                 if (data.client) {
                     this.clientId      = data.client.id;
-                    this.form.nombre   = data.client.nombre   || '';
-                    this.form.telefono = data.client.telefono || '';
+                    this.form.nombre   = data.client.name   || data.client.nombre   || '';
+                    this.form.telefono = data.client.phone  || data.client.telefono || '';
                     this.form.objetivo = data.client.objetivo || '';
-                    this.form.notas    = data.client.notas    || '';
+                    this.form.notas    = data.client.notes  || data.client.notas    || '';
                     this._original     = { ...this.form };
                 }
             } catch (e) {
