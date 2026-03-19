@@ -34,6 +34,36 @@ class MySQLProjectRepository implements ProjectRepository
         return $stmt->rowCount() > 0;
     }
 
+    public function create(array $data): int
+    {
+        $year  = date('Y');
+        $count = (int) $this->db->query(
+            "SELECT COUNT(*) FROM projects WHERE project_code LIKE 'PW-{$year}-%'"
+        )->fetchColumn();
+        $code  = sprintf('PW-%s-%03d', $year, $count + 1);
+
+        $stmt = $this->db->prepare(
+            'INSERT INTO projects
+                (client_id, project_code, service_type, title, description, price_cop, status, start_date, deadline, notes)
+             VALUES
+                (:client_id, :project_code, :service_type, :title, :description, :price_cop, :status, :start_date, :deadline, :notes)'
+        );
+        $stmt->execute([
+            'client_id'    => $data['client_id'],
+            'project_code' => $code,
+            'service_type' => $data['service_type'],
+            'title'        => $data['title']       ?? null,
+            'description'  => $data['description'] ?? null,
+            'price_cop'    => $data['price_cop'],
+            'status'       => $data['status']      ?? 'cotizacion',
+            'start_date'   => $data['start_date']  ?? null,
+            'deadline'     => $data['deadline']    ?? null,
+            'notes'        => $data['notes']       ?? null,
+        ]);
+
+        return (int) $this->db->lastInsertId();
+    }
+
     public function findAll(): array
     {
         $stmt = $this->db->query(

@@ -9,6 +9,9 @@ interface ProjectRepository
     public function findById(int $id): ?array;
     public function updateStatus(int $id, string $status): bool;
 
+    /** Create a new project and return its new ID. */
+    public function create(array $data): int;
+
     // ── Admin-scope queries ────────────────────────────────────────────────────
     /** All projects across all clients with client info joined, newest first. */
     public function findAll(): array;

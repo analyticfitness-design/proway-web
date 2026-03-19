@@ -50,8 +50,8 @@ if (empty($projects)) {
                 $status     = $proj['status'] ?? 'pendiente';
                 $statusInfo = PROJECT_STATUS_MAP[$status] ?? ['class' => 'badge--neutral', 'label' => ucfirst($status)];
                 $client     = htmlspecialchars($proj['client_name'] ?? $proj['client_code'] ?? '—', ENT_QUOTES, 'UTF-8');
-                $name       = htmlspecialchars($proj['name']        ?? '—', ENT_QUOTES, 'UTF-8');
-                $type       = htmlspecialchars(ucfirst($proj['type'] ?? '—'), ENT_QUOTES, 'UTF-8');
+                $name       = htmlspecialchars($proj['title']        ?? $proj['name'] ?? '—', ENT_QUOTES, 'UTF-8');
+                $type       = htmlspecialchars(ucfirst($proj['service_type'] ?? $proj['type'] ?? '—'), ENT_QUOTES, 'UTF-8');
                 $date       = isset($proj['created_at']) ? date('d/m/Y', strtotime($proj['created_at'])) : '—';
             ?>
             <tr>

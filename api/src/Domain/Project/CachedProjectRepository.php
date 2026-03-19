@@ -57,6 +57,11 @@ class CachedProjectRepository implements ProjectRepository
         return $result;
     }
 
+    public function create(array $data): int
+    {
+        return $this->inner->create($data);
+    }
+
     // Admin queries bypass cache — always fresh data.
 
     public function findAll(): array

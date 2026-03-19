@@ -51,6 +51,34 @@ class AdminController
         Response::success(['id' => $id], 201);
     }
 
+    // ── POST /api/v1/admin/projects ───────────────────────────────────────────
+    public function createProject(Request $request, array $vars): never
+    {
+        $this->requireAdmin($request);
+
+        $clientId    = (int) $request->input('client_id', 0);
+        $serviceType = (string) $request->input('service_type', '');
+        $priceCop    = (float) $request->input('price_cop', 0);
+
+        if ($clientId === 0 || $serviceType === '' || $priceCop <= 0) {
+            Response::error('VALIDATION', 'client_id, service_type y price_cop son requeridos', 422);
+        }
+
+        $id = $this->projects->create([
+            'client_id'    => $clientId,
+            'service_type' => $serviceType,
+            'title'        => $request->input('title')       ?: null,
+            'description'  => $request->input('description') ?: null,
+            'price_cop'    => $priceCop,
+            'status'       => $request->input('status', 'cotizacion'),
+            'start_date'   => $request->input('start_date')  ?: null,
+            'deadline'     => $request->input('deadline')    ?: null,
+            'notes'        => $request->input('notes')       ?: null,
+        ]);
+
+        Response::success(['id' => $id], 201);
+    }
+
     // ── GET /api/v1/admin/stats ────────────────────────────────────────────────
     public function stats(Request $request, array $vars): never
     {

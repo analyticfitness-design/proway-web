@@ -85,6 +85,13 @@
     </svg>
     Actualizar
 </button>
+
+<button class="btn btn--primary btn--sm" @click="$dispatch('open-create-project')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+    Nuevo Proyecto
+</button>
 {% endblock %}
 
 {# ── Main content ────────────────────────────────────────── #}
@@ -147,8 +154,167 @@ document.body.addEventListener('htmx:responseError', function(evt) {
     }
 });
 </script>
+
+{# ── Modal: Nuevo Proyecto ────────────────────────────────── #}
+<div x-data="createProjectForm()"
+     @open-create-project.window="open()"
+     x-show="isOpen"
+     x-cloak
+     style="position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.6);"
+     @keydown.escape.window="close()">
+
+    <div class="card" style="width:100%;max-width:520px;max-height:90vh;overflow-y:auto;margin:var(--pw-space-4);" @click.stop>
+        <div class="card__header">
+            <h2 style="margin:0;font-size:1rem;font-weight:600;">Nuevo Proyecto</h2>
+            <button class="btn btn--ghost btn--sm" @click="close()" aria-label="Cerrar"
+                    style="padding:4px;line-height:1;">✕</button>
+        </div>
+
+        <form @submit.prevent="submit()" style="padding:var(--pw-space-4);display:flex;flex-direction:column;gap:var(--pw-space-3);">
+
+            <div class="form-group">
+                <label class="form-label">Cliente *</label>
+                <select class="form-input" x-model="form.client_id" required>
+                    <option value="">— seleccionar —</option>
+                    <template x-for="c in clients" :key="c.id">
+                        <option :value="c.id" x-text="c.nombre || c.name"></option>
+                    </template>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Tipo de servicio *</label>
+                <select class="form-input" x-model="form.service_type" required>
+                    <option value="">— seleccionar —</option>
+                    <option value="Video Elite">Video Elite</option>
+                    <option value="Paquete Growth">Paquete Growth</option>
+                    <option value="Paquete Starter">Paquete Starter</option>
+                    <option value="Reels Básico">Reels Básico</option>
+                    <option value="Identidad de Marca">Identidad de Marca</option>
+                    <option value="Consultoría">Consultoría</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Título del proyecto</label>
+                <input class="form-input" type="text" x-model="form.title" placeholder="Ej: Reels Mayo 2026">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Precio (COP) *</label>
+                <input class="form-input" type="number" min="0" step="1000" x-model="form.price_cop" required placeholder="0">
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--pw-space-3);">
+                <div class="form-group">
+                    <label class="form-label">Inicio</label>
+                    <input class="form-input" type="date" x-model="form.start_date">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Entrega</label>
+                    <input class="form-input" type="date" x-model="form.deadline">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Estado inicial</label>
+                <select class="form-input" x-model="form.status">
+                    <option value="cotizacion">Cotización</option>
+                    <option value="confirmado">Confirmado</option>
+                    <option value="en_produccion">En Producción</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Descripción / notas</label>
+                <textarea class="form-input" rows="3" x-model="form.notes" placeholder="Detalles del proyecto..."></textarea>
+            </div>
+
+            <p x-show="error" x-text="error" class="text-error" style="margin:0;font-size:.85rem;"></p>
+
+            <div style="display:flex;gap:var(--pw-space-2);justify-content:flex-end;padding-top:var(--pw-space-2);">
+                <button type="button" class="btn btn--ghost btn--sm" @click="close()">Cancelar</button>
+                <button type="submit" class="btn btn--primary btn--sm" :disabled="loading">
+                    <span x-show="loading">Guardando…</span>
+                    <span x-show="!loading">Crear Proyecto</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block scripts %}
 <script type="module" src="/dist/assets/admin.js"></script>
+<script>
+function createProjectForm() {
+    return {
+        isOpen:  false,
+        loading: false,
+        error:   '',
+        clients: [],
+        form: {
+            client_id:    '',
+            service_type: '',
+            title:        '',
+            price_cop:    '',
+            start_date:   '',
+            deadline:     '',
+            status:       'cotizacion',
+            notes:        '',
+        },
+
+        async open() {
+            this.isOpen = true;
+            if (this.clients.length === 0) await this.loadClients();
+        },
+
+        close() {
+            this.isOpen  = false;
+            this.error   = '';
+            this.loading = false;
+            Object.keys(this.form).forEach(k => {
+                this.form[k] = k === 'status' ? 'cotizacion' : '';
+            });
+        },
+
+        async loadClients() {
+            try {
+                const res  = await fetch('/api/v1/clients', { credentials: 'include' });
+                const json = await res.json();
+                this.clients = json.data ?? [];
+            } catch {
+                this.clients = [];
+            }
+        },
+
+        async submit() {
+            this.error   = '';
+            this.loading = true;
+            try {
+                const res  = await fetch('/api/v1/admin/projects', {
+                    method:      'POST',
+                    credentials: 'include',
+                    headers:     { 'Content-Type': 'application/json' },
+                    body:        JSON.stringify(this.form),
+                });
+                const json = await res.json();
+                if (!res.ok) {
+                    this.error = json.message ?? 'Error al crear el proyecto';
+                    return;
+                }
+                this.close();
+                // Refresh the projects table
+                htmx.trigger('#admin-projects-container', 'load');
+            } catch {
+                this.error = 'Error de conexión. Intenta de nuevo.';
+            } finally {
+                this.loading = false;
+            }
+        },
+    };
+}
+</script>
 {% endblock %}

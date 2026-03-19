@@ -108,6 +108,7 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     // Admin
     $r->addRoute('GET',  '/api/v1/admin/stats',    [$adminCtrl, 'stats']);
     $r->addRoute('POST', '/api/v1/admin/invoices', [$adminCtrl, 'createInvoice']);
+    $r->addRoute('POST', '/api/v1/admin/projects', [$adminCtrl, 'createProject']);
 });
 
 $request  = new Request();

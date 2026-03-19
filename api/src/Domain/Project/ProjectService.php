@@ -28,6 +28,15 @@ class ProjectService
         return $this->repo->updateStatus($id, $status);
     }
 
+    public function create(array $data): int
+    {
+        if (empty($data['client_id']) || empty($data['service_type']) || !isset($data['price_cop'])) {
+            throw new \InvalidArgumentException('client_id, service_type and price_cop are required');
+        }
+
+        return $this->repo->create($data);
+    }
+
     // ── Admin-scope methods ────────────────────────────────────────────────────
 
     public function listAll(): array
