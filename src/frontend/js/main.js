@@ -68,6 +68,61 @@ Alpine.data('profileForm', () => ({
 
 Alpine.start()
 
+// ── Wompi checkout ─────────────────────────────────────────────────────────────
+// Global function called via onclick from HTMX-loaded invoice table rows.
+// Uses textContent and safe DOM methods — no innerHTML with dynamic content.
+window.wompiPay = async function wompiPay(invoiceId, btn) {
+    const originalText = btn ? btn.textContent.trim() : ''
+    if (btn) {
+        btn.disabled = true
+        btn.textContent = 'Redirigiendo\u2026'
+    }
+
+    try {
+        const res = await fetch('/api/v1/payments/checkout', {
+            method: 'POST',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ invoice_id: invoiceId }),
+        })
+
+        if (res.status === 401) { window.location.href = '/login'; return }
+
+        const body = await res.json()
+
+        if (!body.success) {
+            _wompiShowError(body.error?.message ?? 'Error al iniciar el pago')
+            if (btn) { btn.disabled = false; btn.textContent = originalText }
+            return
+        }
+
+        const d = body.data.checkout
+        const params = new URLSearchParams({
+            'public-key':          d.public_key,
+            'currency':            d.currency ?? 'COP',
+            'amount-in-cents':     String(d.amount_in_cents),
+            'reference':           d.reference,
+            'customer-email':      d.customer_email ?? '',
+            'signature:integrity': d.signature.integrity,
+        })
+
+        window.location.href = 'https://checkout.wompi.co/p/?' + params.toString()
+    } catch (_) {
+        _wompiShowError('Error de conexi\u00f3n. Intenta de nuevo.')
+        if (btn) { btn.disabled = false; btn.textContent = originalText }
+    }
+}
+
+function _wompiShowError(msg) {
+    const tc = document.getElementById('toast-container')
+    if (!tc) return
+    const toast = document.createElement('div')
+    toast.className = 'toast toast--error'
+    toast.textContent = msg
+    tc.replaceChildren(toast)
+    setTimeout(() => { tc.replaceChildren() }, 6000)
+}
+
 // ── HTMX global config ────────────────────────────────────────────────────────
 document.addEventListener('htmx:configRequest', (evt) => {
     evt.detail.headers['X-Requested-With'] = 'XMLHttpRequest'
@@ -75,9 +130,5 @@ document.addEventListener('htmx:configRequest', (evt) => {
 
 document.addEventListener('htmx:responseError', (evt) => {
     if (evt.detail.xhr.status === 401) { window.location.href = '/login'; return }
-    const tc = document.getElementById('toast-container')
-    if (tc) {
-        tc.innerHTML = '<div class="toast toast--error">Error de conexión. Intenta de nuevo.</div>'
-        setTimeout(() => { tc.innerHTML = '' }, 5000)
-    }
+    _wompiShowError('Error de conexi\u00f3n. Intenta de nuevo.')
 })

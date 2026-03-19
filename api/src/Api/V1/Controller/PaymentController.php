@@ -52,7 +52,7 @@ class PaymentController
 
         $client    = $this->clients->getById($user->id);
         $reference = 'PW-' . $invoiceId . '-' . time();
-        $amountCOP = (int) $invoice['amount'];
+        $amountCOP = (int) ($invoice['total_cop'] ?? $invoice['amount_cop'] ?? 0);
 
         $checkout = $this->wompi->buildCheckoutData(
             $reference,
