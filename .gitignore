@@ -12,3 +12,9 @@ desktop.ini
 .idea/
 node_modules/
 dist/
+api/vendor/
+api/.phpunit.result.cache
+playwright-report/
+test-results/
+*.png
+docs/

@@ -11,12 +11,16 @@ use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
 use ProWay\Domain\Auth\TokenManager;
+use ProWay\Domain\Client\CachedClientRepository;
 use ProWay\Domain\Client\ClientService;
 use ProWay\Domain\Client\MySQLClientRepository;
+use ProWay\Domain\Invoice\CachedInvoiceRepository;
 use ProWay\Domain\Invoice\InvoiceService;
 use ProWay\Domain\Invoice\MySQLInvoiceRepository;
+use ProWay\Domain\Project\CachedProjectRepository;
 use ProWay\Domain\Project\MySQLProjectRepository;
 use ProWay\Domain\Project\ProjectService;
+use ProWay\Infrastructure\Cache\CacheFactory;
 use ProWay\Infrastructure\Database\Connection;
 use ProWay\Infrastructure\Http\Request;
 use ProWay\Infrastructure\Http\Response;
@@ -48,9 +52,11 @@ $tokens = new TokenManager($pdo);
 $auth   = new AuthService($pdo, $tokens);
 $mw     = new AuthMiddleware($auth);
 
-$clientService  = new ClientService(new MySQLClientRepository($pdo));
-$projectService = new ProjectService(new MySQLProjectRepository($pdo));
-$invoiceService = new InvoiceService(new MySQLInvoiceRepository($pdo));
+$cache = CacheFactory::create();
+
+$clientService  = new ClientService(new CachedClientRepository(new MySQLClientRepository($pdo), $cache));
+$projectService = new ProjectService(new CachedProjectRepository(new MySQLProjectRepository($pdo), $cache));
+$invoiceService = new InvoiceService(new CachedInvoiceRepository(new MySQLInvoiceRepository($pdo), $cache));
 
 $authCtrl    = new AuthController($auth, $mw);
 $clientCtrl  = new ClientController($clientService, $mw);
