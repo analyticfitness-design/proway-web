@@ -1,8 +1,40 @@
+# Git
 .git
 .gitignore
-test/
-logs/
-*.md
+
+# Environment files (never in image)
 .env
 *.env
 api/.env
+
+# Development files
+test/
+tests/
+*.log
+node_modules/
+dist/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# PHP dev dependencies (installed by Composer stage)
+api/vendor/
+api/.phpunit.result.cache
+
+# Playwright
+playwright-report/
+test-results/
+
+# Docs
+docs/
+
+# Docker compose files (not needed in image)
+docker-compose.yml
+docker-compose.prod.yml
+
+# CI
+.github/

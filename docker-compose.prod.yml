@@ -1,0 +1,79 @@
+version: '3.9'
+
+# ProWay Lab — Production stack (EasyPanel / VPS)
+#
+# Uso en servidor:
+#   docker compose -f docker-compose.prod.yml up -d
+#
+# Variables de entorno requeridas (en .env del servidor o EasyPanel):
+#   MYSQL_ROOT_PASSWORD, DB_PASS, API_SECRET
+#   WOMPI_PUBLIC_KEY, WOMPI_PRIVATE_KEY, WOMPI_EVENTS_KEY, WOMPI_INTEGRITY_KEY
+#   MAILJET_API_KEY, MAILJET_SECRET_KEY
+
+services:
+
+  app:
+    image: ghcr.io/analyticfitness-design/proway-web:latest
+    container_name: proway-app
+    ports:
+      - "80:80"
+    environment:
+      APP_ENV: production
+      DB_HOST: mysql
+      DB_NAME: prowaylab_db
+      DB_USER: proway
+      DB_PASS: ${DB_PASS}
+      DB_CHARSET: utf8mb4
+      TOKEN_EXPIRY_CLIENT: 168
+      TOKEN_EXPIRY_ADMIN: 8
+      API_SECRET: ${API_SECRET}
+      WOMPI_PUBLIC_KEY: ${WOMPI_PUBLIC_KEY}
+      WOMPI_PRIVATE_KEY: ${WOMPI_PRIVATE_KEY}
+      WOMPI_EVENTS_KEY: ${WOMPI_EVENTS_KEY}
+      WOMPI_INTEGRITY_KEY: ${WOMPI_INTEGRITY_KEY}
+      WOMPI_TEST_MODE: "false"
+      MAILJET_API_KEY: ${MAILJET_API_KEY}
+      MAILJET_SECRET_KEY: ${MAILJET_SECRET_KEY}
+      MAIL_FROM: info@prowaylab.com
+      MAIL_FROM_NAME: ProWay Lab
+      FORMSPREE_ID: xdaldlby
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - proway-net
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  mysql:
+    image: mysql:8.0
+    container_name: proway-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: prowaylab_db
+      MYSQL_USER: proway
+      MYSQL_PASSWORD: ${DB_PASS}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "proway", "-p${DB_PASS}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - proway-net
+    restart: always
+    # No exponer puerto 3306 en producción
+
+volumes:
+  mysql-data:
+    driver: local
+
+networks:
+  proway-net:
+    driver: bridge
