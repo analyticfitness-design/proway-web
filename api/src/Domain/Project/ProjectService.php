@@ -5,7 +5,7 @@ namespace ProWay\Domain\Project;
 
 class ProjectService
 {
-    private const VALID_STATUSES = ['pendiente', 'produccion', 'revision', 'entrega', 'completado', 'cancelado'];
+    private const VALID_STATUSES = ['cotizacion', 'confirmado', 'en_produccion', 'revision', 'entregado', 'facturado', 'pagado'];
 
     public function __construct(private readonly ProjectRepository $repo) {}
 

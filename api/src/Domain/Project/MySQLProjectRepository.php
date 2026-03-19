@@ -48,7 +48,7 @@ class MySQLProjectRepository implements ProjectRepository
     public function countActive(): int
     {
         $stmt = $this->db->query(
-            "SELECT COUNT(*) FROM projects WHERE status IN ('produccion','revision','entrega')"
+            "SELECT COUNT(*) FROM projects WHERE status IN ('confirmado','en_produccion','revision')"
         );
         return (int) $stmt->fetchColumn();
     }

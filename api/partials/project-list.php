@@ -6,12 +6,14 @@ require_once __DIR__ . '/_auth.php';
 
 header('Content-Type: text/html; charset=utf-8');
 
-// Map DB status values to CSS modifier classes and display labels.
 const PROJECT_STATUS_MAP = [
-    'pendiente'   => ['class' => 'badge--pendiente',  'label' => 'Pendiente'],
-    'en_progreso' => ['class' => 'badge--en-progreso', 'label' => 'En Progreso'],
-    'revision'    => ['class' => 'badge--revision',    'label' => 'Revisión'],
-    'completado'  => ['class' => 'badge--completado',  'label' => 'Completado'],
+    'cotizacion'   => ['class' => 'badge--neutral',   'label' => 'Cotización'],
+    'confirmado'   => ['class' => 'badge--enviada',   'label' => 'Confirmado'],
+    'en_produccion'=> ['class' => 'badge--pendiente', 'label' => 'En Producción'],
+    'revision'     => ['class' => 'badge--pendiente', 'label' => 'Revisión'],
+    'entregado'    => ['class' => 'badge--pagada',    'label' => 'Entregado'],
+    'facturado'    => ['class' => 'badge--pagada',    'label' => 'Facturado'],
+    'pagado'       => ['class' => 'badge--pagada',    'label' => 'Pagado'],
 ];
 
 try {
@@ -22,16 +24,16 @@ try {
 }
 
 if (empty($projects)) {
-    echo '<p class="text-muted">No tienes proyectos activos en este momento.</p>';
+    echo '<p class="text-muted" style="padding: var(--pw-space-4);">No tienes proyectos activos en este momento.</p>';
     exit;
 }
 
 foreach ($projects as $project):
-    $status      = $project['status'] ?? 'pendiente';
-    $statusInfo  = PROJECT_STATUS_MAP[$status] ?? ['class' => 'badge--pendiente', 'label' => ucfirst($status)];
-    $title       = htmlspecialchars($project['title'] ?? 'Sin título', ENT_QUOTES, 'UTF-8');
-    $rawDate     = $project['created_at'] ?? $project['updated_at'] ?? '';
-    $date        = $rawDate !== '' ? date('d/m/Y', strtotime($rawDate)) : '—';
+    $status     = $project['status'] ?? 'cotizacion';
+    $statusInfo = PROJECT_STATUS_MAP[$status] ?? ['class' => 'badge--neutral', 'label' => ucfirst($status)];
+    $title      = htmlspecialchars($project['title'] ?? $project['service_type'] ?? 'Sin título', ENT_QUOTES, 'UTF-8');
+    $type       = htmlspecialchars($project['service_type'] ?? '', ENT_QUOTES, 'UTF-8');
+    $deadline   = !empty($project['deadline']) ? date('d/m/Y', strtotime($project['deadline'])) : '—';
 ?>
 <div class="project-card">
     <div class="project-card__header">
@@ -40,8 +42,11 @@ foreach ($projects as $project):
             <?= htmlspecialchars($statusInfo['label'], ENT_QUOTES, 'UTF-8') ?>
         </span>
     </div>
+    <?php if ($type): ?>
+    <p style="font-size:0.8rem; color:var(--pw-text-muted); margin: var(--pw-space-1) 0;"><?= $type ?></p>
+    <?php endif; ?>
     <div class="project-card__footer">
-        <span class="project-card__date"><?= $date ?></span>
+        <span class="project-card__date">Entrega: <?= $deadline ?></span>
     </div>
 </div>
 <?php endforeach; ?>

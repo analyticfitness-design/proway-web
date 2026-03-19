@@ -13,12 +13,13 @@ if ($currentUser->type !== 'admin') {
 }
 
 const PROJECT_STATUS_MAP = [
-    'pendiente'  => ['class' => 'badge--neutral',   'label' => 'Pendiente'],
-    'produccion' => ['class' => 'badge--enviada',    'label' => 'Producción'],
-    'revision'   => ['class' => 'badge--pendiente',  'label' => 'Revisión'],
-    'entrega'    => ['class' => 'badge--pagada',     'label' => 'Entrega'],
-    'completado' => ['class' => 'badge--pagada',     'label' => 'Completado'],
-    'cancelado'  => ['class' => 'badge--vencido',    'label' => 'Cancelado'],
+    'cotizacion'    => ['class' => 'badge--neutral',   'label' => 'Cotización'],
+    'confirmado'    => ['class' => 'badge--enviada',   'label' => 'Confirmado'],
+    'en_produccion' => ['class' => 'badge--pendiente', 'label' => 'En Producción'],
+    'revision'      => ['class' => 'badge--pendiente', 'label' => 'Revisión'],
+    'entregado'     => ['class' => 'badge--pagada',    'label' => 'Entregado'],
+    'facturado'     => ['class' => 'badge--pagada',    'label' => 'Facturado'],
+    'pagado'        => ['class' => 'badge--pagada',    'label' => 'Pagado'],
 ];
 
 try {
