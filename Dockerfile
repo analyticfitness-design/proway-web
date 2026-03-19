@@ -42,9 +42,9 @@ RUN apk add --no-cache \
         nginx \
         supervisor \
         curl \
-        libpng-dev \
         libzip-dev \
         zip \
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
     && docker-php-ext-install \
         pdo \
         pdo_mysql \
@@ -52,6 +52,7 @@ RUN apk add --no-cache \
         zip \
     && pecl install apcu \
     && docker-php-ext-enable apcu \
+    && apk del .build-deps \
     && mkdir -p /var/www/html /run/nginx /var/log/supervisor
 
 # PHP configuration: OPcache + JIT + APCu
