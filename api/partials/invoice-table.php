@@ -65,7 +65,7 @@ if (empty($invoices)) {
                         <?= htmlspecialchars($statusInfo['label'], ENT_QUOTES, 'UTF-8') ?>
                     </span>
                 </td>
-                <td>
+                <td style="white-space:nowrap; display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
                     <?php if ($canPay): ?>
                     <button
                         class="btn btn--primary btn--sm"
@@ -78,9 +78,20 @@ if (empty($invoices)) {
                         </svg>
                         Pagar
                     </button>
-                    <?php else: ?>
-                    <span class="text-muted" style="font-size: 0.75rem;">—</span>
                     <?php endif; ?>
+                    <a href="/api/partials/invoice-pdf.php?id=<?= $invoiceId ?>&autoprint=0"
+                       target="_blank"
+                       class="btn btn--ghost btn--sm"
+                       title="Ver / Descargar PDF">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                        PDF
+                    </a>
                 </td>
             </tr>
             <?php endforeach; ?>
