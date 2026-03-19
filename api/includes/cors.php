@@ -1,6 +1,22 @@
 <?php
 declare(strict_types=1);
 
+// Load .env early so APP_ENV is available for CORS checks.
+// config/database.php does the same with a static-guard, so double-loading is safe.
+(static function (): void {
+    $envFile = __DIR__ . '/../.env';
+    if (file_exists($envFile)) {
+        $env = parse_ini_file($envFile);
+        if ($env !== false) {
+            foreach ($env as $key => $value) {
+                if (!isset($_ENV[$key])) {
+                    $_ENV[$key] = $value;
+                }
+            }
+        }
+    }
+})();
+
 /**
  * Sets CORS headers for the ProWay Lab API.
  * Allows requests from the frontend domain.
