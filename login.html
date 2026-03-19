@@ -1,1021 +1,167 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Acceso Administrativo &mdash; ProWay Lab</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Iniciar Sesión — ProWay Lab</title>
+    <meta name="description" content="Accede a tu portal de cliente ProWay Lab">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+
+    <!-- Preconnect for fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-    <!--
-        NOTA DE PRODUCCION:
-        Este sistema de login es un prototipo con autenticacion localStorage.
-        Para produccion real, implementar:
-        - Backend con JWT tokens (Node.js/Python/PHP)
-        - Base de datos de usuarios con passwords hasheados (bcrypt)
-        - HTTPS obligatorio
-        - Rate limiting para prevenir brute force
-        - Session timeout automatico
-        - 2FA opcional para mayor seguridad
-    -->
+    <!-- ProWay Design System -->
+    <link rel="stylesheet" href="/dist/assets/module.css">
 
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --bg:        #0C0C0F;
-            --surface:   #111114;
-            --surface-2: #191920;
-            --border:    #252528;
-            --blue:      #00D9FF;
-            --blue-dim:  rgba(0,217,255,0.08);
-            --red:       #E31E24;
-            --green:     #00FF87;
-            --white:     #FFFFFF;
-            --gray:      #A1A1AA;
-            --dark:      #52525B;
-            --font-h:    'Montserrat', sans-serif;
-            --font-b:    'Inter', sans-serif;
-            --font-m:    'Roboto Mono', monospace;
-        }
-
-        html, body {
-            height: 100%;
-            background: var(--bg);
-            color: var(--white);
-            font-family: var(--font-b);
-            overflow: hidden;
-        }
-
-        /* LAYOUT SPLIT */
-        .login-wrapper {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        /* LEFT PANEL (60%) */
-        .panel-left {
-            flex: 0 0 60%;
-            position: relative;
-            background: var(--bg);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 64px 72px;
-        }
-
-        /* Animated grid double layer */
-        .grid-layer-1,
-        .grid-layer-2 {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
-
-        .grid-layer-1 {
-            background-image:
-                linear-gradient(rgba(0,217,255,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,217,255,0.04) 1px, transparent 1px);
-            background-size: 60px 60px;
-            animation: gridDrift1 20s linear infinite;
-        }
-
-        .grid-layer-2 {
-            background-image:
-                linear-gradient(rgba(227,30,36,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(227,30,36,0.03) 1px, transparent 1px);
-            background-size: 120px 120px;
-            animation: gridDrift2 35s linear infinite;
-        }
-
-        @keyframes gridDrift1 {
-            0%   { transform: translate(0, 0); }
-            100% { transform: translate(60px, 60px); }
-        }
-
-        @keyframes gridDrift2 {
-            0%   { transform: translate(0, 0); }
-            100% { transform: translate(-120px, 60px); }
-        }
-
-        .panel-left::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at 30% 50%, transparent 40%, rgba(12,12,15,0.7) 100%);
-            pointer-events: none;
-        }
-
-        .left-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .accent-line {
-            width: 48px;
-            height: 2px;
-            background: var(--red);
-            margin-bottom: 32px;
-        }
-
-        .wordmark-large {
-            font-family: var(--font-h);
-            font-weight: 900;
-            font-size: clamp(56px, 6vw, 88px);
-            letter-spacing: -0.02em;
-            color: var(--white);
-            line-height: 1;
-            margin-bottom: 8px;
-        }
-
-        .wordmark-large .accent { color: var(--blue); }
-
-        .access-label {
-            font-family: var(--font-m);
-            font-size: 11px;
-            letter-spacing: 0.22em;
-            color: var(--dark);
-            margin-top: 16px;
-            margin-bottom: 56px;
-        }
-
-        .stats-row {
-            display: flex;
-            gap: 40px;
-        }
-
-        .mini-stat {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .mini-stat-value {
-            font-family: var(--font-h);
-            font-weight: 800;
-            font-size: 28px;
-            color: var(--white);
-            line-height: 1;
-        }
-
-        .mini-stat-label {
-            font-family: var(--font-m);
-            font-size: 10px;
-            letter-spacing: 0.14em;
-            color: var(--dark);
-            text-transform: uppercase;
-        }
-
-        .mini-stat-divider {
-            width: 1px;
-            background: var(--border);
-            align-self: stretch;
-        }
-
-        .mini-stat-value.blue  { color: var(--blue); }
-        .mini-stat-value.green { color: var(--green); }
-
-        .left-badge {
-            position: absolute;
-            bottom: 40px;
-            left: 72px;
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .left-badge-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--green);
-            animation: pulseDot 2s ease-in-out infinite;
-        }
-
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50%       { opacity: 0.5; transform: scale(0.7); }
-        }
-
-        .left-badge-text {
-            font-family: var(--font-m);
-            font-size: 10px;
-            letter-spacing: 0.14em;
-            color: var(--dark);
-        }
-
-        /* RIGHT PANEL (40%) */
-        .panel-right {
-            flex: 0 0 40%;
-            background: var(--surface);
-            border-left: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 48px;
-            position: relative;
-        }
-
-        .panel-right::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--blue), transparent);
-            opacity: 0.4;
-        }
-
-        .form-container {
-            width: 100%;
-            max-width: 360px;
-        }
-
-        .form-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 32px;
-        }
-
-        .form-logo-wordmark {
-            font-family: var(--font-h);
-            font-weight: 900;
-            font-size: 14px;
-            letter-spacing: 0.12em;
-            color: var(--white);
-        }
-
-        .form-logo-wordmark .accent { color: var(--blue); }
-
-        .form-divider {
-            width: 100%;
-            height: 1px;
-            background: var(--border);
-            margin-bottom: 28px;
-        }
-
-        .form-heading {
-            font-family: var(--font-h);
-            font-weight: 800;
-            font-size: 18px;
-            letter-spacing: 0.08em;
-            color: var(--white);
-            margin-bottom: 6px;
-        }
-
-        .form-subheading {
-            font-family: var(--font-m);
-            font-size: 10px;
-            letter-spacing: 0.16em;
-            color: var(--dark);
-            margin-bottom: 32px;
-        }
-
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin-bottom: 16px;
-        }
-
-        .input-label {
-            font-family: var(--font-m);
-            font-size: 9px;
-            letter-spacing: 0.18em;
-            color: var(--dark);
-            text-transform: uppercase;
-        }
-
-        .input-field {
-            width: 100%;
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 13px 16px;
-            font-family: var(--font-b);
-            font-size: 14px;
-            color: var(--white);
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            -webkit-appearance: none;
-        }
-
-        .input-field::placeholder {
-            color: var(--dark);
-        }
-
-        .input-field:focus {
-            border-color: var(--blue);
-            box-shadow: 0 0 0 3px var(--blue-dim);
-        }
-
-        .checkbox-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 24px;
-            cursor: pointer;
-        }
-
-        .checkbox-input {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--blue);
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .checkbox-label {
-            font-family: var(--font-b);
-            font-size: 13px;
-            color: var(--gray);
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .login-error {
-            display: none;
-            background: rgba(227,30,36,0.08);
-            border: 1px solid rgba(227,30,36,0.3);
-            border-radius: 4px;
-            padding: 10px 14px;
-            margin-bottom: 16px;
-        }
-
-        .login-error-text {
-            font-family: var(--font-b);
-            font-size: 13px;
-            color: var(--red);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-login {
-            width: 100%;
-            background: var(--blue);
-            color: #0C0C0F;
-            border: none;
-            border-radius: 4px;
-            padding: 14px 24px;
-            font-family: var(--font-h);
-            font-weight: 900;
-            font-size: 13px;
-            letter-spacing: 0.18em;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s, background 0.3s;
-            outline: none;
-        }
-
-        .btn-login:hover  { opacity: 0.88; }
-        .btn-login:active { transform: scale(0.98); }
-        .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-login.success  { background: var(--green); }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%       { transform: translateX(-8px); }
-            40%       { transform: translateX(8px); }
-            60%       { transform: translateX(-6px); }
-            80%       { transform: translateX(6px); }
-        }
-
-        .shake { animation: shake 0.45s ease-in-out; }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        .spinner {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            border: 2px solid rgba(12,12,15,0.3);
-            border-top-color: #0C0C0F;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            vertical-align: middle;
-            margin-right: 6px;
-        }
-
-        .form-footer-divider {
-            width: 100%;
-            height: 1px;
-            background: var(--border);
-            margin: 28px 0 20px;
-        }
-
-        .form-help {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .form-help-text {
-            font-family: var(--font-b);
-            font-size: 12px;
-            color: var(--dark);
-        }
-
-        .btn-whatsapp {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-family: var(--font-b);
-            font-size: 12px;
-            color: var(--green);
-            text-decoration: none;
-            transition: opacity 0.2s;
-        }
-
-        .btn-whatsapp:hover { opacity: 0.75; }
-
-        /* ─── FLOATING PARTICLES (decorative, left panel) ─── */
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 1;
-            animation: floatParticle linear infinite;
-            opacity: 0;
-        }
-
-        @keyframes floatParticle {
-            0%   { transform: translateY(0)   scale(1);   opacity: 0; }
-            10%  { opacity: 0.4; }
-            90%  { opacity: 0.2; }
-            100% { transform: translateY(-80px) scale(0.6); opacity: 0; }
-        }
-
-        /* ─── CORNER MARK (left panel bottom-right) ─────── */
-        .corner-mark {
-            position: absolute;
-            bottom: 40px;
-            right: 40px;
-            z-index: 2;
-            opacity: 0.12;
-        }
-
-        /* ─── VERSION TAG ────────────────────────────────── */
-        .version-tag {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            font-family: var(--font-m);
-            font-size: 9px;
-            letter-spacing: 0.18em;
-            color: var(--dark);
-            z-index: 2;
-        }
-
-        /* ─── HORIZONTAL RULE in form ────────────────────── */
-        .form-rule {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-
-        .form-rule-line {
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .form-rule-text {
-            font-family: var(--font-m);
-            font-size: 9px;
-            letter-spacing: 0.14em;
-            color: var(--dark);
-            white-space: nowrap;
-        }
-
-        /* ─── INPUT ICON WRAPPER ─────────────────────────── */
-        .input-icon-wrap {
-            position: relative;
-        }
-
-        .input-icon-wrap .input-field {
-            padding-left: 40px;
-        }
-
-        .input-icon {
-            position: absolute;
-            left: 13px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--dark);
-            pointer-events: none;
-            transition: color 0.18s;
-        }
-
-        .input-icon-wrap:focus-within .input-icon {
-            color: var(--blue);
-        }
-
-        /* ─── PASSWORD TOGGLE ────────────────────────────── */
-        .btn-pw-toggle {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: var(--dark);
-            cursor: pointer;
-            padding: 2px;
-            display: flex;
-            align-items: center;
-            transition: color 0.18s;
-        }
-
-        .btn-pw-toggle:hover { color: var(--gray); }
-
-        /* ─── FEATURE PILLS (left panel) ────────────────── */
-        .feature-pills {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 48px;
-        }
-
-        .feature-pill {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .feature-pill-icon {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            background: rgba(0,217,255,0.06);
-            border: 1px solid rgba(0,217,255,0.12);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .feature-pill-text {
-            font-family: var(--font-b);
-            font-size: 12px;
-            color: var(--dark);
-        }
-
-        /* ─── MOBILE ────────────────────────────────────── */
-        @media (max-width: 767px) {
-            html, body { overflow: auto; }
-            .login-wrapper { flex-direction: column; height: auto; min-height: 100vh; }
-            .panel-left   { display: none; }
-            .panel-right  {
-                flex: 1; border-left: none;
-                padding: 48px 28px; min-height: 100vh;
-            }
-            .panel-right::before { display: none; }
-            .mobile-logo-header {
-                display: flex; flex-direction: column;
-                align-items: center; margin-bottom: 40px; gap: 12px;
-            }
-            .mobile-logo-header .mobile-wordmark {
-                font-family: var(--font-h); font-weight: 900;
-                font-size: 28px; letter-spacing: 0.06em; color: var(--white);
-            }
-            .mobile-logo-header .mobile-wordmark .accent { color: var(--blue); }
-            .mobile-logo-header .mobile-sub {
-                font-family: var(--font-m); font-size: 9px;
-                letter-spacing: 0.2em; color: var(--dark);
-            }
-        }
-
-        @media (min-width: 768px) { .mobile-logo-header { display: none; } }
-
-        @media (min-width: 768px) and (max-width: 1023px) {
-            .panel-left  { flex: 0 0 50%; padding: 48px 40px; }
-            .panel-right { flex: 0 0 50%; padding: 48px 36px; }
-            .wordmark-large { font-size: 52px; }
-        }
-
-        /* ================================================
-           RESPONSIVE MOBILE — CORRECCIONES
-           ================================================ */
-        @media (max-width: 767px) {
-            /* Evitar scroll horizontal */
-            html, body { overflow-x: hidden; }
-
-            /* Panel derecho: centrado, padding lateral mínimo 16px */
-            .panel-right {
-                padding: 40px 16px;
-                min-height: 100vh;
-                justify-content: flex-start;
-                padding-top: 60px;
-            }
-
-            /* Contenedor del form: ancho máximo con margen automático */
-            .form-container {
-                max-width: 100%;
-                width: 100%;
-            }
-
-            /* font-size 16px en inputs para prevenir zoom automático en iOS */
-            .input-field { font-size: 16px; }
-
-            /* Touch target mínimo 44px en inputs */
-            .input-field { min-height: 48px; }
-
-            /* Botón login full width (ya lo es) y min-height 52px */
-            .btn-login { min-height: 52px; font-size: 14px; }
-
-            /* Checkbox touch target */
-            .checkbox-row { padding: 4px 0; min-height: 44px; }
-            .checkbox-input { width: 18px; height: 18px; }
-
-            /* form-help: wrap en mobile para evitar overflow */
-            .form-help {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-
-            /* WhatsApp link touch target */
-            .btn-whatsapp { min-height: 36px; align-items: center; }
-
-            /* Logo en desktop ocultado correctamente */
-            .form-logo { margin-bottom: 24px; }
-
-            /* Espacio mobile-logo-header */
-            .mobile-logo-header { margin-bottom: 32px; }
-        }
-
-        @media (max-width: 380px) {
-            .panel-right { padding: 48px 14px; }
-            .input-field { font-size: 16px; padding: 12px 14px; }
-            .mobile-logo-header .mobile-wordmark { font-size: 24px; }
-        }
-    </style>
 </head>
 <body>
+    <div id="toast-container" aria-live="polite"></div>
 
-<script>
-    (function() {
-        if (localStorage.getItem('pw_admin_auth')) {
-            window.location.href = 'admin.html';
+<div class="page" style="display:flex; align-items:center; justify-content:center; min-height:100vh; padding: var(--pw-space-6);">
+    <div style="width:100%; max-width:420px;">
+        <div style="text-align:center; margin-bottom: var(--pw-space-8);">
+            <a href="/">
+                <img src="/images/logo.png" alt="ProWay Lab" height="40" style="margin:0 auto;">
+            </a>
+        </div>
+
+<div class="card" x-data="{
+    error: '',
+    loading: false,
+    async handleResponse(event) {
+        const xhr = event.detail.xhr;
+        try {
+            const data = JSON.parse(xhr.responseText);
+            if (data.success) {
+                window.location.href = data.redirect || '/portal';
+            } else {
+                this.error = data.message || 'Credenciales incorrectas. Inténtalo de nuevo.';
+                this.loading = false;
+            }
+        } catch(e) {
+            this.error = 'Error inesperado. Por favor, intenta de nuevo.';
+            this.loading = false;
         }
-    }());
-</script>
-
-<div class="login-wrapper">
-
-    <!-- LEFT PANEL -->
-    <div class="panel-left">
-        <div class="grid-layer-1"></div>
-        <div class="grid-layer-2"></div>
-
-        <div class="left-content">
-            <div class="accent-line"></div>
-
-            <h1 class="wordmark-large">PROWAY<span class="accent">.LAB</span></h1>
-
-            <p class="access-label">SISTEMA DE GESTION &nbsp;&middot;&nbsp; ACCESO RESTRINGIDO</p>
-
-            <div class="stats-row">
-                <div class="mini-stat">
-                    <span class="mini-stat-value blue">47</span>
-                    <span class="mini-stat-label">Coaches</span>
-                </div>
-                <div class="mini-stat-divider"></div>
-                <div class="mini-stat">
-                    <span class="mini-stat-value">2.3M</span>
-                    <span class="mini-stat-label">Views</span>
-                </div>
-                <div class="mini-stat-divider"></div>
-                <div class="mini-stat">
-                    <span class="mini-stat-value green">12</span>
-                    <span class="mini-stat-label">Activos</span>
-                </div>
-            </div>
-
-            <!-- Feature pills -->
-            <div class="feature-pills">
-                <div class="feature-pill">
-                    <div class="feature-pill-icon">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" aria-hidden="true">
-                            <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
-                            <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z"/>
-                        </svg>
-                    </div>
-                    <span class="feature-pill-text">Gestion de leads y solicitudes entrantes</span>
-                </div>
-                <div class="feature-pill">
-                    <div class="feature-pill-icon">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" aria-hidden="true">
-                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                            <circle cx="9" cy="7" r="4"/>
-                        </svg>
-                    </div>
-                    <span class="feature-pill-text">Seguimiento de clientes activos</span>
-                </div>
-                <div class="feature-pill">
-                    <div class="feature-pill-icon">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" aria-hidden="true">
-                            <rect x="1" y="4" width="22" height="16" rx="2"/>
-                            <line x1="1" y1="10" x2="23" y2="10"/>
-                        </svg>
-                    </div>
-                    <span class="feature-pill-text">Control de pagos y facturacion</span>
-                </div>
-                <div class="feature-pill">
-                    <div class="feature-pill-icon">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" aria-hidden="true">
-                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                        </svg>
-                    </div>
-                    <span class="feature-pill-text">Dashboard de metricas y analytics</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Corner decoration -->
-        <div class="corner-mark" aria-hidden="true">
-            <img src="logo-proway.png" alt="" width="64" height="64" loading="lazy" style="width:64px;height:auto;opacity:0.35;filter:brightness(0) invert(1);">
-        </div>
-
-        <!-- Version tag -->
-        <div class="version-tag" aria-hidden="true">PANEL v1.0</div>
-
-        <div class="left-badge">
-            <div class="left-badge-dot"></div>
-            <span class="left-badge-text">SISTEMA OPERATIVO &nbsp;&middot;&nbsp; v1.0</span>
-        </div>
+    }
+}">
+    <div class="card__header" style="text-align:center; padding-bottom: var(--pw-space-4);">
+        <h2 class="card__title" style="font-size: var(--pw-text-xl); font-weight: var(--pw-weight-semi);">Bienvenido de vuelta</h2>
+        <p style="color: var(--pw-text-muted); font-size: var(--pw-text-sm); margin-top: var(--pw-space-1);">
+            Ingresa a tu portal de cliente
+        </p>
     </div>
 
-    <!-- RIGHT PANEL -->
-    <div class="panel-right">
-        <div class="form-container">
-
-            <!-- Mobile logo -->
-            <div class="mobile-logo-header">
-                <div class="mobile-wordmark">PROWAY<span class="accent">.LAB</span></div>
-                <div class="mobile-sub">SISTEMA DE GESTION &nbsp;&middot;&nbsp; ACCESO RESTRINGIDO</div>
-            </div>
-
-            <!-- Desktop logo row -->
-            <div class="form-logo">
-                <img src="logo-proway.png" alt="ProWay Lab" width="120" height="32" loading="eager" style="height:32px;width:auto;object-fit:contain;">
-            </div>
-
-            <div class="form-divider"></div>
-
-            <h2 class="form-heading">ACCESO ADMINISTRATIVO</h2>
-            <p class="form-subheading">INGRESA TUS CREDENCIALES PARA CONTINUAR</p>
-
-            <div class="login-error" id="loginError" role="alert">
-                <div class="login-error-text">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10"/>
-                        <line x1="12" y1="8" x2="12" y2="12"/>
-                        <circle cx="12" cy="16" r="1" fill="currentColor"/>
-                    </svg>
-                    <span>Usuario o contrasena incorrectos</span>
-                </div>
-            </div>
-
-            <form id="loginForm" autocomplete="off" novalidate>
-                <div class="input-group">
-                    <label class="input-label" for="usuario">USUARIO</label>
-                    <div class="input-icon-wrap">
-                        <svg class="input-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        <input
-                            class="input-field"
-                            type="text"
-                            id="usuario"
-                            name="usuario"
-                            placeholder="usuario"
-                            autocomplete="username"
-                            spellcheck="false"
-                            required
-                        >
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label class="input-label" for="password">CONTRASENA</label>
-                    <div class="input-icon-wrap" style="position:relative">
-                        <svg class="input-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                            <path d="M7 11V7a5 5 0 0110 0v4"/>
-                        </svg>
-                        <input
-                            class="input-field"
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;"
-                            autocomplete="current-password"
-                            required
-                            style="padding-right: 40px;"
-                        >
-                        <button class="btn-pw-toggle" type="button" id="pwToggle" aria-label="Mostrar contrasena" title="Mostrar / ocultar contrasena">
-                            <svg id="eyeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                <circle cx="12" cy="12" r="3"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <label class="checkbox-row" for="keepSession">
-                    <input class="checkbox-input" type="checkbox" id="keepSession" name="keepSession">
-                    <span class="checkbox-label">Mantener sesion activa</span>
-                </label>
-
-                <button class="btn-login" type="submit" id="submitBtn">INGRESAR</button>
-            </form>
-
-            <div class="form-footer-divider"></div>
-
-            <div class="form-help">
-                <span class="form-help-text">Problemas para ingresar?</span>
-                <a class="btn-whatsapp" href="https://wa.me/573124904720?text=Hola%2C%20necesito%20acceso%20al%20panel%20ProWay" target="_blank" rel="noopener noreferrer">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                    </svg>
-                    WhatsApp
-                </a>
-            </div>
-
-        </div>
+    <!-- Error alert -->
+    <div x-show="error"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 transform -translate-y-1"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-cloak
+         style="
+             background: rgba(255,71,87,0.1);
+             border: 1px solid rgba(255,71,87,0.3);
+             border-radius: var(--pw-radius-sm);
+             padding: var(--pw-space-3) var(--pw-space-4);
+             margin-bottom: var(--pw-space-4);
+             color: var(--pw-danger);
+             font-size: var(--pw-text-sm);
+             display: flex;
+             align-items: center;
+             gap: var(--pw-space-2);
+         ">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span x-text="error"></span>
     </div>
 
+    <form id="login-form"
+          hx-post="/api/v1/auth/login"
+          hx-ext="json-enc"
+          hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
+          hx-on::before-request="loading = true; error = ''"
+          hx-on::after-request="handleResponse(event)"
+          novalidate>
+
+        <div class="form-group">
+            <label class="form-label" for="email">Correo electrónico</label>
+            <input class="form-input"
+                   type="email"
+                   id="email"
+                   name="email"
+                   placeholder="tu@email.com"
+                   required
+                   autocomplete="email"
+                   inputmode="email">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="password">
+                Contraseña
+            </label>
+            <input class="form-input"
+                   type="password"
+                   id="password"
+                   name="password"
+                   placeholder="••••••••"
+                   required
+                   autocomplete="current-password">
+        </div>
+
+        <button type="submit"
+                class="btn btn--primary btn--full"
+                style="margin-top: var(--pw-space-6); position: relative;"
+                :disabled="loading">
+
+            <!-- Loading state -->
+            <span x-show="loading" style="display:flex; align-items:center; gap:var(--pw-space-2); justify-content:center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     style="animation: spin 0.8s linear infinite;" aria-hidden="true">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                Ingresando...
+            </span>
+
+            <!-- Default state -->
+            <span x-show="!loading">Ingresar</span>
+        </button>
+    </form>
+
+    <p style="text-align:center; margin-top: var(--pw-space-5); font-size: var(--pw-text-sm); color: var(--pw-text-muted);">
+        ¿Problemas para acceder?
+        <a href="mailto:hola@prowaylab.com"
+           style="color: var(--pw-accent); text-decoration: none;"
+           onmouseover="this.style.textDecoration='underline'"
+           onmouseout="this.style.textDecoration='none'">
+            Contacta soporte
+        </a>
+    </p>
 </div>
 
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+[x-cloak] { display: none !important; }
+
+/* HTMX request state — disable button visually */
+.btn[disabled] { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
+</style>
+
 <script>
-    /* CREDENTIALS — REEMPLAZAR en produccion con auth real */
-    var CREDENTIALS = {
-        'admin':  'ProWay2026!',
-        'proway': 'admin123'
-    };
-
-    var loginForm  = document.getElementById('loginForm');
-    var submitBtn  = document.getElementById('submitBtn');
-    var errorBox   = document.getElementById('loginError');
-    var usuarioEl  = document.getElementById('usuario');
-    var passwordEl = document.getElementById('password');
-    var keepEl     = document.getElementById('keepSession');
-
-    /* Show/hide error safely using textContent only */
-    function showError(show) {
-        errorBox.style.display = show ? 'block' : 'none';
+/* Redirect 401 HTMX errors globally to login (redundant guard here since we're already on login) */
+document.body.addEventListener('htmx:responseError', function(evt) {
+    if (evt.detail.xhr.status === 403) {
+        window.location.href = '/login';
     }
-
-    /* Update button text safely */
-    function setBtnText(text) {
-        submitBtn.textContent = text;
-    }
-
-    /* Button loading state using a child span */
-    function setBtnLoading(loading) {
-        if (loading) {
-            submitBtn.disabled = true;
-            submitBtn.textContent = '';
-            var s = document.createElement('span');
-            s.className = 'spinner';
-            s.setAttribute('aria-hidden', 'true');
-            submitBtn.appendChild(s);
-            var t = document.createTextNode('VERIFICANDO...');
-            submitBtn.appendChild(t);
-        } else {
-            submitBtn.disabled = false;
-            setBtnText('INGRESAR');
-        }
-    }
-
-    loginForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        var user = usuarioEl.value.trim();
-        var pass = passwordEl.value;
-        var keep = keepEl.checked;
-
-        showError(false);
-        setBtnLoading(true);
-
-        function grantAccess(token, username) {
-            localStorage.setItem('pw_admin_auth', token);
-            localStorage.setItem('pw_admin_user', username);
-            localStorage.setItem('pw_token', token);
-            if (keep) { localStorage.setItem('pw_admin_keep', '1'); }
-            submitBtn.disabled = true;
-            submitBtn.className = 'btn-login success';
-            setBtnText('ACCESO CONCEDIDO');
-            setTimeout(function() { window.location.href = 'admin.html'; }, 400);
-        }
-
-        function denyAccess() {
-            setBtnLoading(false);
-            showError(true);
-            loginForm.classList.add('shake');
-            setTimeout(function() { loginForm.classList.remove('shake'); }, 500);
-            passwordEl.value = '';
-            passwordEl.focus();
-        }
-
-        // API real + fallback a credenciales hardcoded
-        fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-            body: JSON.stringify({ type: 'admin', email: user, password: pass })
-        })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            if (!data.token) { throw new Error('no token'); }
-            var uname = (data.user && data.user.username) ? data.user.username : user;
-            grantAccess(data.token, uname);
-        })
-        .catch(function() {
-            // Fallback: credenciales hardcoded
-            if (CREDENTIALS.hasOwnProperty(user) && CREDENTIALS[user] === pass) {
-                var token = btoa(user + ':' + Date.now());
-                grantAccess(token, user);
-            } else {
-                denyAccess();
-            }
-        });
-    });
-
-    /* Tab from usuario to password */
-    usuarioEl.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') { e.preventDefault(); passwordEl.focus(); }
-    });
-
-    /* Hide error on typing */
-    usuarioEl.addEventListener('input', function() { showError(false); });
-    passwordEl.addEventListener('input', function() { showError(false); });
-
-    /* ─── PASSWORD VISIBILITY TOGGLE ─────────────────────── */
-    var pwToggle = document.getElementById('pwToggle');
-    var eyeIcon  = document.getElementById('eyeIcon');
-
-    var EYE_OPEN = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
-    var EYE_SHUT = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
-
-    pwToggle.addEventListener('click', function() {
-        var isPassword = passwordEl.type === 'password';
-        passwordEl.type = isPassword ? 'text' : 'password';
-        pwToggle.setAttribute('aria-label', isPassword ? 'Ocultar contrasena' : 'Mostrar contrasena');
-        /* Update icon safely via child SVG elements */
-        while (eyeIcon.firstChild) { eyeIcon.removeChild(eyeIcon.firstChild); }
-        var paths = isPassword ? EYE_SHUT.split('/>') : EYE_OPEN.split('/>');
-        /* Re-render using template trick — safe because source is hardcoded */
-        eyeIcon.setAttribute('viewBox', '0 0 24 24');
-        var tmp = document.createElementNS('http://www.w3.org/2000/svg', 'desc');
-        /* Use innerHTML only on a detached, isolated SVG element with no user data */
-        var svgNS  = 'http://www.w3.org/2000/svg';
-        var newSvg = document.createElementNS(svgNS, 'svg');
-        newSvg.setAttribute('viewBox', '0 0 24 24');
-        /* Safely build path elements from constant strings */
-        if (isPassword) {
-            /* Eye-slash icon */
-            var p1 = document.createElementNS(svgNS, 'path');
-            p1.setAttribute('d', 'M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24');
-            p1.setAttribute('stroke', 'currentColor'); p1.setAttribute('stroke-width','1.8'); p1.setAttribute('fill','none');
-            var l1 = document.createElementNS(svgNS, 'line');
-            l1.setAttribute('x1','1'); l1.setAttribute('y1','1'); l1.setAttribute('x2','23'); l1.setAttribute('y2','23');
-            l1.setAttribute('stroke', 'currentColor'); l1.setAttribute('stroke-width','1.8');
-            eyeIcon.appendChild(p1); eyeIcon.appendChild(l1);
-        } else {
-            /* Eye-open icon */
-            var p2 = document.createElementNS(svgNS, 'path');
-            p2.setAttribute('d', 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z');
-            p2.setAttribute('stroke', 'currentColor'); p2.setAttribute('stroke-width','1.8'); p2.setAttribute('fill','none');
-            var c2 = document.createElementNS(svgNS, 'circle');
-            c2.setAttribute('cx','12'); c2.setAttribute('cy','12'); c2.setAttribute('r','3');
-            c2.setAttribute('stroke', 'currentColor'); c2.setAttribute('stroke-width','1.8'); c2.setAttribute('fill','none');
-            eyeIcon.appendChild(p2); eyeIcon.appendChild(c2);
-        }
-    });
-
-    /* ─── KEYBOARD SHORTCUT: Enter on page ──────────────── */
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            usuarioEl.value = '';
-            passwordEl.value = '';
-            showError(false);
-            usuarioEl.focus();
-        }
-    });
+});
 </script>
+    </div>
+</div>
 
+    <!-- JS: HTMX + Alpine.js (injected by Vite) -->
+    <script type="module" src="/dist/assets/main.js"></script>
 </body>
 </html>

@@ -1,14 +1,14 @@
 {% extends "layouts/app.njk" %}
 
-{% block title %}Admin Dashboard — ProWay Lab{% endblock %}
-{% block description %}Panel de administración ProWay Lab{% endblock %}
-{% block page_title %}Dashboard{% endblock %}
+{% block title %}Proyectos — Admin ProWay Lab{% endblock %}
+{% block description %}Gestión de proyectos en el panel de administración{% endblock %}
+{% block page_title %}Proyectos{% endblock %}
 
 {# ── Sidebar ─────────────────────────────────────────────── #}
 {% block sidebar_nav %}
 <span class="sidebar__section-title">Administración</span>
 
-<a href="/admin" class="sidebar__link sidebar__link--active">
+<a href="/admin" class="sidebar__link">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
@@ -30,7 +30,7 @@
     Clientes
 </a>
 
-<a href="/admin/proyectos" class="sidebar__link">
+<a href="/admin/proyectos" class="sidebar__link sidebar__link--active">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polygon points="5 3 19 12 5 21 5 3"/>
@@ -65,7 +65,7 @@
 
 {# ── Page actions ────────────────────────────────────────── #}
 {% block page_actions %}
-<span id="global-spinner" class="htmx-indicator" aria-label="Actualizando">
+<span id="projects-spinner" class="htmx-indicator" aria-label="Actualizando proyectos">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
          style="animation: pw-spin 0.8s linear infinite; color: var(--pw-accent);" aria-hidden="true">
         <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
@@ -73,13 +73,12 @@
 </span>
 
 <button class="btn btn--ghost btn--sm"
-        hx-get="/api/partials/admin-stats.php"
-        hx-target="#admin-stats"
+        hx-get="/api/partials/admin-projects.php"
+        hx-target="#admin-projects-container"
         hx-swap="innerHTML"
         hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-        hx-indicator="#global-spinner"
-        hx-trigger="click"
-        title="Refrescar todo">
+        hx-indicator="#projects-spinner"
+        title="Actualizar proyectos">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <polyline points="23 4 23 10 17 10"/>
         <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
@@ -91,79 +90,33 @@
 {# ── Main content ────────────────────────────────────────── #}
 {% block content %}
 
-<!-- Stats row -->
-<div id="admin-stats"
-     hx-get="/api/partials/admin-stats.php"
+<div id="admin-projects-container"
+     hx-get="/api/partials/admin-projects.php"
      hx-trigger="load"
      hx-swap="innerHTML"
      hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-     hx-indicator="#global-spinner"
-     style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--pw-space-4); margin-bottom: var(--pw-space-8);">
+     hx-indicator="#projects-spinner">
 
-    <!-- Skeleton placeholders -->
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-</div>
-
-<!-- Recent clients -->
-<div class="card">
-    <div class="card__header">
-        <h2 class="card__title">Clientes Recientes</h2>
-        <a href="/admin/clientes" class="btn btn--ghost btn--sm">
-            Ver todos
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-            </svg>
-        </a>
-    </div>
-
-    <div id="admin-clients"
-         hx-get="/api/partials/admin-clients.php"
-         hx-trigger="load"
-         hx-swap="innerHTML"
-         hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-         hx-indicator="#global-spinner">
-
-        <!-- Skeleton table -->
-        <div class="table-wrapper" aria-busy="true" aria-label="Cargando clientes">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Plan</th>
-                        <th>Estado</th>
-                        <th>Fecha</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for i in range(0, 5) %}
-                    <tr class="loading-skeleton" aria-hidden="true">
-                        <td><span class="skeleton-text" style="width: 140px;"></span></td>
-                        <td><span class="skeleton-text" style="width: 80px;"></span></td>
-                        <td><span class="skeleton-text" style="width: 70px; border-radius: var(--pw-radius-full);"></span></td>
-                        <td><span class="skeleton-text" style="width: 90px;"></span></td>
-                        <td><span class="skeleton-text" style="width: 60px;"></span></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- Skeleton card grid while loading -->
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--pw-space-4);" aria-busy="true" aria-label="Cargando proyectos">
+        {% for i in range(0, 6) %}
+        <div class="card loading-skeleton" aria-hidden="true" style="min-height: 140px;">
+            <div class="card__header">
+                <span class="skeleton-text" style="width: 55%; height: 16px;"></span>
+                <span class="skeleton-text" style="width: 60px; border-radius: var(--pw-radius-full); height: 22px;"></span>
+            </div>
+            <div style="padding: var(--pw-space-4); display:flex; flex-direction:column; gap: var(--pw-space-3);">
+                <span class="skeleton-text" style="width: 80%;"></span>
+                <span class="skeleton-text" style="width: 50%;"></span>
+                <div style="display:flex; gap: var(--pw-space-2); margin-top: var(--pw-space-2);">
+                    <span class="skeleton-text" style="width: 70px; height: 30px; border-radius: var(--pw-radius-sm);"></span>
+                    <span class="skeleton-text" style="width: 70px; height: 30px; border-radius: var(--pw-radius-sm);"></span>
+                </div>
+            </div>
         </div>
+        {% endfor %}
     </div>
+
 </div>
 
 <style>
@@ -173,7 +126,7 @@
     0%, 100% { opacity: 1; }
     50%       { opacity: 0.35; }
 }
-.loading-skeleton { pointer-events: none; }
+.loading-skeleton { pointer-events: none; animation: pw-skeleton-pulse 1.4s ease-in-out infinite; }
 .skeleton-text {
     display: inline-block;
     height: 14px;

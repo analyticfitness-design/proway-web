@@ -1,11 +1,35 @@
-{% extends "layouts/app.njk" %}
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Mi Portal — ProWay Lab</title>
+    <meta name="description" content="Dashboard de cliente ProWay Lab">
 
-{% block title %}Mi Portal — ProWay Lab{% endblock %}
-{% block description %}Dashboard de cliente ProWay Lab{% endblock %}
-{% block page_title %}Mi Portal{% endblock %}
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/favicon.png">
 
-{# ── Sidebar ─────────────────────────────────────────────── #}
-{% block sidebar_nav %}
+    <!-- Preconnect for fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- ProWay Design System -->
+    <link rel="stylesheet" href="/dist/assets/module.css">
+
+</head>
+<body>
+    <div id="toast-container" aria-live="polite"></div>
+
+<div class="page flex">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar" x-data="{ open: false }" :class="{ 'is-open': open }">
+        <div class="sidebar__logo">
+            <img src="/images/logo-mark.png" alt="PW" width="28" height="28">
+            <span class="sidebar__logo-text">ProWay</span>
+        </div>
+
+        <nav class="sidebar__nav">
 <span class="sidebar__section-title">Mi Cuenta</span>
 
 <a href="/portal" class="sidebar__link sidebar__link--active">
@@ -47,9 +71,9 @@
     </span>
     Mi Perfil
 </a>
-{% endblock %}
+        </nav>
 
-{% block sidebar_footer %}
+        <div class="sidebar__footer">
 <button class="btn btn--ghost btn--full"
         style="justify-content:flex-start; gap: var(--pw-space-2);"
         @click="fetch('/api/v1/auth/logout', {method:'POST', credentials:'include'}).then(() => window.location.href = '/login')">
@@ -59,11 +83,14 @@
     </svg>
     Cerrar Sesión
 </button>
-{% endblock %}
+        </div>
+    </aside>
 
-{# ── Page actions ────────────────────────────────────────── #}
-{% block page_actions %}
-<button class="btn btn--ghost btn--sm"
+    <!-- Main content -->
+    <main class="main-with-sidebar page-content" id="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Mi Portal</h1>
+            <div class="flex gap-4"><button class="btn btn--ghost btn--sm"
         hx-get="/api/partials/client-stats.php"
         hx-target="#client-stats"
         hx-swap="innerHTML"
@@ -76,10 +103,9 @@
     </svg>
     Actualizar
 </button>
-{% endblock %}
+</div>
+        </div>
 
-{# ── Main content ────────────────────────────────────────── #}
-{% block content %}
 
 <!-- Stats row -->
 <div id="client-stats"
@@ -180,4 +206,10 @@ document.body.addEventListener('htmx:responseError', function(evt) {
     }
 });
 </script>
-{% endblock %}
+    </main>
+</div>
+
+    <!-- JS: HTMX + Alpine.js (injected by Vite) -->
+    <script type="module" src="/dist/assets/main.js"></script>
+</body>
+</html>

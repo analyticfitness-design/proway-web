@@ -1,36 +1,136 @@
 {% extends "layouts/auth.njk" %}
 
 {% block title %}Iniciar Sesión — ProWay Lab{% endblock %}
+{% block description %}Accede a tu portal de cliente ProWay Lab{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="card__header">
-        <h2 class="card__title">Bienvenido de vuelta</h2>
+<div class="card" x-data="{
+    error: '',
+    loading: false,
+    async handleResponse(event) {
+        const xhr = event.detail.xhr;
+        try {
+            const data = JSON.parse(xhr.responseText);
+            if (data.success) {
+                window.location.href = data.redirect || '/portal';
+            } else {
+                this.error = data.message || 'Credenciales incorrectas. Inténtalo de nuevo.';
+                this.loading = false;
+            }
+        } catch(e) {
+            this.error = 'Error inesperado. Por favor, intenta de nuevo.';
+            this.loading = false;
+        }
+    }
+}">
+    <div class="card__header" style="text-align:center; padding-bottom: var(--pw-space-4);">
+        <h2 class="card__title" style="font-size: var(--pw-text-xl); font-weight: var(--pw-weight-semi);">Bienvenido de vuelta</h2>
+        <p style="color: var(--pw-text-muted); font-size: var(--pw-text-sm); margin-top: var(--pw-space-1);">
+            Ingresa a tu portal de cliente
+        </p>
+    </div>
+
+    <!-- Error alert -->
+    <div x-show="error"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 transform -translate-y-1"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-cloak
+         style="
+             background: rgba(255,71,87,0.1);
+             border: 1px solid rgba(255,71,87,0.3);
+             border-radius: var(--pw-radius-sm);
+             padding: var(--pw-space-3) var(--pw-space-4);
+             margin-bottom: var(--pw-space-4);
+             color: var(--pw-danger);
+             font-size: var(--pw-text-sm);
+             display: flex;
+             align-items: center;
+             gap: var(--pw-space-2);
+         ">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span x-text="error"></span>
     </div>
 
     <form id="login-form"
-          hx-post="/api/auth/login.php"
-          hx-target="#login-result"
-          hx-swap="innerHTML">
+          hx-post="/api/v1/auth/login"
+          hx-ext="json-enc"
+          hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
+          hx-on::before-request="loading = true; error = ''"
+          hx-on::after-request="handleResponse(event)"
+          novalidate>
 
         <div class="form-group">
-            <label class="form-label" for="email">Email</label>
-            <input class="form-input" type="email" id="email" name="email"
-                   placeholder="tu@email.com" required autocomplete="email">
+            <label class="form-label" for="email">Correo electrónico</label>
+            <input class="form-input"
+                   type="email"
+                   id="email"
+                   name="email"
+                   placeholder="tu@email.com"
+                   required
+                   autocomplete="email"
+                   inputmode="email">
         </div>
 
         <div class="form-group">
-            <label class="form-label" for="password">Contraseña</label>
-            <input class="form-input" type="password" id="password" name="password"
-                   placeholder="••••••••" required autocomplete="current-password">
+            <label class="form-label" for="password">
+                Contraseña
+            </label>
+            <input class="form-input"
+                   type="password"
+                   id="password"
+                   name="password"
+                   placeholder="••••••••"
+                   required
+                   autocomplete="current-password">
         </div>
 
-        <button type="submit" class="btn btn--primary btn--full mt-6">
-            <span class="htmx-indicator" style="display:none">Cargando...</span>
-            Ingresar
+        <button type="submit"
+                class="btn btn--primary btn--full"
+                style="margin-top: var(--pw-space-6); position: relative;"
+                :disabled="loading">
+
+            <!-- Loading state -->
+            <span x-show="loading" style="display:flex; align-items:center; gap:var(--pw-space-2); justify-content:center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     style="animation: spin 0.8s linear infinite;" aria-hidden="true">
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                Ingresando...
+            </span>
+
+            <!-- Default state -->
+            <span x-show="!loading">Ingresar</span>
         </button>
     </form>
 
-    <div id="login-result" class="mt-4"></div>
+    <p style="text-align:center; margin-top: var(--pw-space-5); font-size: var(--pw-text-sm); color: var(--pw-text-muted);">
+        ¿Problemas para acceder?
+        <a href="mailto:hola@prowaylab.com"
+           style="color: var(--pw-accent); text-decoration: none;"
+           onmouseover="this.style.textDecoration='underline'"
+           onmouseout="this.style.textDecoration='none'">
+            Contacta soporte
+        </a>
+    </p>
 </div>
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+[x-cloak] { display: none !important; }
+
+/* HTMX request state — disable button visually */
+.btn[disabled] { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
+</style>
+
+<script>
+/* Redirect 401 HTMX errors globally to login (redundant guard here since we're already on login) */
+document.body.addEventListener('htmx:responseError', function(evt) {
+    if (evt.detail.xhr.status === 403) {
+        window.location.href = '/login';
+    }
+});
+</script>
 {% endblock %}

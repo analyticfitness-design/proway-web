@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Mi Perfil — ProWay Lab</title>
+    <meta name="description" content="Actualiza la información de tu cuenta ProWay Lab">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+
+    <!-- Preconnect for fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- ProWay Design System -->
+    <link rel="stylesheet" href="/dist/assets/module.css">
+
+</head>
+<body>
+    <div id="toast-container" aria-live="polite"></div>
+
+<div class="page flex">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar" x-data="{ open: false }" :class="{ 'is-open': open }">
+        <div class="sidebar__logo">
+            <img src="/images/logo-mark.png" alt="PW" width="28" height="28">
+            <span class="sidebar__logo-text">ProWay</span>
+        </div>
+
+        <nav class="sidebar__nav">
+<span class="sidebar__section-title">Mi Cuenta</span>
+
+<a href="/portal" class="sidebar__link">
+    <span class="sidebar__link-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+        </svg>
+    </span>
+    Dashboard
+</a>
+
+<a href="/proyectos" class="sidebar__link">
+    <span class="sidebar__link-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+    </span>
+    Mis Proyectos
+</a>
+
+<a href="/facturas" class="sidebar__link">
+    <span class="sidebar__link-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+    </span>
+    Facturas
+</a>
+
+<a href="/perfil" class="sidebar__link sidebar__link--active">
+    <span class="sidebar__link-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+        </svg>
+    </span>
+    Mi Perfil
+</a>
+        </nav>
+
+        <div class="sidebar__footer">
+<button class="btn btn--ghost btn--full"
+        style="justify-content:flex-start; gap: var(--pw-space-2);"
+        @click="fetch('/api/v1/auth/logout', {method:'POST', credentials:'include'}).then(() => window.location.href = '/login')">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+    Cerrar Sesión
+</button>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-with-sidebar page-content" id="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Mi Perfil</h1>
+            <div class="flex gap-4"></div>
+        </div>
+
+
+<div class="card"
+     x-data="profileForm()"
+     x-init="init()">
+
+    <div class="card__header">
+        <h2 class="card__title">Información Personal</h2>
+        <span x-show="saved"
+              x-transition:enter="transition ease-out duration-300"
+              x-transition:enter-start="opacity-0"
+              x-transition:enter-end="opacity-100"
+              x-transition:leave="transition ease-in duration-200"
+              x-transition:leave-start="opacity-100"
+              x-transition:leave-end="opacity-0"
+              x-cloak
+              class="badge badge--success">
+            Guardado
+        </span>
+    </div>
+
+    <!-- Error banner -->
+    <div x-show="error"
+         x-cloak
+         x-transition
+         role="alert"
+         style="
+             background: rgba(255,71,87,0.1);
+             border: 1px solid rgba(255,71,87,0.3);
+             border-radius: var(--pw-radius-sm);
+             padding: var(--pw-space-3) var(--pw-space-4);
+             margin-bottom: var(--pw-space-5);
+             color: var(--pw-danger);
+             font-size: var(--pw-text-sm);
+             display: flex;
+             align-items: center;
+             gap: var(--pw-space-2);
+         ">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span x-text="error"></span>
+    </div>
+
+    <form @submit.prevent="submit()" novalidate>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--pw-space-4);">
+
+            <div class="form-group">
+                <label class="form-label" for="nombre">Nombre completo</label>
+                <input class="form-input"
+                       type="text"
+                       id="nombre"
+                       name="nombre"
+                       x-model="form.nombre"
+                       placeholder="Tu nombre completo"
+                       autocomplete="name"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="telefono">Teléfono</label>
+                <input class="form-input"
+                       type="tel"
+                       id="telefono"
+                       name="telefono"
+                       x-model="form.telefono"
+                       placeholder="+52 55 0000 0000"
+                       autocomplete="tel"
+                       inputmode="tel">
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="objetivo">
+                Objetivo del proyecto
+                <span style="color: var(--pw-text-muted); font-weight: var(--pw-weight-normal);">(opcional)</span>
+            </label>
+            <textarea class="form-input"
+                      id="objetivo"
+                      name="objetivo"
+                      x-model="form.objetivo"
+                      rows="3"
+                      placeholder="¿Qué quieres lograr con tus videos? Ej: aumentar ventas, generar awareness de marca..."
+                      style="resize: vertical; min-height: 80px;"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="notas">
+                Notas adicionales
+                <span style="color: var(--pw-text-muted); font-weight: var(--pw-weight-normal);">(opcional)</span>
+            </label>
+            <textarea class="form-input"
+                      id="notas"
+                      name="notas"
+                      x-model="form.notas"
+                      rows="3"
+                      placeholder="Información adicional que quieras compartir con tu equipo ProWay..."
+                      style="resize: vertical; min-height: 80px;"></textarea>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:flex-end; gap: var(--pw-space-3); margin-top: var(--pw-space-6); padding-top: var(--pw-space-4); border-top: 1px solid var(--pw-border);">
+            <button type="button"
+                    class="btn btn--ghost"
+                    @click="reset()"
+                    :disabled="loading || !isDirty">
+                Descartar cambios
+            </button>
+            <button type="submit"
+                    class="btn btn--primary"
+                    :disabled="loading || !isDirty"
+                    style="min-width: 140px;">
+                <span x-show="loading" style="display:flex; align-items:center; gap: var(--pw-space-2);">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         style="animation: pw-spin 0.8s linear infinite;" aria-hidden="true">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                    </svg>
+                    Guardando...
+                </span>
+                <span x-show="!loading">Guardar cambios</span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+@keyframes pw-spin { to { transform: rotate(360deg); } }
+[x-cloak] { display: none !important; }
+
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+/* Toast styles */
+.pw-toast {
+    position: fixed;
+    bottom: var(--pw-space-6);
+    right: var(--pw-space-6);
+    z-index: 9999;
+    min-width: 280px;
+    max-width: 400px;
+    padding: var(--pw-space-4) var(--pw-space-5);
+    border-radius: var(--pw-radius);
+    font-size: var(--pw-text-sm);
+    font-weight: var(--pw-weight-medium);
+    display: flex;
+    align-items: center;
+    gap: var(--pw-space-3);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    animation: pw-toast-in 0.25s ease-out;
+}
+.pw-toast--success {
+    background: rgba(0,212,170,0.15);
+    border: 1px solid rgba(0,212,170,0.4);
+    color: var(--pw-accent-2);
+}
+.pw-toast--error {
+    background: rgba(255,71,87,0.15);
+    border: 1px solid rgba(255,71,87,0.4);
+    color: var(--pw-danger);
+}
+@keyframes pw-toast-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+<script>
+function profileForm() {
+    return {
+        clientId: document.body.dataset.clientId || null,
+
+        form: {
+            nombre:   '',
+            telefono: '',
+            objetivo: '',
+            notas:    ''
+        },
+
+        _original: {},
+
+        loading: false,
+        error:   '',
+        saved:   false,
+
+        get isDirty() {
+            return JSON.stringify(this.form) !== JSON.stringify(this._original);
+        },
+
+        async init() {
+            try {
+                const res = await fetch('/api/v1/clients/me', {
+                    credentials: 'include',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                if (res.status === 401) { window.location.href = '/login'; return; }
+                if (!res.ok) throw new Error('No se pudo cargar el perfil.');
+
+                const data = await res.json();
+                if (data.client) {
+                    this.clientId      = data.client.id;
+                    this.form.nombre   = data.client.nombre   || '';
+                    this.form.telefono = data.client.telefono || '';
+                    this.form.objetivo = data.client.objetivo || '';
+                    this.form.notas    = data.client.notas    || '';
+                    this._original     = { ...this.form };
+                }
+            } catch (e) {
+                this.error = e.message || 'Error al cargar el perfil.';
+            }
+        },
+
+        async submit() {
+            if (!this.isDirty || this.loading) return;
+            this.loading = true;
+            this.error   = '';
+            this.saved   = false;
+
+            try {
+                const url = this.clientId
+                    ? '/api/v1/clients/' + this.clientId
+                    : '/api/v1/clients/me';
+
+                const res = await fetch(url, {
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify(this.form)
+                });
+
+                if (res.status === 401) { window.location.href = '/login'; return; }
+
+                const data = await res.json();
+                if (!res.ok || !data.success) {
+                    throw new Error(data.message || 'Error al guardar. Inténtalo de nuevo.');
+                }
+
+                this._original = { ...this.form };
+                this.saved = true;
+                this.showToast('Perfil actualizado correctamente.', 'success');
+                setTimeout(() => { this.saved = false; }, 3000);
+
+            } catch (e) {
+                this.error = e.message;
+                this.showToast(e.message, 'error');
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        reset() {
+            this.form  = { ...this._original };
+            this.error = '';
+        },
+
+        showToast(message, type) {
+            const toast = document.createElement('div');
+            toast.className = 'pw-toast pw-toast--' + (type || 'success');
+            toast.setAttribute('role', 'status');
+            toast.setAttribute('aria-live', 'polite');
+
+            const msg = document.createElement('span');
+            msg.textContent = message;
+            toast.appendChild(msg);
+
+            const container = document.getElementById('toast-container');
+            if (container) {
+                container.appendChild(toast);
+                setTimeout(function() {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s';
+                    setTimeout(function() { toast.remove(); }, 300);
+                }, 4000);
+            }
+        }
+    };
+}
+
+document.body.addEventListener('htmx:responseError', function(evt) {
+    if (evt.detail.xhr.status === 401) {
+        window.location.href = '/login';
+    }
+});
+</script>
+    </main>
+</div>
+
+    <!-- JS: HTMX + Alpine.js (injected by Vite) -->
+    <script type="module" src="/dist/assets/main.js"></script>
+</body>
+</html>

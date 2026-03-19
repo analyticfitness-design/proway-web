@@ -1,14 +1,14 @@
 {% extends "layouts/app.njk" %}
 
-{% block title %}Admin Dashboard — ProWay Lab{% endblock %}
-{% block description %}Panel de administración ProWay Lab{% endblock %}
-{% block page_title %}Dashboard{% endblock %}
+{% block title %}Clientes — Admin ProWay Lab{% endblock %}
+{% block description %}Gestión de clientes en el panel de administración{% endblock %}
+{% block page_title %}Clientes{% endblock %}
 
 {# ── Sidebar ─────────────────────────────────────────────── #}
 {% block sidebar_nav %}
 <span class="sidebar__section-title">Administración</span>
 
-<a href="/admin" class="sidebar__link sidebar__link--active">
+<a href="/admin" class="sidebar__link">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
@@ -18,7 +18,7 @@
     Dashboard
 </a>
 
-<a href="/admin/clientes" class="sidebar__link">
+<a href="/admin/clientes" class="sidebar__link sidebar__link--active">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -65,7 +65,7 @@
 
 {# ── Page actions ────────────────────────────────────────── #}
 {% block page_actions %}
-<span id="global-spinner" class="htmx-indicator" aria-label="Actualizando">
+<span id="clients-spinner" class="htmx-indicator" aria-label="Actualizando clientes">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
          style="animation: pw-spin 0.8s linear infinite; color: var(--pw-accent);" aria-hidden="true">
         <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
@@ -73,13 +73,12 @@
 </span>
 
 <button class="btn btn--ghost btn--sm"
-        hx-get="/api/partials/admin-stats.php"
-        hx-target="#admin-stats"
+        hx-get="/api/partials/admin-clients.php"
+        hx-target="#clients-table-container"
         hx-swap="innerHTML"
         hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-        hx-indicator="#global-spinner"
-        hx-trigger="click"
-        title="Refrescar todo">
+        hx-indicator="#clients-spinner"
+        title="Actualizar lista">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <polyline points="23 4 23 10 17 10"/>
         <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
@@ -91,79 +90,78 @@
 {# ── Main content ────────────────────────────────────────── #}
 {% block content %}
 
-<!-- Stats row -->
-<div id="admin-stats"
-     hx-get="/api/partials/admin-stats.php"
-     hx-trigger="load"
-     hx-swap="innerHTML"
-     hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-     hx-indicator="#global-spinner"
-     style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--pw-space-4); margin-bottom: var(--pw-space-8);">
-
-    <!-- Skeleton placeholders -->
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-</div>
-
-<!-- Recent clients -->
-<div class="card">
+<div class="card" x-data="{ search: '' }">
     <div class="card__header">
-        <h2 class="card__title">Clientes Recientes</h2>
-        <a href="/admin/clientes" class="btn btn--ghost btn--sm">
-            Ver todos
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+        <h2 class="card__title">Todos los Clientes</h2>
+
+        <!-- Search input (Alpine.js local filter) -->
+        <div style="position: relative; display: flex; align-items: center;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 aria-hidden="true"
+                 style="position:absolute; left: var(--pw-space-3); color: var(--pw-text-muted); pointer-events:none;">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
             </svg>
-        </a>
+            <input type="search"
+                   class="form-input"
+                   x-model="search"
+                   placeholder="Buscar cliente..."
+                   autocomplete="off"
+                   aria-label="Buscar clientes"
+                   style="padding-left: calc(var(--pw-space-3) + 15px + var(--pw-space-2)); width: 220px; height: 36px; font-size: var(--pw-text-sm);">
+        </div>
     </div>
 
-    <div id="admin-clients"
+    <!-- Clients table loaded via HTMX; Alpine filters rows client-side after load -->
+    <div id="clients-table-container"
          hx-get="/api/partials/admin-clients.php"
          hx-trigger="load"
          hx-swap="innerHTML"
          hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-         hx-indicator="#global-spinner">
+         hx-indicator="#clients-spinner">
 
-        <!-- Skeleton table -->
+        <!-- Skeleton loader while HTMX fetches -->
         <div class="table-wrapper" aria-busy="true" aria-label="Cargando clientes">
             <table class="table">
                 <thead>
                     <tr>
                         <th>Cliente</th>
+                        <th>Email</th>
                         <th>Plan</th>
                         <th>Estado</th>
-                        <th>Fecha</th>
+                        <th>Proyectos</th>
+                        <th>Registro</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for i in range(0, 5) %}
+                    {% for i in range(0, 8) %}
                     <tr class="loading-skeleton" aria-hidden="true">
-                        <td><span class="skeleton-text" style="width: 140px;"></span></td>
-                        <td><span class="skeleton-text" style="width: 80px;"></span></td>
-                        <td><span class="skeleton-text" style="width: 70px; border-radius: var(--pw-radius-full);"></span></td>
+                        <td><span class="skeleton-text" style="width: 130px;"></span></td>
+                        <td><span class="skeleton-text" style="width: 170px;"></span></td>
+                        <td><span class="skeleton-text" style="width: 70px;"></span></td>
+                        <td><span class="skeleton-text" style="width: 65px; border-radius: var(--pw-radius-full);"></span></td>
+                        <td><span class="skeleton-text" style="width: 30px;"></span></td>
                         <td><span class="skeleton-text" style="width: 90px;"></span></td>
-                        <td><span class="skeleton-text" style="width: 60px;"></span></td>
+                        <td><span class="skeleton-text" style="width: 80px;"></span></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+
     </div>
+
+    {#
+        After HTMX loads the table, Alpine.js x-model="search" drives
+        client-side row filtering. The partial at /api/partials/admin-clients.php
+        should render each <tr> with a data-search attribute containing
+        lowercase name+email so the filter below works without a round-trip.
+
+        Example partial row:
+          <tr data-search="nombre apellido email@domain.com">...</tr>
+
+        The htmx:afterSwap listener below binds the filter once the DOM is ready.
+    #}
 </div>
 
 <style>
@@ -188,6 +186,48 @@
 </style>
 
 <script>
+/* ── Client-side row filter ─────────────────────────────────
+   Runs whenever the Alpine search value changes. Filters <tr>
+   elements by their data-search attribute (set by the PHP partial).
+   Falls back gracefully if rows have no data-search attribute.
+   ──────────────────────────────────────────────────────────── */
+(function() {
+    function bindSearch() {
+        var cardEl = document.querySelector('[x-data]');
+        if (!cardEl || !window.Alpine) return;
+
+        // Watch Alpine's reactive `search` property via a DOM watcher
+        var inputEl = cardEl.querySelector('input[type="search"]');
+        if (!inputEl) return;
+
+        inputEl.addEventListener('input', filterRows);
+    }
+
+    function filterRows() {
+        var cardEl = document.querySelector('[x-data]');
+        if (!cardEl) return;
+        var term = (cardEl.querySelector('input[type="search"]') || {}).value || '';
+        var lower = term.toLowerCase().trim();
+        var rows  = document.querySelectorAll('#clients-table-container tbody tr');
+
+        rows.forEach(function(row) {
+            var haystack = (row.dataset.search || row.textContent || '').toLowerCase();
+            row.style.display = (!lower || haystack.includes(lower)) ? '' : 'none';
+        });
+    }
+
+    /* Re-bind after each HTMX swap so the listener works on fresh DOM */
+    document.body.addEventListener('htmx:afterSwap', function(evt) {
+        if (evt.detail.target && evt.detail.target.id === 'clients-table-container') {
+            bindSearch();
+            filterRows(); // apply any existing search term immediately
+        }
+    });
+
+    /* Initial bind on page load */
+    document.addEventListener('DOMContentLoaded', bindSearch);
+})();
+
 document.body.addEventListener('htmx:responseError', function(evt) {
     if (evt.detail.xhr.status === 401) {
         window.location.href = '/login';
