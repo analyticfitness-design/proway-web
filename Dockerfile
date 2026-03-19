@@ -58,11 +58,17 @@ RUN apk add --no-cache \
 COPY docker/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY docker/php.ini     /usr/local/etc/php/conf.d/prowaylab.ini
 
-# PHP-FPM: listen on TCP (needed by nginx fastcgi_pass)
-RUN sed -i 's|listen = /var/run/php-fpm.sock|listen = 127.0.0.1:9000|' \
-        /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i 's|;listen.owner|listen.owner|' /usr/local/etc/php-fpm.d/www.conf \
-    && sed -i 's|;listen.group|listen.group|' /usr/local/etc/php-fpm.d/www.conf
+# PHP-FPM pool: proceso dinámico + timeout
+RUN { \
+    echo '[www]'; \
+    echo 'pm = dynamic'; \
+    echo 'pm.max_children = 15'; \
+    echo 'pm.start_servers = 3'; \
+    echo 'pm.min_spare_servers = 2'; \
+    echo 'pm.max_spare_servers = 8'; \
+    echo 'pm.max_requests = 500'; \
+    echo 'request_terminate_timeout = 60s'; \
+} >> /usr/local/etc/php-fpm.d/www.conf
 
 # Nginx + Supervisor configuration
 COPY nginx.conf       /etc/nginx/http.d/default.conf
