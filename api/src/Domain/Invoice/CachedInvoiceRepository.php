@@ -12,6 +12,16 @@ class CachedInvoiceRepository implements InvoiceRepository
         private readonly CacheInterface $cache
     ) {}
 
+    public function findById(int $id): ?array
+    {
+        return $this->inner->findById($id);
+    }
+
+    public function findByClientAndId(int $clientId, int $id): ?array
+    {
+        return $this->inner->findByClientAndId($clientId, $id);
+    }
+
     public function findAllForClient(int $clientId): array
     {
         $key    = "pw:invoices:client:{$clientId}";

@@ -6,6 +6,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use ProWay\Api\V1\Controller\AuthController;
 use ProWay\Api\V1\Controller\ClientController;
 use ProWay\Api\V1\Controller\InvoiceController;
+use ProWay\Api\V1\Controller\PaymentController;
 use ProWay\Api\V1\Controller\ProjectController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
@@ -20,8 +21,10 @@ use ProWay\Domain\Invoice\MySQLInvoiceRepository;
 use ProWay\Domain\Project\CachedProjectRepository;
 use ProWay\Domain\Project\MySQLProjectRepository;
 use ProWay\Domain\Project\ProjectService;
+use ProWay\Domain\Payment\WompiService;
 use ProWay\Infrastructure\Cache\CacheFactory;
 use ProWay\Infrastructure\Database\Connection;
+use ProWay\Infrastructure\Email\MailjetService;
 use ProWay\Infrastructure\Http\Request;
 use ProWay\Infrastructure\Http\Response;
 use ProWay\Infrastructure\Http\Router;
@@ -58,17 +61,21 @@ $clientService  = new ClientService(new CachedClientRepository(new MySQLClientRe
 $projectService = new ProjectService(new CachedProjectRepository(new MySQLProjectRepository($pdo), $cache));
 $invoiceService = new InvoiceService(new CachedInvoiceRepository(new MySQLInvoiceRepository($pdo), $cache));
 
+$wompi   = new WompiService();
+$mailer  = new MailjetService();
+
 $authCtrl    = new AuthController($auth, $mw);
 $clientCtrl  = new ClientController($clientService, $mw);
 $projectCtrl = new ProjectController($projectService, $mw);
 $invoiceCtrl = new InvoiceController($invoiceService, $mw);
+$paymentCtrl = new PaymentController($invoiceService, $clientService, $wompi, $mailer, $mw);
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',  [$authCtrl, 'login']);
@@ -90,6 +97,10 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('GET',   '/api/v1/invoices/pending',                  [$invoiceCtrl, 'pending']);
     $r->addRoute('POST',  '/api/v1/invoices/{id:\d+}/pay',             [$invoiceCtrl, 'pay']);
     $r->addRoute('PATCH', '/api/v1/invoices/{id:\d+}/status',          [$invoiceCtrl, 'updateStatus']);
+
+    // Payments (Wompi)
+    $r->addRoute('POST', '/api/v1/payments/checkout', [$paymentCtrl, 'checkout']);
+    $r->addRoute('POST', '/api/v1/payments/webhook',  [$paymentCtrl, 'webhook']);
 });
 
 $request  = new Request();

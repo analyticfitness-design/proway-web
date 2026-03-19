@@ -9,6 +9,22 @@ class MySQLInvoiceRepository implements InvoiceRepository
 {
     public function __construct(private readonly PDO $db) {}
 
+    public function findById(int $id): ?array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM invoices WHERE id = ?');
+        $stmt->execute([$id]);
+        $row = $stmt->fetch();
+        return $row !== false ? $row : null;
+    }
+
+    public function findByClientAndId(int $clientId, int $id): ?array
+    {
+        $stmt = $this->db->prepare('SELECT * FROM invoices WHERE id = ? AND client_id = ?');
+        $stmt->execute([$id, $clientId]);
+        $row = $stmt->fetch();
+        return $row !== false ? $row : null;
+    }
+
     public function findAllForClient(int $clientId): array
     {
         $stmt = $this->db->prepare(

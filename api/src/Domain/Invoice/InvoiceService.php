@@ -9,6 +9,16 @@ class InvoiceService
 
     public function __construct(private readonly InvoiceRepository $repo) {}
 
+    public function getById(int $id): ?array
+    {
+        return $this->repo->findById($id);
+    }
+
+    public function getForClient(int $clientId, int $id): ?array
+    {
+        return $this->repo->findByClientAndId($clientId, $id);
+    }
+
     public function listForClient(int $clientId): array
     {
         return $this->repo->findAllForClient($clientId);

@@ -7,6 +7,11 @@ class ClientService
 {
     public function __construct(private readonly ClientRepository $repo) {}
 
+    public function getById(int $id): ?array
+    {
+        return $this->repo->findById($id);
+    }
+
     public function getByCode(string $code): ?array
     {
         return $this->repo->findByCode($code);
