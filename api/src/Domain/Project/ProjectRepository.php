@@ -8,4 +8,10 @@ interface ProjectRepository
     public function findAllForClient(int $clientId): array;
     public function findById(int $id): ?array;
     public function updateStatus(int $id, string $status): bool;
+
+    // ── Admin-scope queries ────────────────────────────────────────────────────
+    /** All projects across all clients with client info joined, newest first. */
+    public function findAll(): array;
+    /** Count projects in active states (produccion, revision, entrega). */
+    public function countActive(): int;
 }

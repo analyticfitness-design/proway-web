@@ -33,4 +33,23 @@ class MySQLProjectRepository implements ProjectRepository
         $stmt->execute([$status, $id]);
         return $stmt->rowCount() > 0;
     }
+
+    public function findAll(): array
+    {
+        $stmt = $this->db->query(
+            'SELECT p.*, c.nombre AS client_name, c.code AS client_code
+             FROM projects p
+             LEFT JOIN clients c ON c.id = p.client_id
+             ORDER BY p.created_at DESC'
+        );
+        return $stmt->fetchAll();
+    }
+
+    public function countActive(): int
+    {
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) FROM projects WHERE status IN ('produccion','revision','entrega')"
+        );
+        return (int) $stmt->fetchColumn();
+    }
 }

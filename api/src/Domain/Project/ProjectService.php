@@ -5,7 +5,7 @@ namespace ProWay\Domain\Project;
 
 class ProjectService
 {
-    private const VALID_STATUSES = ['pendiente', 'en_progreso', 'revision', 'completado'];
+    private const VALID_STATUSES = ['pendiente', 'produccion', 'revision', 'entrega', 'completado', 'cancelado'];
 
     public function __construct(private readonly ProjectRepository $repo) {}
 
@@ -26,5 +26,17 @@ class ProjectService
         }
 
         return $this->repo->updateStatus($id, $status);
+    }
+
+    // ── Admin-scope methods ────────────────────────────────────────────────────
+
+    public function listAll(): array
+    {
+        return $this->repo->findAll();
+    }
+
+    public function countActive(): int
+    {
+        return $this->repo->countActive();
     }
 }

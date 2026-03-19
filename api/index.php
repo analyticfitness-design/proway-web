@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/vendor/autoload.php';
 
+use ProWay\Api\V1\Controller\AdminController;
 use ProWay\Api\V1\Controller\AuthController;
 use ProWay\Api\V1\Controller\ClientController;
 use ProWay\Api\V1\Controller\InvoiceController;
@@ -69,13 +70,14 @@ $clientCtrl  = new ClientController($clientService, $mw);
 $projectCtrl = new ProjectController($projectService, $mw);
 $invoiceCtrl = new InvoiceController($invoiceService, $mw);
 $paymentCtrl = new PaymentController($invoiceService, $clientService, $wompi, $mailer, $mw);
+$adminCtrl   = new AdminController($invoiceService, $projectService, $mw);
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',  [$authCtrl, 'login']);
@@ -101,6 +103,10 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     // Payments (Wompi)
     $r->addRoute('POST', '/api/v1/payments/checkout', [$paymentCtrl, 'checkout']);
     $r->addRoute('POST', '/api/v1/payments/webhook',  [$paymentCtrl, 'webhook']);
+
+    // Admin
+    $r->addRoute('GET',  '/api/v1/admin/stats',    [$adminCtrl, 'stats']);
+    $r->addRoute('POST', '/api/v1/admin/invoices', [$adminCtrl, 'createInvoice']);
 });
 
 $request  = new Request();

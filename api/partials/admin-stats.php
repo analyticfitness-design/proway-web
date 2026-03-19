@@ -13,12 +13,17 @@ if ($currentUser->type !== 'admin') {
 }
 
 try {
-    $activeClients = $clientService->getActiveClients();
-    $clientCount   = count($activeClients);
+    $activeClients  = $clientService->getActiveClients();
+    $clientCount    = count($activeClients);
+    $activeProjects = $projectService->countActive();
+    $pendingInv     = $invoiceService->countPending();
+    $monthlyIncome  = $invoiceService->sumPaidThisMonth();
 } catch (Throwable $e) {
     echo '<div class="alert alert--error">Error al cargar las estadísticas. Inténtalo de nuevo.</div>';
     exit;
 }
+
+$incomeFormatted = '$' . number_format($monthlyIncome, 0, ',', '.');
 ?>
 <div class="stat-card">
     <div class="stat-card__value"><?= $clientCount ?></div>
@@ -26,16 +31,16 @@ try {
 </div>
 
 <div class="stat-card">
-    <div class="stat-card__value">—</div>
+    <div class="stat-card__value"><?= $activeProjects ?></div>
     <div class="stat-card__label">Proyectos Activos</div>
 </div>
 
 <div class="stat-card">
-    <div class="stat-card__value">—</div>
+    <div class="stat-card__value"><?= $pendingInv ?></div>
     <div class="stat-card__label">Facturas Pendientes</div>
 </div>
 
 <div class="stat-card">
-    <div class="stat-card__value">—</div>
+    <div class="stat-card__value"><?= $incomeFormatted ?></div>
     <div class="stat-card__label">Ingresos del Mes</div>
 </div>

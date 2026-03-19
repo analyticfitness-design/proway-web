@@ -11,4 +11,14 @@ interface InvoiceRepository
     public function findByClientAndId(int $clientId, int $id): ?array;
     public function markPaid(int $id, string $method, string $reference): bool;
     public function updateStatus(int $id, string $status): bool;
+
+    // ── Admin-scope queries ────────────────────────────────────────────────────
+    /** Return every invoice across all clients, newest first. */
+    public function findAll(): array;
+    /** Count invoices in payable states (pendiente + enviada). */
+    public function countPending(): int;
+    /** Sum of total_cop for invoices paid in the current calendar month. */
+    public function sumPaidThisMonth(): float;
+    /** Insert a new invoice and return its auto-increment id. */
+    public function create(array $data): int;
 }

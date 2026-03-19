@@ -52,17 +52,35 @@ class CachedInvoiceRepository implements InvoiceRepository
         return $data;
     }
 
+    // Admin queries bypass cache — aggregate data must be fresh.
+
+    public function findAll(): array
+    {
+        return $this->inner->findAll();
+    }
+
+    public function countPending(): int
+    {
+        return $this->inner->countPending();
+    }
+
+    public function sumPaidThisMonth(): float
+    {
+        return $this->inner->sumPaidThisMonth();
+    }
+
+    public function create(array $data): int
+    {
+        return $this->inner->create($data);
+    }
+
     public function markPaid(int $id, string $method, string $reference): bool
     {
-        // We delegate directly. Since InvoiceRepository has no findById,
-        // we cannot determine the client_id to invalidate list keys.
-        // The TTL of 180s is acceptable for invoice data freshness.
         return $this->inner->markPaid($id, $method, $reference);
     }
 
     public function updateStatus(int $id, string $status): bool
     {
-        // Same as markPaid: delegate directly, rely on TTL expiry for list invalidation.
         return $this->inner->updateStatus($id, $status);
     }
 }

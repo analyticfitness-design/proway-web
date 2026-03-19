@@ -43,6 +43,59 @@ class MySQLInvoiceRepository implements InvoiceRepository
         return $stmt->fetchAll();
     }
 
+    public function findAll(): array
+    {
+        $stmt = $this->db->query(
+            'SELECT i.*, c.nombre AS client_name, c.email AS client_email
+             FROM invoices i
+             LEFT JOIN clients c ON c.id = i.client_id
+             ORDER BY i.created_at DESC'
+        );
+        return $stmt->fetchAll();
+    }
+
+    public function countPending(): int
+    {
+        $stmt = $this->db->query(
+            "SELECT COUNT(*) FROM invoices WHERE status IN ('pendiente', 'enviada')"
+        );
+        return (int) $stmt->fetchColumn();
+    }
+
+    public function sumPaidThisMonth(): float
+    {
+        $stmt = $this->db->query(
+            "SELECT COALESCE(SUM(total_cop), 0)
+             FROM invoices
+             WHERE status = 'pagada'
+               AND paid_at >= DATE_FORMAT(NOW(), '%Y-%m-01')
+               AND paid_at <  DATE_FORMAT(NOW() + INTERVAL 1 MONTH, '%Y-%m-01')"
+        );
+        return (float) $stmt->fetchColumn();
+    }
+
+    public function create(array $data): int
+    {
+        $stmt = $this->db->prepare(
+            'INSERT INTO invoices
+                (client_id, project_id, invoice_number, amount_cop, tax_cop, total_cop, status, due_date, notes)
+             VALUES
+                (:client_id, :project_id, :invoice_number, :amount_cop, :tax_cop, :total_cop, :status, :due_date, :notes)'
+        );
+        $stmt->execute([
+            ':client_id'      => $data['client_id'],
+            ':project_id'     => $data['project_id'] ?? null,
+            ':invoice_number' => $data['invoice_number'],
+            ':amount_cop'     => $data['amount_cop'],
+            ':tax_cop'        => $data['tax_cop'] ?? 0,
+            ':total_cop'      => $data['total_cop'],
+            ':status'         => $data['status'] ?? 'enviada',
+            ':due_date'       => $data['due_date'] ?? null,
+            ':notes'          => $data['notes'] ?? null,
+        ]);
+        return (int) $this->db->lastInsertId();
+    }
+
     public function markPaid(int $id, string $method, string $reference): bool
     {
         $stmt = $this->db->prepare(
