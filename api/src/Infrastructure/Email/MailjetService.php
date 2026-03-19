@@ -4,20 +4,31 @@ declare(strict_types=1);
 
 namespace ProWay\Infrastructure\Email;
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+
 /**
- * Mailjet transactional email via REST API v3.1.
+ * Transactional email service.
  *
- * Uses cURL + Basic Auth (API_KEY:SECRET_KEY) — no SMTP required.
+ * Primary:  Mailjet REST API v3.1 (when MAILJET_API_KEY is set).
+ * Fallback: SMTP via PHPMailer (smtp.privateemail.com or any host in MAIL_SMTP_HOST).
+ *
  * Docs: https://dev.mailjet.com/email/guides/send-api-v31/
  */
 class MailjetService
 {
-    private const API_URL = 'https://api.mailjet.com/v3.1/send';
+    private const MJ_API_URL = 'https://api.mailjet.com/v3.1/send';
 
     private string $apiKey;
     private string $secretKey;
     private string $fromEmail;
     private string $fromName;
+
+    // SMTP fallback settings
+    private string $smtpHost;
+    private int    $smtpPort;
+    private string $smtpUser;
+    private string $smtpPass;
 
     public function __construct()
     {
@@ -25,10 +36,15 @@ class MailjetService
         $this->secretKey = $_ENV['MAILJET_SECRET_KEY'] ?? '';
         $this->fromEmail = $_ENV['MAIL_FROM']          ?? 'info@prowaylab.com';
         $this->fromName  = $_ENV['MAIL_FROM_NAME']     ?? 'ProWay Lab';
+
+        $this->smtpHost = $_ENV['MAIL_SMTP_HOST'] ?? 'smtp.privateemail.com';
+        $this->smtpPort = (int) ($_ENV['MAIL_SMTP_PORT'] ?? 465);
+        $this->smtpUser = $_ENV['MAIL_SMTP_USER'] ?? $this->fromEmail;
+        $this->smtpPass = $_ENV['MAIL_SMTP_PASS'] ?? '';
     }
 
     /**
-     * Send a transactional email via Mailjet API v3.1.
+     * Send a transactional email. Uses Mailjet if keys are set, otherwise SMTP.
      */
     public function send(
         string $toEmail,
@@ -37,23 +53,58 @@ class MailjetService
         string $htmlContent,
         ?string $textContent = null
     ): bool {
-        if ($this->apiKey === '' || $this->secretKey === '') {
-            return false;
+        if ($this->apiKey !== '' && $this->secretKey !== '') {
+            return $this->sendViaMailjet($toEmail, $toName, $subject, $htmlContent, $textContent);
         }
 
+        if ($this->smtpPass !== '') {
+            return $this->sendViaSmtp($toEmail, $toName, $subject, $htmlContent, $textContent);
+        }
+
+        return false;
+    }
+
+    public function sendPaymentConfirmation(array $invoice, array $client): bool
+    {
+        $subject = "Pago confirmado — Factura #{$invoice['invoice_number']}";
+        $amount  = number_format((float) ($invoice['total_cop'] ?? $invoice['amount_cop'] ?? 0), 0, ',', '.');
+        $html    = $this->buildPaymentConfirmationHtml($invoice, $client, $amount);
+        $name    = $client['nombre'] ?? $client['name'] ?? 'Cliente';
+        $email   = $client['email'] ?? '';
+
+        return $this->send($email, $name, $subject, $html);
+    }
+
+    public function sendWelcome(array $client): bool
+    {
+        $subject = 'Bienvenido a ProWay Lab';
+        $html    = $this->buildWelcomeHtml($client);
+        $name    = $client['nombre'] ?? $client['name'] ?? 'Cliente';
+        $email   = $client['email'] ?? '';
+
+        return $this->send($email, $name, $subject, $html);
+    }
+
+    // ── Private transport methods ──────────────────────────────────────────────
+
+    private function sendViaMailjet(
+        string $toEmail,
+        string $toName,
+        string $subject,
+        string $htmlContent,
+        ?string $textContent
+    ): bool {
         $payload = [
-            'Messages' => [
-                [
-                    'From'     => ['Email' => $this->fromEmail, 'Name' => $this->fromName],
-                    'To'       => [['Email' => $toEmail, 'Name' => $toName]],
-                    'Subject'  => $subject,
-                    'HTMLPart' => $htmlContent,
-                    'TextPart' => $textContent ?? strip_tags($htmlContent),
-                ],
-            ],
+            'Messages' => [[
+                'From'     => ['Email' => $this->fromEmail, 'Name' => $this->fromName],
+                'To'       => [['Email' => $toEmail, 'Name' => $toName]],
+                'Subject'  => $subject,
+                'HTMLPart' => $htmlContent,
+                'TextPart' => $textContent ?? strip_tags($htmlContent),
+            ]],
         ];
 
-        $ch = curl_init(self::API_URL);
+        $ch = curl_init(self::MJ_API_URL);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST           => true,
@@ -77,35 +128,48 @@ class MailjetService
             && $body['Messages'][0]['Status'] === 'success';
     }
 
-    /**
-     * Send a payment confirmation email after a successful Wompi transaction.
-     */
-    public function sendPaymentConfirmation(array $invoice, array $client): bool
-    {
-        $subject = "Pago confirmado — Factura #{$invoice['invoice_number']}";
-        $amount  = number_format((float) $invoice['amount'], 0, ',', '.');
+    private function sendViaSmtp(
+        string $toEmail,
+        string $toName,
+        string $subject,
+        string $htmlContent,
+        ?string $textContent
+    ): bool {
+        $mail = new PHPMailer(true);
 
-        $html = $this->buildPaymentConfirmationHtml($invoice, $client, $amount);
+        try {
+            $mail->isSMTP();
+            $mail->Host       = $this->smtpHost;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $this->smtpUser;
+            $mail->Password   = $this->smtpPass;
+            $mail->SMTPSecure = $this->smtpPort === 587 ? PHPMailer::ENCRYPTION_STARTTLS : PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = $this->smtpPort;
+            $mail->CharSet    = 'UTF-8';
+            $mail->Timeout    = 10;
 
-        return $this->send($client['email'], $client['name'], $subject, $html);
+            $mail->setFrom($this->fromEmail, $this->fromName);
+            $mail->addAddress($toEmail, $toName);
+
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = $htmlContent;
+            $mail->AltBody = $textContent ?? strip_tags($htmlContent);
+
+            $mail->send();
+            return true;
+        } catch (\Exception) {
+            return false;
+        }
     }
 
-    /**
-     * Send a welcome email when a new client is registered.
-     */
-    public function sendWelcome(array $client): bool
-    {
-        $subject = 'Bienvenido a ProWay Lab';
-        $html    = $this->buildWelcomeHtml($client);
-
-        return $this->send($client['email'], $client['name'], $subject, $html);
-    }
+    // ── HTML builders ──────────────────────────────────────────────────────────
 
     private function buildPaymentConfirmationHtml(array $invoice, array $client, string $amount): string
     {
-        $name        = htmlspecialchars($client['name'], ENT_QUOTES, 'UTF-8');
-        $number      = htmlspecialchars($invoice['invoice_number'], ENT_QUOTES, 'UTF-8');
-        $description = htmlspecialchars($invoice['description'], ENT_QUOTES, 'UTF-8');
+        $name        = htmlspecialchars($client['nombre'] ?? $client['name'] ?? 'Cliente', ENT_QUOTES, 'UTF-8');
+        $number      = htmlspecialchars($invoice['invoice_number'] ?? '—', ENT_QUOTES, 'UTF-8');
+        $description = htmlspecialchars($invoice['notes'] ?? $invoice['description'] ?? '—', ENT_QUOTES, 'UTF-8');
 
         return <<<HTML
         <!DOCTYPE html>
@@ -145,7 +209,7 @@ class MailjetService
 
     private function buildWelcomeHtml(array $client): string
     {
-        $name   = htmlspecialchars($client['name'], ENT_QUOTES, 'UTF-8');
+        $name   = htmlspecialchars($client['nombre'] ?? $client['name'] ?? 'Cliente', ENT_QUOTES, 'UTF-8');
         $portal = 'https://prowaylab.com/portal';
 
         return <<<HTML
