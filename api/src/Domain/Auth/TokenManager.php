@@ -17,7 +17,7 @@ class TokenManager
         $expires  = date('Y-m-d H:i:s', time() + ($expiryHours * 3600));
 
         $stmt = $this->db->prepare(
-            'INSERT INTO auth_tokens (client_id, token_hash, expires_at, type) VALUES (?, ?, ?, ?)'
+            'INSERT INTO auth_tokens (user_id, token, expires_at, user_type) VALUES (?, ?, ?, ?)'
         );
         $stmt->execute([$userId, $hash, $expires, $type]);
 
@@ -29,8 +29,8 @@ class TokenManager
     {
         $hash = hash('sha256', $token);
         $stmt = $this->db->prepare(
-            'SELECT client_id, type FROM auth_tokens
-             WHERE token_hash = ? AND expires_at > NOW()'
+            'SELECT user_id AS client_id, user_type AS type FROM auth_tokens
+             WHERE token = ? AND expires_at > NOW()'
         );
         $stmt->execute([$hash]);
         $row = $stmt->fetch();
@@ -42,7 +42,7 @@ class TokenManager
     public function revoke(string $token): void
     {
         $hash = hash('sha256', $token);
-        $stmt = $this->db->prepare('DELETE FROM auth_tokens WHERE token_hash = ?');
+        $stmt = $this->db->prepare('DELETE FROM auth_tokens WHERE token = ?');
         $stmt->execute([$hash]);
     }
 }
