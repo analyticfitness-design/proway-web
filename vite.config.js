@@ -13,9 +13,9 @@ export default defineConfig({
                 admin: path.resolve(__dirname, 'src/frontend/js/admin.js'),
             },
             output: {
-                entryFileNames: '[name].js',
-                chunkFileNames: '[name].js',
-                assetFileNames: '[name][extname]',
+                entryFileNames: 'assets/[name].js',
+                chunkFileNames: 'assets/[name].js',
+                assetFileNames: 'assets/[name][extname]',
             },
         },
         sourcemap: false,
