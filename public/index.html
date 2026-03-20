@@ -1018,7 +1018,282 @@
         }
         .d1{transition-delay:0.05s} .d2{transition-delay:0.12s} .d3{transition-delay:0.19s}
         .d4{transition-delay:0.26s} .d5{transition-delay:0.33s} .d6{transition-delay:0.40s}
+
+
+    /* ================================================
+       PORTFOLIO SECTION — index.html
+       ================================================ */
+    #portafolio-landing {
+        padding: 100px 0 80px;
+        background: var(--surface);
+        position: relative;
+        overflow: hidden;
+    }
+    #portafolio-landing::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 50%;
+        transform: translateX(-50%);
+        width: 1px; height: 80px;
+        background: linear-gradient(to bottom, transparent, var(--border));
+    }
+    .port-wrap {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 0 32px;
+    }
+    .port-header {
+        text-align: center;
+        margin-bottom: 52px;
+    }
+    .port-filters {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 48px;
+    }
+    .port-filter-btn {
+        font-family: var(--font-m);
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--gray);
+        background: transparent;
+        border: 1px solid var(--border);
+        padding: 9px 20px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        outline: none;
+    }
+    .port-filter-btn:hover {
+        color: var(--white);
+        border-color: rgba(0,217,255,0.45);
+    }
+    .port-filter-btn.active {
+        color: var(--bg);
+        background: var(--blue);
+        border-color: var(--blue);
+        box-shadow: 0 0 18px rgba(0,217,255,0.35);
+    }
+    .port-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+    @media (max-width: 900px) { .port-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .port-grid { grid-template-columns: 1fr; } }
+
+    .port-card {
+        position: relative;
+        aspect-ratio: 9 / 16;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94),
+                    border-color 0.3s ease,
+                    box-shadow 0.3s ease;
+    }
+    .port-card:hover {
+        transform: scale(1.03);
+        border-color: var(--blue);
+        box-shadow: 0 12px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,217,255,0.35);
+    }
+    .port-card img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.5s ease;
+    }
+    .port-card:hover img { transform: scale(1.08); }
+    .port-card-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);
+        transition: background 0.3s ease;
+    }
+    .port-card:hover .port-card-overlay {
+        background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.3) 55%, rgba(0,217,255,0.04) 100%);
+    }
+    .port-play-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: rgba(0,217,255,0.15);
+        border: 1.5px solid rgba(0,217,255,0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.25s ease, transform 0.25s ease, background 0.25s ease;
+        backdrop-filter: blur(6px);
+    }
+    .port-play-btn svg { width: 20px; height: 20px; fill: var(--blue); margin-left: 3px; }
+    .port-card:hover .port-play-btn {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    .port-play-btn:hover {
+        background: rgba(0,217,255,0.3);
+    }
+    .port-card-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px 16px 16px;
+        z-index: 2;
+    }
+    .port-card-cat {
+        font-family: var(--font-m);
+        font-size: 9px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--blue);
+        margin-bottom: 6px;
+    }
+    .port-card-title {
+        font-family: var(--font-h);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--white);
+        line-height: 1.3;
+        letter-spacing: 0.02em;
+    }
+    .port-card-meta {
+        font-family: var(--font-m);
+        font-size: 10px;
+        color: var(--dark);
+        margin-top: 4px;
+        letter-spacing: 0.08em;
+    }
+    .port-cta {
+        text-align: center;
+        margin-top: 52px;
+    }
+
+    /* LIGHTBOX */
+    .port-lightbox {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.94);
+        z-index: 99000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        backdrop-filter: blur(12px);
+    }
+    .port-lightbox-inner {
+        position: relative;
+        width: 100%;
+        max-width: 420px;
+        aspect-ratio: 9 / 16;
+        background: #000;
+        border: 1px solid var(--border);
+        box-shadow: 0 0 80px rgba(0,217,255,0.15);
+    }
+    @media (max-width: 480px) {
+        .port-lightbox-inner { max-width: 100%; height: 100%; aspect-ratio: auto; }
+        .port-lightbox { padding: 0; align-items: stretch; }
+    }
+    .port-lightbox-close {
+        position: absolute;
+        top: -44px;
+        right: 0;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--gray);
+        font-size: 20px;
+        cursor: pointer;
+        border-radius: 50%;
+        transition: border-color 0.2s, color 0.2s;
+        z-index: 10;
+    }
+    .port-lightbox-close:hover { border-color: var(--red); color: var(--red); }
+    .port-lightbox-meta {
+        position: absolute;
+        bottom: -56px;
+        left: 0;
+        right: 0;
+    }
+    .port-lightbox-title {
+        font-family: var(--font-h);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--white);
+        letter-spacing: 0.02em;
+    }
+    .port-lightbox-cat {
+        font-family: var(--font-m);
+        font-size: 10px;
+        color: var(--blue);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        margin-top: 4px;
+    }
+    .port-lightbox-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.5);
+        border: 1px solid var(--border);
+        color: var(--white);
+        font-size: 18px;
+        cursor: pointer;
+        border-radius: 50%;
+        transition: border-color 0.2s, background 0.2s;
+        z-index: 10;
+        backdrop-filter: blur(4px);
+    }
+    .port-lightbox-nav:hover { border-color: var(--blue); background: rgba(0,217,255,0.12); }
+    .port-lightbox-prev { left: -52px; }
+    .port-lightbox-next { right: -52px; }
+    @media (max-width: 600px) {
+        .port-lightbox-prev { left: 8px; }
+        .port-lightbox-next { right: 8px; }
+    }
+    .port-lightbox-link {
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: var(--font-m);
+        font-size: 9px;
+        letter-spacing: 0.22em;
+        color: var(--blue);
+        text-decoration: none;
+        text-transform: uppercase;
+        border: 1px solid rgba(0,217,255,0.4);
+        padding: 6px 14px;
+        background: rgba(0,0,0,0.6);
+        transition: background 0.2s;
+        white-space: nowrap;
+    }
+    .port-lightbox-link:hover { background: rgba(0,217,255,0.12); }
+    [x-cloak] { display: none !important; }
     </style>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
 
@@ -1644,7 +1919,545 @@
 </section>
 
 <!-- =====================
-     08. WELLCORE
+     07B. PORTAFOLIO VISUAL
+     ===================== -->
+<section id="portafolio-landing"
+  x-data="portfolioGallery()"
+  x-init="init()"
+  @keydown.escape.window="closeLightbox()"
+  x-cloak>
+
+  <div class="port-wrap">
+
+    <!-- Header -->
+    <div class="port-header rv">
+      <div class="sec-label">Producción audiovisual</div>
+      <h2 class="sec-title">NUESTRO <span class="text-blue">PORTAFOLIO</span></h2>
+      <p style="font-size:15px;color:var(--gray);margin-top:14px;max-width:520px;margin-left:auto;margin-right:auto">
+        Contenido que transforma marcas fitness. Reels, branding y producción completa.
+      </p>
+    </div>
+
+    <!-- Filter buttons -->
+    <div class="port-filters rv">
+      <template x-for="cat in categories" :key="cat.id">
+        <button
+          class="port-filter-btn"
+          :class="{ active: activeFilter === cat.id }"
+          @click="setFilter(cat.id)"
+          x-text="cat.label">
+        </button>
+      </template>
+    </div>
+
+    <!-- Grid -->
+    <div class="port-grid">
+      <template x-for="(item, idx) in filteredItems" :key="item.id">
+        <div
+          class="port-card rv"
+          @click="openLightbox(idx)">
+          <img :src="item.thumbnail" :alt="item.title" loading="lazy">
+          <div class="port-card-overlay"></div>
+          <div class="port-play-btn" aria-hidden="true">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="port-card-info">
+            <div class="port-card-cat" x-text="item.categoryLabel"></div>
+            <div class="port-card-title" x-text="item.title"></div>
+            <div class="port-card-meta" x-text="item.meta"></div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- CTA -->
+    <div class="port-cta rv">
+      <a href="/portafolio" style="display:inline-flex;align-items:center;gap:12px;font-family:var(--font-m);font-size:11px;letter-spacing:0.2em;color:var(--blue);border:1px solid var(--blue);padding:16px 32px;text-decoration:none;transition:all 0.3s" onmouseover="this.style.background='var(--blue-dim)'" onmouseout="this.style.background='transparent'">
+        VER PORTAFOLIO COMPLETO &rarr;
+      </a>
+    </div>
+  </div>
+
+  <!-- Lightbox modal -->
+  <div
+    class="port-lightbox"
+    x-show="lightboxOpen"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @click.self="closeLightbox()"
+    style="display:none">
+
+    <div class="port-lightbox-inner">
+      <!-- Close -->
+      <button class="port-lightbox-close" @click="closeLightbox()" aria-label="Cerrar">&times;</button>
+
+      <!-- Thumbnail full -->
+      <img
+        :src="currentItem ? currentItem.thumbnail : ''"
+        :alt="currentItem ? currentItem.title : ''"
+        style="width:100%;height:100%;object-fit:cover;display:block;">
+
+      <!-- Instagram link overlay -->
+      <a
+        :href="currentItem ? currentItem.videoUrl : '#'"
+        target="_blank"
+        rel="noopener"
+        class="port-lightbox-link"
+        x-show="currentItem && currentItem.videoUrl">
+        Ver en Instagram &rarr;
+      </a>
+
+      <!-- Prev / Next -->
+      <button class="port-lightbox-nav port-lightbox-prev" @click="prevItem()" aria-label="Anterior">&#8249;</button>
+      <button class="port-lightbox-nav port-lightbox-next" @click="nextItem()" aria-label="Siguiente">&#8250;</button>
+
+      <!-- Meta below -->
+      <div class="port-lightbox-meta">
+        <div class="port-lightbox-title" x-text="currentItem ? currentItem.title : ''"></div>
+        <div class="port-lightbox-cat" x-text="currentItem ? currentItem.categoryLabel : ''"></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<script>
+function portfolioGallery() {
+  const items = [
+    { id: 1, title: 'Reel Entrenamiento HIIT',      category: 'reels',    categoryLabel: 'Reels',             thumbnail: '/images/portafolio/portafolio-01.jpg', videoUrl: 'https://www.instagram.com/reel/DTv9xHUkX8G/', meta: 'WellCore Fitness · 2026' },
+    { id: 2, title: 'Reel Nutrición y Hábitos',     category: 'reels',    categoryLabel: 'Reels',             thumbnail: '/images/portafolio/portafolio-02.jpg', videoUrl: 'https://www.instagram.com/reel/DUB7GxwES6u/', meta: '@fitcoach_co · 2.1M vistas' },
+    { id: 3, title: 'Contenido Educativo Fitness',  category: 'reels',    categoryLabel: 'Reels',             thumbnail: '/images/portafolio/portafolio-03.jpg', videoUrl: 'https://www.instagram.com/reel/DTJfoGED9B9/', meta: 'Coach S. Vargas · Bogotá' },
+    { id: 4, title: 'Identidad Visual WellCore',    category: 'branding', categoryLabel: 'Branding',          thumbnail: '/images/portafolio/portafolio-04.jpg', videoUrl: 'https://www.instagram.com/reel/DTNnb8kDfgL/', meta: 'Wellcorefitness.com · Colombia' },
+    { id: 5, title: 'Branded Content @powerfit',    category: 'produccion', categoryLabel: 'Producción Completa', thumbnail: '/images/portafolio/portafolio-05.jpg', videoUrl: 'https://www.instagram.com/reel/DUrP9v-j_ob/', meta: 'Bogotá · +8.7% conversión' },
+    { id: 6, title: 'Reel Transformación 30 Días',  category: 'reels',    categoryLabel: 'Reels',             thumbnail: '/images/portafolio/portafolio-06.jpg', videoUrl: 'https://www.instagram.com/reel/DSFpOZhjQ60/', meta: 'Coach V. Torres · 180K vistas' },
+    { id: 7, title: 'Sistema Editorial 90D',        category: 'produccion', categoryLabel: 'Producción Completa', thumbnail: '/images/portafolio/portafolio-07.jpg', videoUrl: 'https://www.instagram.com/reel/DUwRn95iWfG/', meta: 'LATAM · +290% alcance' },
+    { id: 8, title: 'Identidad JK Training',        category: 'branding', categoryLabel: 'Branding',          thumbnail: '/images/portafolio/portafolio-08.jpg', videoUrl: 'https://www.instagram.com/reel/DSdFkP4jmj8/', meta: 'Editorial · Workout Book' },
+  ];
+
+  return {
+    categories: [
+      { id: 'todos',     label: 'Todos' },
+      { id: 'reels',     label: 'Reels' },
+      { id: 'branding',  label: 'Branding' },
+      { id: 'produccion', label: 'Producción Completa' },
+    ],
+    items,
+    activeFilter: 'todos',
+    lightboxOpen: false,
+    currentIndex: 0,
+
+    get filteredItems() {
+      if (this.activeFilter === 'todos') return this.items;
+      return this.items.filter(i => i.category === this.activeFilter);
+    },
+    get currentItem() {
+      return this.filteredItems[this.currentIndex] || null;
+    },
+
+    init() {},
+    setFilter(id) {
+      this.activeFilter = id;
+      this.currentIndex = 0;
+    },
+    openLightbox(idx) {
+      this.currentIndex = idx;
+      this.lightboxOpen = true;
+      document.body.style.overflow = 'hidden';
+    },
+    closeLightbox() {
+      this.lightboxOpen = false;
+      document.body.style.overflow = '';
+    },
+    prevItem() {
+      const len = this.filteredItems.length;
+      this.currentIndex = (this.currentIndex - 1 + len) % len;
+    },
+    nextItem() {
+      this.currentIndex = (this.currentIndex + 1) % this.filteredItems.length;
+    },
+  };
+}
+</script>
+
+<!-- =====================
+     08. TESTIMONIOS
+     ===================== -->
+<section id="testimonios" class="section testimonials-section">
+    <div class="wrap">
+        <div class="rv" style="text-align:center;margin-bottom:64px">
+            <div class="sec-label">Clientes reales, resultados reales</div>
+            <h2 class="sec-title">LO QUE DICEN<br><span class="text-blue">NUESTROS CLIENTES</span></h2>
+            <p style="font-size:15px;color:var(--gray);margin-top:14px;max-width:520px;margin-left:auto;margin-right:auto">
+                Coaches fitness de Colombia y LATAM que transformaron su presencia digital con metodología ProWay Lab.
+            </p>
+        </div>
+
+        <div class="testimonials-grid">
+            <!-- Testimonial 1 -->
+            <article class="tcard rv d1">
+                <div class="tcard-quote-mark">&ldquo;</div>
+                <div class="tcard-stars">
+                    <span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span>
+                </div>
+                <p class="tcard-body">ProWay Lab transformó completamente mi presencia en redes. En tres meses pasé de publicar sin estrategia a tener un sistema de contenido que trabaja mientras yo entreno clientes. Mi comunidad creció de verdad.</p>
+                <div class="tcard-result">+340% engagement en 3 meses</div>
+                <div class="tcard-author">
+                    <div class="tcard-avatar">CM</div>
+                    <div class="tcard-info">
+                        <div class="tcard-name">Carlos Mendoza</div>
+                        <div class="tcard-brand">@carlosfitpro &middot; Bogotá</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Testimonial 2 -->
+            <article class="tcard rv d2">
+                <div class="tcard-quote-mark">&ldquo;</div>
+                <div class="tcard-stars">
+                    <span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span>
+                </div>
+                <p class="tcard-body">Antes pensaba que el contenido era solo subir fotos bonitas. ProWay Lab me mostró que hay una ciencia detrás. Ahora mis reels tienen una narrativa clara y mis seguidores se convierten en clientes reales.</p>
+                <div class="tcard-result">De 800 a 12K seguidores en 5 meses</div>
+                <div class="tcard-author">
+                    <div class="tcard-avatar">MG</div>
+                    <div class="tcard-info">
+                        <div class="tcard-name">María García</div>
+                        <div class="tcard-brand">@mariawellness &middot; Medellín</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Testimonial 3 -->
+            <article class="tcard rv d3">
+                <div class="tcard-quote-mark">&ldquo;</div>
+                <div class="tcard-stars">
+                    <span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span>
+                </div>
+                <p class="tcard-body">El sistema de 6 fases no es marketing, es real. Tienen un proceso tan estructurado que en cada entrega sé exactamente qué esperar. Es la primera vez que trabajo con un proveedor que cumple lo que promete.</p>
+                <div class="tcard-result">8 nuevos clientes en el primer mes</div>
+                <div class="tcard-author">
+                    <div class="tcard-avatar">JR</div>
+                    <div class="tcard-info">
+                        <div class="tcard-name">Juliana Restrepo</div>
+                        <div class="tcard-brand">@julianafit &middot; Cali</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Testimonial 4 -->
+            <article class="tcard rv d1">
+                <div class="tcard-quote-mark">&ldquo;</div>
+                <div class="tcard-stars">
+                    <span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span>
+                </div>
+                <p class="tcard-body">Mi marca se veía amateur aunque mi entrenamiento era profesional. Después de trabajar con ProWay Lab, mis clientes me dicen que ven una imagen diferente, más seria. Las ventas de mis programas online subieron un 200%.</p>
+                <div class="tcard-result">+200% en ventas de programas online</div>
+                <div class="tcard-author">
+                    <div class="tcard-avatar">AS</div>
+                    <div class="tcard-info">
+                        <div class="tcard-name">Andrés Salcedo</div>
+                        <div class="tcard-brand">@andrescoach &middot; Barranquilla</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Testimonial 5 -->
+            <article class="tcard rv d2">
+                <div class="tcard-quote-mark">&ldquo;</div>
+                <div class="tcard-stars">
+                    <span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span>
+                </div>
+                <p class="tcard-body">Llevaba dos años publicando sin ver resultados claros. Con ProWay Lab definimos mi nicho, mi tono de voz y mi calendario de contenido. En cuatro meses tengo lista de espera para mis coaching 1 a 1.</p>
+                <div class="tcard-result">Lista de espera de 15 clientes activos</div>
+                <div class="tcard-author">
+                    <div class="tcard-avatar">LT</div>
+                    <div class="tcard-info">
+                        <div class="tcard-name">Laura Torres</div>
+                        <div class="tcard-brand">@laurafitlab &middot; Bucaramanga</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Testimonial 6 -->
+            <article class="tcard rv d3">
+                <div class="tcard-quote-mark">&ldquo;</div>
+                <div class="tcard-stars">
+                    <span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span>
+                </div>
+                <p class="tcard-body">Lo que más valoro es el portal de clientes. Puedo ver en tiempo real el avance de cada entrega sin tener que preguntar. ProWay Lab no es solo diseño, es una experiencia profesional de principio a fin.</p>
+                <div class="tcard-result">3 patrocinios de marca en 6 meses</div>
+                <div class="tcard-author">
+                    <div class="tcard-avatar">DF</div>
+                    <div class="tcard-info">
+                        <div class="tcard-name">Diego Fuentes</div>
+                        <div class="tcard-brand">@diegofuentes.fit &middot; Bogotá</div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- Aggregate rating strip -->
+        <div class="rv" style="text-align:center;margin-top:56px">
+            <div class="t-aggregate">
+                <span class="t-agg-score">4.9</span>
+                <div class="t-agg-mid">
+                    <div class="tcard-stars" style="justify-content:flex-start">
+                        <span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span><span class="tstar">&#9733;</span>
+                    </div>
+                    <span class="t-agg-label">Calificación promedio &middot; 47+ coaches trabajados</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "ProWay Lab",
+      "url": "https://prowaylab.com",
+      "description": "Producción de contenido y arquitectura de marca para entrenadores fitness en Colombia y LATAM.",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "6",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "review": [
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "Carlos Mendoza" },
+          "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+          "reviewBody": "ProWay Lab transformó completamente mi presencia en redes. En tres meses pasé de publicar sin estrategia a tener un sistema de contenido que trabaja mientras yo entreno clientes."
+        },
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "María García" },
+          "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+          "reviewBody": "Antes pensaba que el contenido era solo subir fotos bonitas. ProWay Lab me mostró que hay una ciencia detrás. Ahora mis reels tienen una narrativa clara y mis seguidores se convierten en clientes reales."
+        },
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "Juliana Restrepo" },
+          "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+          "reviewBody": "El sistema de 6 fases no es marketing, es real. Tienen un proceso tan estructurado que en cada entrega sé exactamente qué esperar."
+        },
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "Andrés Salcedo" },
+          "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+          "reviewBody": "Mi marca se veía amateur aunque mi entrenamiento era profesional. Después de trabajar con ProWay Lab, mis clientes me dicen que ven una imagen diferente, más seria."
+        },
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "Laura Torres" },
+          "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+          "reviewBody": "Llevaba dos años publicando sin ver resultados claros. Con ProWay Lab definimos mi nicho, mi tono de voz y mi calendario de contenido. En cuatro meses tengo lista de espera."
+        },
+        {
+          "@type": "Review",
+          "author": { "@type": "Person", "name": "Diego Fuentes" },
+          "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+          "reviewBody": "Lo que más valoro es el portal de clientes. Puedo ver en tiempo real el avance de cada entrega sin tener que preguntar."
+        }
+      ]
+    }
+    </script>
+
+    <style>
+        /* === TESTIMONIALS SECTION === */
+        .testimonials-section {
+            background: linear-gradient(180deg, var(--bg) 0%, #0e0e12 50%, var(--bg) 100%);
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .tcard {
+            position: relative;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 32px 28px 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .tcard::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--blue), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tcard:hover {
+            border-color: rgba(0, 217, 255, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 24px rgba(0, 217, 255, 0.06);
+        }
+
+        .tcard:hover::before {
+            opacity: 1;
+        }
+
+        .tcard-quote-mark {
+            font-family: var(--font-h);
+            font-size: 64px;
+            font-weight: 900;
+            color: var(--blue);
+            line-height: 0.6;
+            opacity: 0.35;
+            position: absolute;
+            top: 24px;
+            right: 24px;
+        }
+
+        .tcard-stars {
+            display: flex;
+            gap: 3px;
+        }
+
+        .tstar {
+            color: #FACC15;
+            font-size: 14px;
+        }
+
+        .tcard-body {
+            font-family: var(--font-b);
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.75;
+            flex: 1;
+        }
+
+        .tcard-result {
+            font-family: var(--font-m);
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--blue);
+            background: var(--blue-dim);
+            border: 1px solid rgba(0, 217, 255, 0.15);
+            padding: 8px 12px;
+            border-radius: 2px;
+        }
+
+        .tcard-author {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .tcard-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--blue);
+            background: var(--blue-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-h);
+            font-weight: 800;
+            font-size: 13px;
+            color: var(--blue);
+            flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(0, 217, 255, 0.2);
+        }
+
+        .tcard-name {
+            font-family: var(--font-h);
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            color: var(--white);
+        }
+
+        .tcard-brand {
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.12em;
+            color: var(--dark);
+            margin-top: 3px;
+        }
+
+        /* Aggregate rating strip */
+        .t-aggregate {
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 18px 28px;
+            border-radius: 4px;
+        }
+
+        .t-agg-score {
+            font-family: var(--font-m);
+            font-size: 40px;
+            font-weight: 700;
+            color: #FACC15;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        .t-agg-mid {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: left;
+        }
+
+        .t-agg-label {
+            font-family: var(--font-m);
+            font-size: 9px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--dark);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .testimonials-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            .t-aggregate {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .t-agg-mid {
+                align-items: center;
+                text-align: center;
+            }
+        }
+    </style>
+</section>
+
+<!-- =====================
+     09. WELLCORE
      ===================== -->
 <section id="wellcore" class="section">
     <div class="wrap">
