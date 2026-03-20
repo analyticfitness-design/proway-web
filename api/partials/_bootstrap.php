@@ -17,6 +17,8 @@ use ProWay\Domain\Notification\NotificationService;
 use ProWay\Domain\Notification\MySQLNotificationRepository;
 use ProWay\Domain\ActivityLog\ActivityLogService;
 use ProWay\Domain\ActivityLog\MySQLActivityLogRepository;
+use ProWay\Domain\ErrorLog\ErrorLogService;
+use ProWay\Domain\ErrorLog\MySQLErrorLogRepository;
 
 $pdo            = Connection::getInstance();
 $tokens         = new TokenManager($pdo);
@@ -26,3 +28,4 @@ $projectService = new ProjectService(new MySQLProjectRepository($pdo));
 $invoiceService = new InvoiceService(new MySQLInvoiceRepository($pdo));
 $notifService   = new NotificationService(new MySQLNotificationRepository($pdo));
 $activityService = new ActivityLogService(new MySQLActivityLogRepository($pdo));
+$errorLogService = new ErrorLogService(new MySQLErrorLogRepository($pdo));

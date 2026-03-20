@@ -1,4 +1,5 @@
 // ProWay Lab — Main Entry Point (client portal + public pages)
+import './error-reporter.js'
 import '../css/main.css'
 import 'htmx.org'
 import Alpine from 'alpinejs'

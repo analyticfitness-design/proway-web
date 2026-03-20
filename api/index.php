@@ -10,6 +10,7 @@ use ProWay\Api\V1\Controller\ClientController;
 use ProWay\Api\V1\Controller\InvoiceController;
 use ProWay\Api\V1\Controller\PaymentController;
 use ProWay\Api\V1\Controller\DeliverableController;
+use ProWay\Api\V1\Controller\ErrorLogController;
 use ProWay\Api\V1\Controller\NotificationController;
 use ProWay\Api\V1\Controller\ProjectController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
@@ -31,6 +32,8 @@ use ProWay\Domain\Notification\NotificationService;
 use ProWay\Domain\Notification\MySQLNotificationRepository;
 use ProWay\Domain\ActivityLog\ActivityLogService;
 use ProWay\Domain\ActivityLog\MySQLActivityLogRepository;
+use ProWay\Domain\ErrorLog\ErrorLogService;
+use ProWay\Domain\ErrorLog\MySQLErrorLogRepository;
 use ProWay\Domain\Payment\WompiService;
 use ProWay\Infrastructure\Cache\CacheFactory;
 use ProWay\Infrastructure\Database\Connection;
@@ -75,6 +78,7 @@ $invoiceService = new InvoiceService(new CachedInvoiceRepository(new MySQLInvoic
 $deliverableService  = new DeliverableService(new MySQLDeliverableRepository($pdo));
 $notificationService = new NotificationService(new MySQLNotificationRepository($pdo));
 $activityLogService  = new ActivityLogService(new MySQLActivityLogRepository($pdo));
+$errorLogService     = new ErrorLogService(new MySQLErrorLogRepository($pdo));
 
 $wompi   = new WompiService();
 $mailer  = new MailjetService();
@@ -87,6 +91,7 @@ $invoiceCtrl = new InvoiceController($invoiceService, $mw, $clientService, $pdfR
 $paymentCtrl = new PaymentController($invoiceService, $clientService, $wompi, $mailer, $mw);
 $adminCtrl        = new AdminController($invoiceService, $projectService, $clientService, $mw, $mailer, $notificationService, $activityLogService);
 $notifCtrl        = new NotificationController($notificationService, $mw);
+$errorLogCtrl     = new ErrorLogController($errorLogService, $mw);
 $deliverableCtrl  = new DeliverableController($deliverableService, $mw);
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
@@ -94,7 +99,7 @@ RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -142,6 +147,10 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     // Deliverables
     $r->addRoute('GET',  '/api/v1/deliverables',        [$deliverableCtrl, 'listByProject']);
     $r->addRoute('POST', '/api/v1/admin/deliverables',   [$deliverableCtrl, 'upload']);
+
+    // Error Logs
+    $r->addRoute('POST', '/api/v1/errors',              [$errorLogCtrl, 'store']);
+    $r->addRoute('GET',  '/api/v1/admin/errors',         [$errorLogCtrl, 'index']);
 });
 
 $request  = new Request();
