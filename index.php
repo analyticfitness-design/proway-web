@@ -35,6 +35,16 @@ $pageMap = [
 // Normalize trailing slash
 $normalized = rtrim($uri, '/') ?: '/';
 
+// Dynamic routes — must be checked before the static pageMap
+if (preg_match('#^/proyectos/(\d+)$#', $normalized)) {
+    $file = __DIR__ . '/proyecto.html';
+    if (file_exists($file)) {
+        header('Content-Type: text/html; charset=utf-8');
+        readfile($file);
+        exit;
+    }
+}
+
 if (isset($pageMap[$normalized])) {
     $file = __DIR__ . '/' . $pageMap[$normalized];
     if (file_exists($file)) {
