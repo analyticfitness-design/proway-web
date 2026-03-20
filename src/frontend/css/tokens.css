@@ -48,12 +48,12 @@
     --pw-space-16: 64px;
     --pw-space-20: 80px;
 
-    /* ── Border Radius ───────────────────────────── */
-    --pw-radius-sm: 6px;
-    --pw-radius:    10px;
-    --pw-radius-md: 14px;
-    --pw-radius-lg: 20px;
-    --pw-radius-xl: 28px;
+    /* ── Border Radius (angular = landing style) ── */
+    --pw-radius-sm:   2px;
+    --pw-radius:      3px;
+    --pw-radius-md:   4px;
+    --pw-radius-lg:   6px;
+    --pw-radius-xl:   8px;
     --pw-radius-full: 9999px;
 
     /* ── Shadows ─────────────────────────────────── */

@@ -19,12 +19,19 @@
 
 .btn--primary {
     background: var(--pw-accent);
-    color: #fff;
+    color: #000;
     border-color: var(--pw-accent);
+    font-family: var(--pw-font-display);
+    font-weight: var(--pw-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    border-radius: 0;
 }
 .btn--primary:hover:not(:disabled) {
-    background: #7d75ff;
-    box-shadow: var(--pw-glow);
+    background: #33E4FF;
+    box-shadow: 0 8px 30px rgba(0,217,255,0.25);
+    transform: translateY(-1px);
 }
 
 .btn--secondary {
@@ -44,15 +51,17 @@
 }
 .btn--ghost:hover:not(:disabled) { color: var(--pw-text); background: var(--pw-surface); }
 
-.btn--teal {
+.btn--teal,
+.btn--green {
     background: var(--pw-accent-2);
-    color: #0a0a0f;
+    color: #0C0C0F;
     border-color: var(--pw-accent-2);
     font-weight: var(--pw-weight-semi);
 }
-.btn--teal:hover:not(:disabled) {
-    background: #00e8bb;
-    box-shadow: var(--pw-glow-teal);
+.btn--teal:hover:not(:disabled),
+.btn--green:hover:not(:disabled) {
+    background: #33FFa0;
+    box-shadow: var(--pw-glow-green);
 }
 
 .btn--danger {
