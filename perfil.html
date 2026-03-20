@@ -21,7 +21,18 @@
 <body>
     <div id="toast-container" aria-live="polite"></div>
 
+<!-- Scroll progress bar -->
+<div id="scroll-progress"></div>
+
 <div class="page flex">
+    <!-- Mobile hamburger -->
+    <button class="mobile-menu-toggle" id="mobile-menu-btn" aria-label="Menu"
+            onclick="document.getElementById('sidebar').classList.toggle('is-open')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+    </button>
+
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar" x-data="{ open: false }" :class="{ 'is-open': open }">
         <div class="sidebar__logo">
@@ -245,6 +256,21 @@
 <!-- Component logic is in main.js via Alpine.data('profileForm') -->
     </main>
 </div>
+
+<script>
+(function() {
+    var bar = document.getElementById('scroll-progress');
+    if (bar) {
+        var main = document.getElementById('main-content');
+        (main || window).addEventListener('scroll', function() {
+            var el = main || document.documentElement;
+            var scrollTop = main ? el.scrollTop : (window.pageYOffset || el.scrollTop);
+            var scrollHeight = el.scrollHeight - el.clientHeight;
+            bar.style.width = scrollHeight > 0 ? (scrollTop / scrollHeight * 100) + '%' : '0%';
+        });
+    }
+})();
+</script>
 
     <!-- JS: HTMX + Alpine.js (injected by Vite) -->
     <script type="module" src="/dist/assets/main.js"></script>

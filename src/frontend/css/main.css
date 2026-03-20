@@ -29,7 +29,8 @@
 
 .text-muted { color: var(--pw-text-muted); }
 .text-accent { color: var(--pw-accent); }
-.text-teal   { color: var(--pw-accent-2); }
+.text-teal,
+.text-green  { color: var(--pw-accent-2); }
 .text-sm     { font-size: var(--pw-text-sm); }
 
 .mt-4  { margin-top: var(--pw-space-4); }
@@ -50,8 +51,11 @@
     margin-bottom: var(--pw-space-8);
 }
 .page-title {
+    font-family: var(--pw-font-display);
     font-size: var(--pw-text-2xl);
-    font-weight: var(--pw-weight-bold);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 /* Divider */
