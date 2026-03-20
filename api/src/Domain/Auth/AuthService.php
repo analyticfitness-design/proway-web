@@ -43,7 +43,7 @@ class AuthService
     public function loginAdmin(string $username, string $password): ?array
     {
         $stmt = $this->db->prepare(
-            'SELECT id, name, email, password_hash FROM admin_users WHERE username = ? AND active = 1'
+            'SELECT id, name, password_hash FROM admins WHERE username = ?'
         );
         $stmt->execute([$username]);
         $row = $stmt->fetch();
@@ -52,7 +52,7 @@ class AuthService
             return null;
         }
 
-        $user  = UserDTO::fromArray(array_merge($row, ['code' => '', 'plan_type' => '']), 'admin');
+        $user  = UserDTO::fromArray(array_merge($row, ['email' => '', 'code' => '', 'plan_type' => '']), 'admin');
         $token = $this->tokens->create($user->id, 'admin', 8);
 
         return ['token' => $token, 'user' => $user];
@@ -72,11 +72,11 @@ class AuthService
         $type   = $data['type'];
 
         if ($type === 'admin') {
-            $stmt = $this->db->prepare('SELECT id, name, email FROM admin_users WHERE id = ?');
+            $stmt = $this->db->prepare('SELECT id, name FROM admins WHERE id = ?');
             $stmt->execute([$userId]);
             $row = $stmt->fetch();
             if (!$row) return null;
-            return UserDTO::fromArray(array_merge($row, ['code' => '', 'plan_type' => '']), 'admin');
+            return UserDTO::fromArray(array_merge($row, ['email' => '', 'code' => '', 'plan_type' => '']), 'admin');
         }
 
         $stmt = $this->db->prepare(

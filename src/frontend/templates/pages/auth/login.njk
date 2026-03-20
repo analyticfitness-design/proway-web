@@ -12,9 +12,10 @@
         try {
             const data = JSON.parse(xhr.responseText);
             if (data.success) {
-                window.location.href = data.redirect || '/portal';
+                const type = data.data && data.data.user && data.data.user.type;
+                window.location.href = type === 'admin' ? '/admin' : '/portal';
             } else {
-                this.error = data.message || 'Credenciales incorrectas. Inténtalo de nuevo.';
+                this.error = (data.error && data.error.message) || 'Credenciales incorrectas. Inténtalo de nuevo.';
                 this.loading = false;
             }
         } catch(e) {
@@ -63,14 +64,14 @@
           novalidate>
 
         <div class="form-group">
-            <label class="form-label" for="email">Correo electrónico</label>
+            <label class="form-label" for="email">Correo electrónico o usuario</label>
             <input class="form-input"
-                   type="email"
+                   type="text"
                    id="email"
                    name="email"
                    placeholder="tu@email.com"
                    required
-                   autocomplete="email"
+                   autocomplete="username"
                    inputmode="email">
         </div>
 
@@ -126,10 +127,12 @@
 </style>
 
 <script>
-/* Redirect 401 HTMX errors globally to login (redundant guard here since we're already on login) */
-document.body.addEventListener('htmx:responseError', function(evt) {
-    if (evt.detail.xhr.status === 403) {
-        window.location.href = '/login';
+/* If the user typed a username (no @), send it as `username` field instead of `email` */
+document.getElementById('login-form').addEventListener('htmx:configRequest', function(evt) {
+    var value = evt.detail.parameters['email'] || '';
+    if (value && !value.includes('@')) {
+        delete evt.detail.parameters['email'];
+        evt.detail.parameters['username'] = value;
     }
 });
 </script>
