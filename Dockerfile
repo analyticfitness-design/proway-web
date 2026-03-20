@@ -90,7 +90,8 @@ COPY --from=frontend-build /app/dist/    /var/www/html/dist/
 # Application source (API, static assets, config)
 COPY api/       /var/www/html/api/
 COPY images/    /var/www/html/images/
-COPY index.php  /var/www/html/index.php
+COPY index.php          /var/www/html/index.php
+COPY deploy-webhook.php /var/www/html/deploy-webhook.php
 
 # Set permissions
 RUN chown -R nobody:nobody /var/www/html \
