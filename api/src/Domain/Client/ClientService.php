@@ -22,6 +22,11 @@ class ClientService
         return $this->repo->findAllActive();
     }
 
+    public function create(array $data): int
+    {
+        return $this->repo->create($data);
+    }
+
     public function update(int $id, array $data): bool
     {
         return $this->repo->update($id, $data);

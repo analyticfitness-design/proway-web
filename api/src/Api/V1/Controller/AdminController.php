@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ProWay\Api\V1\Controller;
 
 use ProWay\Api\V1\Middleware\AuthMiddleware;
+use ProWay\Domain\Client\ClientService;
 use ProWay\Domain\Invoice\InvoiceService;
 use ProWay\Domain\Project\ProjectService;
 use ProWay\Infrastructure\Http\Request;
@@ -19,8 +20,51 @@ class AdminController
     public function __construct(
         private readonly InvoiceService $invoices,
         private readonly ProjectService $projects,
+        private readonly ClientService  $clients,
         private readonly AuthMiddleware $middleware,
     ) {}
+
+    // ── POST /api/v1/admin/clients ────────────────────────────────────────────
+    public function createClient(Request $request, array $vars): never
+    {
+        $this->requireAdmin($request);
+
+        $name     = trim((string) $request->input('name', ''));
+        $email    = trim((string) $request->input('email', ''));
+        $password = (string) $request->input('password', '');
+
+        if ($name === '' || $email === '' || $password === '') {
+            Response::error('VALIDATION', 'name, email y password son requeridos', 422);
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            Response::error('VALIDATION', 'email inválido', 422);
+        }
+
+        // Auto-generate unique code from email prefix
+        $code = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', explode('@', $email)[0]));
+        $code = substr($code, 0, 12) . '-' . substr(uniqid(), -4);
+
+        try {
+            $id = $this->clients->create([
+                'code'      => $code,
+                'name'      => $name,
+                'email'     => $email,
+                'phone'     => $request->input('phone') ?: null,
+                'company'   => $request->input('company') ?: null,
+                'plan_type' => $request->input('plan_type', 'starter'),
+                'password'  => $password,
+                'status'    => 'activo',
+            ]);
+        } catch (\PDOException $e) {
+            if (str_contains($e->getMessage(), 'Duplicate')) {
+                Response::error('CONFLICT', 'Ya existe un cliente con ese email', 409);
+            }
+            throw $e;
+        }
+
+        Response::success(['id' => $id, 'code' => $code], 201);
+    }
 
     // ── POST /api/v1/admin/invoices ────────────────────────────────────────────
     public function createInvoice(Request $request, array $vars): never

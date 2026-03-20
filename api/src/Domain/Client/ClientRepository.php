@@ -10,4 +10,5 @@ interface ClientRepository
     public function findById(int $id): ?array;
     public function findAllActive(): array;
     public function update(int $id, array $data): bool;
+    public function create(array $data): int;
 }

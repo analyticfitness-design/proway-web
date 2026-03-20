@@ -37,6 +37,40 @@ class MySQLClientRepository implements ClientRepository
         return $stmt->fetchAll();
     }
 
+    public function create(array $data): int
+    {
+        $this->db->beginTransaction();
+
+        try {
+            $stmt = $this->db->prepare(
+                'INSERT INTO clients (code, name, email, phone, company, plan_type, status)
+                 VALUES (:code, :name, :email, :phone, :company, :plan_type, :status)'
+            );
+            $stmt->execute([
+                'code'      => $data['code'],
+                'name'      => $data['name'],
+                'email'     => $data['email'],
+                'phone'     => $data['phone'] ?? null,
+                'company'   => $data['company'] ?? null,
+                'plan_type' => $data['plan_type'] ?? 'starter',
+                'status'    => $data['status'] ?? 'activo',
+            ]);
+
+            $clientId = (int) $this->db->lastInsertId();
+
+            $stmt = $this->db->prepare(
+                'INSERT INTO client_profiles (client_id, password_hash) VALUES (?, ?)'
+            );
+            $stmt->execute([$clientId, password_hash($data['password'], PASSWORD_DEFAULT)]);
+
+            $this->db->commit();
+            return $clientId;
+        } catch (\Throwable $e) {
+            $this->db->rollBack();
+            throw $e;
+        }
+    }
+
     public function update(int $id, array $data): bool
     {
         $allowed = ['name', 'email', 'phone', 'company', 'plan_type', 'status'];

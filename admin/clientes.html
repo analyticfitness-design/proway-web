@@ -112,6 +112,13 @@
     </svg>
     Actualizar
 </button>
+
+<button class="btn btn--primary btn--sm" @click="$dispatch('open-new-client')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+    Nuevo Cliente
+</button>
 </div>
         </div>
 
@@ -241,6 +248,79 @@
     
 </div>
 
+<!-- ── Modal: Nuevo Cliente ────────────────────────────── -->
+<div x-data="newClientModal()"
+     x-show="open"
+     x-cloak
+     @open-new-client.window="open = true"
+     @keydown.escape.window="open && close()"
+     style="position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:var(--pw-space-4);">
+
+    <!-- Backdrop -->
+    <div style="position:absolute;inset:0;background:rgba(0,0,0,.65);" @click="close()"></div>
+
+    <!-- Dialog -->
+    <div role="dialog" aria-modal="true" aria-labelledby="ncm-title"
+         style="position:relative;width:100%;max-width:480px;background:var(--pw-surface-1);border:1px solid var(--pw-border-1);border-radius:var(--pw-radius-lg);padding:var(--pw-space-6);z-index:1;">
+
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--pw-space-5);">
+            <h2 id="ncm-title" style="font-size:var(--pw-text-lg);font-weight:600;margin:0;">Nuevo Cliente</h2>
+            <button @click="close()" class="btn btn--ghost btn--icon" aria-label="Cerrar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <form @submit.prevent="submit()" novalidate>
+            <div class="form-group">
+                <label class="form-label" for="ncm-name">Nombre completo <span aria-hidden="true" style="color:var(--pw-accent)">*</span></label>
+                <input id="ncm-name" type="text" class="form-input" x-model="form.name" required autocomplete="off" placeholder="Ej. Ana García">
+            </div>
+
+            <div class="form-group" style="margin-top:var(--pw-space-4);">
+                <label class="form-label" for="ncm-email">Email <span aria-hidden="true" style="color:var(--pw-accent)">*</span></label>
+                <input id="ncm-email" type="email" class="form-input" x-model="form.email" required autocomplete="off" placeholder="cliente@empresa.com">
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--pw-space-3);margin-top:var(--pw-space-4);">
+                <div class="form-group">
+                    <label class="form-label" for="ncm-phone">Teléfono</label>
+                    <input id="ncm-phone" type="tel" class="form-input" x-model="form.phone" placeholder="+57 300 000 0000">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="ncm-company">Empresa</label>
+                    <input id="ncm-company" type="text" class="form-input" x-model="form.company" placeholder="Opcional">
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:var(--pw-space-4);">
+                <label class="form-label" for="ncm-plan">Plan</label>
+                <select id="ncm-plan" class="form-input" x-model="form.plan_type">
+                    <option value="starter">Starter</option>
+                    <option value="pro">Pro</option>
+                    <option value="enterprise">Enterprise</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-top:var(--pw-space-4);">
+                <label class="form-label" for="ncm-password">Contraseña temporal <span aria-hidden="true" style="color:var(--pw-accent)">*</span></label>
+                <input id="ncm-password" type="text" class="form-input" x-model="form.password" required autocomplete="off" placeholder="El cliente deberá cambiarla">
+            </div>
+
+            <template x-if="error">
+                <p style="color:var(--pw-accent);font-size:var(--pw-text-sm);margin-top:var(--pw-space-3);" x-text="error" role="alert"></p>
+            </template>
+
+            <div style="display:flex;gap:var(--pw-space-3);justify-content:flex-end;margin-top:var(--pw-space-6);">
+                <button type="button" class="btn btn--ghost" @click="close()">Cancelar</button>
+                <button type="submit" class="btn btn--primary" :disabled="loading">
+                    <span x-show="!loading">Crear Cliente</span>
+                    <span x-show="loading">Creando...</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <style>
 @keyframes pw-spin { to { transform: rotate(360deg); } }
 
@@ -310,6 +390,46 @@ document.body.addEventListener('htmx:responseError', function(evt) {
         window.location.href = '/login';
     }
 });
+
+function newClientModal() {
+    return {
+        open: false,
+        loading: false,
+        error: '',
+        form: { name: '', email: '', phone: '', company: '', plan_type: 'starter', password: '' },
+
+        close() {
+            this.open = false;
+            this.error = '';
+            this.form = { name: '', email: '', phone: '', company: '', plan_type: 'starter', password: '' };
+        },
+
+        async submit() {
+            this.error = '';
+            this.loading = true;
+            try {
+                const res = await fetch('/api/v1/admin/clients', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.form),
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    this.error = data?.error?.message || 'Error al crear el cliente';
+                    return;
+                }
+                this.close();
+                // Reload table
+                htmx.trigger('#clients-table-container', 'load');
+            } catch (e) {
+                this.error = 'Error de conexión';
+            } finally {
+                this.loading = false;
+            }
+        },
+    };
+}
 </script>
     </main>
 </div>

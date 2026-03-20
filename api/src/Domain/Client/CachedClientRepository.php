@@ -81,6 +81,13 @@ class CachedClientRepository implements ClientRepository
         return $data;
     }
 
+    public function create(array $data): int
+    {
+        $id = $this->inner->create($data);
+        $this->cache->delete('pw:clients:active');
+        return $id;
+    }
+
     public function update(int $id, array $data): bool
     {
         $result = $this->inner->update($id, $data);
