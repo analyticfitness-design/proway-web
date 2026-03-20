@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0a0a0f">
+    <meta name="theme-color" content="#0C0C0F">
     <title>{% block title %}ProWay Lab{% endblock %}</title>
     <meta name="description" content="{% block description %}Agencia de producción de video profesional{% endblock %}">
 
@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- ProWay Design System -->
-    <link rel="stylesheet" href="/dist/assets/module.css">
+    <link rel="stylesheet" href="/dist/assets/module.css?v=2">
 
     {% block head %}{% endblock %}
 </head>
@@ -26,7 +26,7 @@
 
     <!-- JS: HTMX + Alpine.js (injected by Vite) -->
     {% block scripts %}
-    <script type="module" src="/dist/assets/main.js"></script>
+    <script type="module" src="/dist/assets/main.js?v=2"></script>
     {% endblock %}
 </body>
 </html>
