@@ -79,7 +79,7 @@ $activityLogService  = new ActivityLogService(new MySQLActivityLogRepository($pd
 $wompi   = new WompiService();
 $mailer  = new MailjetService();
 
-$authCtrl    = new AuthController($auth, $mw);
+$authCtrl    = new AuthController($auth, $mw, $mailer);
 $clientCtrl  = new ClientController($clientService, $mw);
 $projectCtrl = new ProjectController($projectService, $mw, $activityLogService);
 $pdfRenderer = new PdfRenderer();
@@ -97,9 +97,11 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl
 ) {
     // Auth
-    $r->addRoute('POST',  '/api/v1/auth/login',  [$authCtrl, 'login']);
-    $r->addRoute('POST',  '/api/v1/auth/logout', [$authCtrl, 'logout']);
-    $r->addRoute('GET',   '/api/v1/auth/me',     [$authCtrl, 'me']);
+    $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
+    $r->addRoute('POST',  '/api/v1/auth/logout',          [$authCtrl, 'logout']);
+    $r->addRoute('GET',   '/api/v1/auth/me',              [$authCtrl, 'me']);
+    $r->addRoute('POST',  '/api/v1/auth/forgot-password', [$authCtrl, 'forgotPassword']);
+    $r->addRoute('POST',  '/api/v1/auth/reset-password',  [$authCtrl, 'resetPassword']);
 
     // Clients
     $r->addRoute('GET',   '/api/v1/clients/me',     [$clientCtrl, 'me']);

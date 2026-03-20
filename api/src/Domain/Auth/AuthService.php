@@ -13,6 +13,68 @@ class AuthService
     ) {}
 
     /**
+     * Generate a password-reset token for a client email.
+     * Returns [token, client_name, client_email] on success, null if email not found.
+     */
+    public function forgotPassword(string $email): ?array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT id, name, email FROM clients WHERE email = ? AND status = ?'
+        );
+        $stmt->execute([$email, 'activo']);
+        $client = $stmt->fetch();
+
+        if (!$client) {
+            return null;
+        }
+
+        $token   = bin2hex(random_bytes(32));
+        $expires = date('Y-m-d H:i:s', time() + 3600);
+
+        $stmt = $this->db->prepare(
+            'UPDATE clients SET reset_token = ?, reset_expires = ? WHERE id = ?'
+        );
+        $stmt->execute([$token, $expires, $client['id']]);
+
+        return [
+            'token' => $token,
+            'name'  => $client['name'],
+            'email' => $client['email'],
+        ];
+    }
+
+    /**
+     * Reset a client password using a valid reset token.
+     * Returns true on success, false if token is invalid or expired.
+     */
+    public function resetPassword(string $token, string $newPassword): bool
+    {
+        $stmt = $this->db->prepare(
+            'SELECT id FROM clients WHERE reset_token = ? AND reset_expires > NOW()'
+        );
+        $stmt->execute([$token]);
+        $client = $stmt->fetch();
+
+        if (!$client) {
+            return false;
+        }
+
+        $hash = password_hash($newPassword, PASSWORD_BCRYPT);
+
+        $stmt = $this->db->prepare(
+            'UPDATE client_profiles SET password_hash = ? WHERE client_id = ?'
+        );
+        $stmt->execute([$hash, $client['id']]);
+
+        $stmt = $this->db->prepare(
+            'UPDATE clients SET reset_token = NULL, reset_expires = NULL WHERE id = ?'
+        );
+        $stmt->execute([$client['id']]);
+
+        return true;
+    }
+
+    /**
      * Authenticate a client by email + password.
      * Returns [token, user] on success, null on failure.
      */
