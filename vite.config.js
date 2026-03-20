@@ -11,7 +11,12 @@ export default defineConfig({
             input: {
                 main:  path.resolve(__dirname, 'src/frontend/js/main.js'),
                 admin: path.resolve(__dirname, 'src/frontend/js/admin.js'),
-            }
+            },
+            output: {
+                entryFileNames: '[name].js',
+                chunkFileNames: '[name].js',
+                assetFileNames: '[name][extname]',
+            },
         },
         sourcemap: false,
         minify: 'esbuild',
