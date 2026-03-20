@@ -16,6 +16,7 @@ use ProWay\Api\V1\Controller\ProjectController;
 use ProWay\Api\V1\Controller\SocialMetricsController;
 use ProWay\Api\V1\Controller\MessageController;
 use ProWay\Api\V1\Controller\OnboardingController;
+use ProWay\Api\V1\Controller\ReportController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
@@ -50,6 +51,8 @@ use ProWay\Infrastructure\Email\MailjetService;
 use ProWay\Infrastructure\Http\Request;
 use ProWay\Infrastructure\Http\Response;
 use ProWay\Infrastructure\Http\Router;
+use ProWay\Domain\Report\MonthlyReportService;
+use ProWay\Domain\Report\ReportPdfRenderer;
 use ProWay\Infrastructure\Pdf\PdfRenderer;
 
 // ── CORS (existing logic preserved) ──────────────────────────────────────────
@@ -117,12 +120,17 @@ $messageCtrl    = new MessageController($messageService, $mw, $notificationServi
 // Onboarding
 $onboardingCtrl = new OnboardingController($pdo, $clientService, $mw, $mailer);
 
+// Monthly Reports
+$reportService     = new MonthlyReportService($pdo, $projectService, $deliverableService, $socialMetricsService, $clientService);
+$reportPdfRenderer = new ReportPdfRenderer();
+$reportCtrl        = new ReportController($reportService, $reportPdfRenderer, $mw);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -195,6 +203,12 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('GET',  '/api/v1/clients/me/profile',              [$onboardingCtrl, 'getProfile']);
     $r->addRoute('PUT',  '/api/v1/clients/me/profile',              [$onboardingCtrl, 'updateProfile']);
     $r->addRoute('POST', '/api/v1/clients/me/onboarding-complete',  [$onboardingCtrl, 'completeOnboarding']);
+
+    // Monthly Reports
+    $r->addRoute('GET',  '/api/v1/admin/reports',          [$reportCtrl, 'listReports']);
+    $r->addRoute('POST', '/api/v1/admin/reports/generate',  [$reportCtrl, 'generate']);
+    $r->addRoute('GET',  '/api/v1/reports/{id:\d+}/pdf',    [$reportCtrl, 'downloadPdf']);
+    $r->addRoute('GET',  '/api/v1/clients/me/reports',      [$reportCtrl, 'clientReports']);
 });
 
 $request  = new Request();
