@@ -95,12 +95,12 @@
 
 
 <div class="card"
-     x-data="profileForm()"
-     x-init="init()">
+     x-data="profileForm">
 
     <div class="card__header">
         <h2 class="card__title">Información Personal</h2>
-        <span x-show="saved"
+        <!-- Toast notification -->
+        <span x-show="toast.show"
               x-transition:enter="transition ease-out duration-300"
               x-transition:enter-start="opacity-0"
               x-transition:enter-end="opacity-100"
@@ -108,35 +108,20 @@
               x-transition:leave-start="opacity-100"
               x-transition:leave-end="opacity-0"
               x-cloak
-              class="badge badge--success">
-            Guardado
+              :class="'badge badge--' + (toast.type === 'success' ? 'success' : 'danger')"
+              x-text="toast.message">
         </span>
     </div>
 
-    <!-- Error banner -->
-    <div x-show="error"
-         x-cloak
-         x-transition
-         role="alert"
-         style="
-             background: rgba(255,71,87,0.1);
-             border: 1px solid rgba(255,71,87,0.3);
-             border-radius: var(--pw-radius-sm);
-             padding: var(--pw-space-3) var(--pw-space-4);
-             margin-bottom: var(--pw-space-5);
-             color: var(--pw-danger);
-             font-size: var(--pw-text-sm);
-             display: flex;
-             align-items: center;
-             gap: var(--pw-space-2);
-         ">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+    <!-- Loading state -->
+    <div x-show="loading" style="text-align:center; padding: var(--pw-space-8);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             style="animation: pw-spin 0.8s linear infinite; color: var(--pw-accent);" aria-hidden="true">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
         </svg>
-        <span x-text="error"></span>
     </div>
 
-    <form @submit.prevent="submit()" novalidate>
+    <form x-show="!loading" @submit.prevent="save()" novalidate>
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--pw-space-4);">
 
             <div class="form-group">
@@ -196,22 +181,22 @@
         <div style="display:flex; align-items:center; justify-content:flex-end; gap: var(--pw-space-3); margin-top: var(--pw-space-6); padding-top: var(--pw-space-4); border-top: 1px solid var(--pw-border);">
             <button type="button"
                     class="btn btn--ghost"
-                    @click="reset()"
-                    :disabled="loading || !isDirty">
+                    @click="discard()"
+                    :disabled="saving || !isDirty">
                 Descartar cambios
             </button>
             <button type="submit"
                     class="btn btn--primary"
-                    :disabled="loading || !isDirty"
+                    :disabled="saving || !isDirty"
                     style="min-width: 140px;">
-                <span x-show="loading" style="display:flex; align-items:center; gap: var(--pw-space-2);">
+                <span x-show="saving" style="display:flex; align-items:center; gap: var(--pw-space-2);">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                          style="animation: pw-spin 0.8s linear infinite;" aria-hidden="true">
                         <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
                     </svg>
                     Guardando...
                 </span>
-                <span x-show="!loading">Guardar cambios</span>
+                <span x-show="!saving">Guardar cambios</span>
             </button>
         </div>
     </form>
@@ -257,127 +242,7 @@
 }
 </style>
 
-<script>
-function profileForm() {
-    return {
-        clientId: document.body.dataset.clientId || null,
-
-        form: {
-            nombre:   '',
-            telefono: '',
-            objetivo: '',
-            notas:    ''
-        },
-
-        _original: {},
-
-        loading: false,
-        error:   '',
-        saved:   false,
-
-        get isDirty() {
-            return JSON.stringify(this.form) !== JSON.stringify(this._original);
-        },
-
-        async init() {
-            try {
-                const res = await fetch('/api/v1/clients/me', {
-                    credentials: 'include',
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                });
-                if (res.status === 401) { window.location.href = '/login'; return; }
-                if (!res.ok) throw new Error('No se pudo cargar el perfil.');
-
-                const json = await res.json();
-                const client = json.data?.client || json.client;
-                if (client) {
-                    this.clientId      = client.id;
-                    this.form.nombre   = client.name   || client.nombre   || '';
-                    this.form.telefono = client.phone  || client.telefono || '';
-                    this.form.objetivo = client.objetivo || '';
-                    this.form.notas    = client.notes  || client.notas    || '';
-                    this._original     = { ...this.form };
-                }
-            } catch (e) {
-                this.error = e.message || 'Error al cargar el perfil.';
-            }
-        },
-
-        async submit() {
-            if (!this.isDirty || this.loading) return;
-            this.loading = true;
-            this.error   = '';
-            this.saved   = false;
-
-            try {
-                const url = this.clientId
-                    ? '/api/v1/clients/' + this.clientId
-                    : '/api/v1/clients/me';
-
-                const res = await fetch(url, {
-                    method: 'PUT',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify(this.form)
-                });
-
-                if (res.status === 401) { window.location.href = '/login'; return; }
-
-                const json = await res.json();
-                if (!res.ok || !json.success) {
-                    throw new Error(json.error?.message || json.message || 'Error al guardar. Inténtalo de nuevo.');
-                }
-
-                this._original = { ...this.form };
-                this.saved = true;
-                this.showToast('Perfil actualizado correctamente.', 'success');
-                setTimeout(() => { this.saved = false; }, 3000);
-
-            } catch (e) {
-                this.error = e.message;
-                this.showToast(e.message, 'error');
-            } finally {
-                this.loading = false;
-            }
-        },
-
-        reset() {
-            this.form  = { ...this._original };
-            this.error = '';
-        },
-
-        showToast(message, type) {
-            const toast = document.createElement('div');
-            toast.className = 'pw-toast pw-toast--' + (type || 'success');
-            toast.setAttribute('role', 'status');
-            toast.setAttribute('aria-live', 'polite');
-
-            const msg = document.createElement('span');
-            msg.textContent = message;
-            toast.appendChild(msg);
-
-            const container = document.getElementById('toast-container');
-            if (container) {
-                container.appendChild(toast);
-                setTimeout(function() {
-                    toast.style.opacity = '0';
-                    toast.style.transition = 'opacity 0.3s';
-                    setTimeout(function() { toast.remove(); }, 300);
-                }, 4000);
-            }
-        }
-    };
-}
-
-document.body.addEventListener('htmx:responseError', function(evt) {
-    if (evt.detail.xhr.status === 401) {
-        window.location.href = '/login';
-    }
-});
-</script>
+<!-- Component logic is in main.js via Alpine.data('profileForm') -->
     </main>
 </div>
 
