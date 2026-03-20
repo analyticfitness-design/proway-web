@@ -1,0 +1,9 @@
+# ProWay Lab — MySQL Backup Cron Entry
+# -----------------------------------------------------------------------
+# Schedule: daily at 3:00 AM Colombia time (UTC-5) = 8:00 AM UTC
+# To install: run `crontab -e` inside the EasyPanel app container and
+# paste the line below (without the leading #).
+# -----------------------------------------------------------------------
+
+# ProWay Lab MySQL daily backup at 3:00 AM Colombia (UTC-5) = 8:00 AM UTC
+0 8 * * * /bin/bash /code/api/scripts/backup.sh >> /backups/backup.log 2>&1
