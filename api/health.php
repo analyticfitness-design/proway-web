@@ -36,6 +36,7 @@ http_response_code($allOk ? 200 : 503);
 echo json_encode([
     'status'    => $allOk ? 'ok' : 'degraded',
     'timestamp' => date('c'),
-    'version'   => '1.0.0',
+    'version'   => '1.1.0',
+    'deploy_id' => 'beebe48',
     'checks'    => $checks,
 ], JSON_PRETTY_PRINT);
