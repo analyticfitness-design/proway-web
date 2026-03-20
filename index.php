@@ -67,6 +67,25 @@ if (preg_match('#^/admin/clientes/(\d+)$#', $normalized)) {
     }
 }
 
+// ── Blog routes: /blog and /blog/{slug} ─────────────────────────────────
+if ($normalized === '/blog') {
+    $file = __DIR__ . '/blog/index.html';
+    if (file_exists($file)) {
+        header('Content-Type: text/html; charset=utf-8');
+        readfile($file);
+        exit;
+    }
+}
+
+if (preg_match('#^/blog/([a-z0-9\-]+)$#', $normalized, $m)) {
+    $file = __DIR__ . '/blog/' . $m[1] . '.html';
+    if (file_exists($file)) {
+        header('Content-Type: text/html; charset=utf-8');
+        readfile($file);
+        exit;
+    }
+}
+
 if (isset($pageMap[$normalized])) {
     $file = __DIR__ . '/' . $pageMap[$normalized];
     if (file_exists($file)) {

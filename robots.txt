@@ -1,11 +1,15 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /admin.html
-Disallow: /cliente.html
-Disallow: /login.html
-Disallow: /login-cliente.html
-Disallow: /reset-password.html
+Disallow: /admin
+Disallow: /portal
+Disallow: /login
+Disallow: /proyectos
+Disallow: /facturas
+Disallow: /calendario
+Disallow: /perfil
+Disallow: /onboarding
 Disallow: /test/
+Disallow: /uploads/
 
 Sitemap: https://prowaylab.com/sitemap.xml
