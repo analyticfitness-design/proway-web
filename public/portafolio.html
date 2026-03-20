@@ -15,6 +15,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
   <style>
     /* ============================================================
@@ -1795,6 +1797,197 @@
       .ft-grid { gap: 24px; }
     }
 
+    /* ============================================================
+       REELS ALPINE — FILTERS + LIGHTBOX
+    ============================================================ */
+    [x-cloak] { display: none !important; }
+
+    /* Enhanced reels section with filter bar */
+    .reels-filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+    .rf-btn {
+      font-family: var(--font-m);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gray);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 9px 20px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      outline: none;
+    }
+    .rf-btn:hover { color: var(--white); border-color: rgba(0,217,255,0.45); }
+    .rf-btn.active {
+      color: var(--bg);
+      background: var(--blue);
+      border-color: var(--blue);
+      box-shadow: 0 0 18px rgba(0,217,255,0.35);
+    }
+
+    /* Lightbox */
+    .reel-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 99000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .reel-lightbox-inner {
+      position: relative;
+      width: min(90vw, 380px);
+      aspect-ratio: 9 / 16;
+      background: #000;
+      border: 1px solid var(--border);
+      box-shadow: 0 0 80px rgba(0,217,255,0.12), 0 40px 120px rgba(0,0,0,0.8);
+      overflow: hidden;
+    }
+    @media (max-width: 480px) {
+      .reel-lightbox { padding: 0; align-items: stretch; }
+      .reel-lightbox-inner { width: 100%; height: 100%; aspect-ratio: auto; border: none; }
+    }
+    .reel-lightbox-inner img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+    }
+    .reel-lightbox-close {
+      position: absolute;
+      top: -48px; right: 0;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--gray);
+      font-size: 22px;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .reel-lightbox-close:hover { border-color: var(--red); color: var(--red); }
+    .reel-lightbox-meta {
+      position: absolute;
+      bottom: -64px; left: 0; right: 0;
+    }
+    .reel-lightbox-title {
+      font-family: var(--font-h);
+      font-size: 15px; font-weight: 700;
+      color: var(--white); letter-spacing: 0.02em;
+    }
+    .reel-lightbox-cat {
+      font-family: var(--font-m);
+      font-size: 10px; color: var(--blue);
+      letter-spacing: 0.18em; text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .reel-lightbox-nav {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      width: 38px; height: 38px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid var(--border);
+      color: var(--white); font-size: 20px;
+      cursor: pointer; border-radius: 50%;
+      transition: border-color 0.2s, background 0.2s;
+      backdrop-filter: blur(4px);
+    }
+    .reel-lightbox-nav:hover { border-color: var(--blue); background: rgba(0,217,255,0.12); }
+    .reel-lb-prev { left: -54px; }
+    .reel-lb-next { right: -54px; }
+    @media (max-width: 600px) {
+      .reel-lb-prev { left: 10px; }
+      .reel-lb-next { right: 10px; }
+    }
+    .reel-lightbox-link {
+      position: absolute;
+      bottom: 14px; left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-m);
+      font-size: 9px; letter-spacing: 0.22em;
+      color: var(--blue); text-decoration: none;
+      text-transform: uppercase;
+      border: 1px solid rgba(0,217,255,0.4);
+      padding: 7px 16px;
+      background: rgba(0,0,0,0.65);
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .reel-lightbox-link:hover { background: rgba(0,217,255,0.12); }
+
+    /* Updated reel card — clickable for lightbox */
+    .reel-card-alpine {
+      position: relative;
+      aspect-ratio: 9 / 16;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94),
+                  border-color 0.3s ease,
+                  box-shadow 0.3s ease;
+    }
+    .reel-card-alpine:hover {
+      transform: scale(1.04);
+      border-color: var(--blue);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,217,255,0.3);
+    }
+    .reel-card-alpine img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform 0.5s ease;
+    }
+    .reel-card-alpine:hover img { transform: scale(1.08); }
+    .reel-play-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .reel-play-circle {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: rgba(0,217,255,0.15);
+      border: 1.5px solid rgba(0,217,255,0.7);
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    .reel-play-circle svg { width: 18px; height: 18px; fill: var(--blue); margin-left: 2px; }
+    .reel-card-alpine:hover .reel-play-circle { opacity: 1; transform: scale(1); }
+    .reel-bottom-info {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 14px 12px;
+      z-index: 2;
+    }
+    .reel-idx-badge {
+      font-family: var(--font-m);
+      font-size: 9px; letter-spacing: 0.2em;
+      color: var(--dark); margin-bottom: 4px;
+    }
+    .reel-cat-label {
+      font-family: var(--font-m);
+      font-size: 9px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--blue);
+      margin-bottom: 4px;
+    }
+    .reel-title-small {
+      font-family: var(--font-h);
+      font-size: 12px; font-weight: 700;
+      color: var(--white); line-height: 1.3;
+    }
+
   </style>
 </head>
 <body>
@@ -2133,104 +2326,157 @@
 </section>
 
 <!-- ============================================================
-     VIDEO REELS — PRODUCCIÓN AUDIOVISUAL
+     VIDEO REELS — PRODUCCIÓN AUDIOVISUAL (Alpine.js)
 ============================================================ -->
-<section id="reels-section">
+<section id="reels-section"
+  x-data="reelsGallery()"
+  x-init="init()"
+  @keydown.escape.window="closeLightbox()"
+  x-cloak>
   <div class="reels-wrap">
     <div class="rv">
       <div class="section-eyebrow">// VIDEO PRODUCIDO</div>
       <h2 class="proceso-title">Producci&oacute;n audiovisual</h2>
     </div>
 
+    <!-- Filter bar -->
+    <div class="reels-filter-bar rv">
+      <template x-for="cat in categories" :key="cat.id">
+        <button
+          class="rf-btn"
+          :class="{ active: activeFilter === cat.id }"
+          @click="setFilter(cat.id)"
+          x-text="cat.label">
+        </button>
+      </template>
+    </div>
+
+    <!-- Reels grid -->
     <div class="reels-grid rv">
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DTv9xHUkX8G/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-01.jpg" alt="Reel 01" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">01</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DUB7GxwES6u/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-02.jpg" alt="Reel 02" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">02</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DTJfoGED9B9/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-03.jpg" alt="Reel 03" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">03</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DTNnb8kDfgL/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-04.jpg" alt="Reel 04" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">04</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DUrP9v-j_ob/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-05.jpg" alt="Reel 05" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">05</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DSFpOZhjQ60/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-06.jpg" alt="Reel 06" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">06</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DUwRn95iWfG/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-07.jpg" alt="Reel 07" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">07</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DSdFkP4jmj8/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-08.jpg" alt="Reel 08" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">08</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DTv5xIcEV5y/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-09.jpg" alt="Reel 09" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">09</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DSlWF9zETpU/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-10.jpg" alt="Reel 10" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">10</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DUgm7E-jydZ/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-11.jpg" alt="Reel 11" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">11</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
-      <a class="reel-card" href="https://www.instagram.com/reel/DTgfRyeEdkR/" target="_blank">
-        <div class="reel-bg"><img src="/images/portafolio/portafolio-12.jpg" alt="Reel 12" width="360" height="640" loading="lazy"></div>
-        <div class="reel-play-static">&#9654;</div>
-        <div class="reel-label">Ver en Instagram</div>
-        <div class="reel-bottom"><div class="reel-idx">12</div><div class="reel-ig">Instagram</div></div>
-      </a>
-
+      <template x-for="(item, idx) in filteredItems" :key="item.id">
+        <div
+          class="reel-card-alpine"
+          @click="openLightbox(idx)"
+          :title="item.title">
+          <img :src="item.thumbnail" :alt="item.title" loading="lazy">
+          <div class="reel-play-overlay">
+            <div class="reel-play-circle">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div class="reel-bottom-info">
+            <div class="reel-idx-badge" x-text="String(item.id).padStart(2,'0')"></div>
+            <div class="reel-cat-label" x-text="item.categoryLabel"></div>
+            <div class="reel-title-small" x-text="item.title"></div>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
+
+  <!-- Lightbox -->
+  <div
+    class="reel-lightbox"
+    x-show="lightboxOpen"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @click.self="closeLightbox()"
+    style="display:none">
+
+    <div class="reel-lightbox-inner">
+      <button class="reel-lightbox-close" @click="closeLightbox()" aria-label="Cerrar">&times;</button>
+
+      <img
+        :src="currentItem ? currentItem.thumbnail : ''"
+        :alt="currentItem ? currentItem.title : ''"
+        style="width:100%;height:100%;object-fit:cover;display:block;">
+
+      <a
+        :href="currentItem ? currentItem.videoUrl : '#'"
+        target="_blank"
+        rel="noopener"
+        class="reel-lightbox-link"
+        x-show="currentItem && currentItem.videoUrl">
+        Ver en Instagram &rarr;
+      </a>
+
+      <button class="reel-lightbox-nav reel-lb-prev" @click="prevItem()" aria-label="Anterior">&#8249;</button>
+      <button class="reel-lightbox-nav reel-lb-next" @click="nextItem()" aria-label="Siguiente">&#8250;</button>
+
+      <div class="reel-lightbox-meta">
+        <div class="reel-lightbox-title" x-text="currentItem ? currentItem.title : ''"></div>
+        <div class="reel-lightbox-cat" x-text="currentItem ? currentItem.categoryLabel : ''"></div>
+      </div>
+    </div>
+  </div>
+
 </section>
+
+<script>
+function reelsGallery() {
+  const items = [
+    { id:  1, title: 'Reel Entrenamiento HIIT',     category: 'reels',      categoryLabel: 'Reels',               thumbnail: '/images/portafolio/portafolio-01.jpg',  videoUrl: 'https://www.instagram.com/reel/DTv9xHUkX8G/' },
+    { id:  2, title: 'Reel Nutrici\u00f3n y H\u00e1bitos',    category: 'reels',      categoryLabel: 'Reels',               thumbnail: '/images/portafolio/portafolio-02.jpg',  videoUrl: 'https://www.instagram.com/reel/DUB7GxwES6u/' },
+    { id:  3, title: 'Contenido Educativo Fitness',  category: 'reels',      categoryLabel: 'Reels',               thumbnail: '/images/portafolio/portafolio-03.jpg',  videoUrl: 'https://www.instagram.com/reel/DTJfoGED9B9/' },
+    { id:  4, title: 'Identidad Visual WellCore',    category: 'branding',   categoryLabel: 'Branding',            thumbnail: '/images/portafolio/portafolio-04.jpg',  videoUrl: 'https://www.instagram.com/reel/DTNnb8kDfgL/' },
+    { id:  5, title: 'Branded Content @powerfit',   category: 'produccion', categoryLabel: 'Producci\u00f3n Completa', thumbnail: '/images/portafolio/portafolio-05.jpg',  videoUrl: 'https://www.instagram.com/reel/DUrP9v-j_ob/' },
+    { id:  6, title: 'Reel Transformaci\u00f3n 30D', category: 'reels',      categoryLabel: 'Reels',               thumbnail: '/images/portafolio/portafolio-06.jpg',  videoUrl: 'https://www.instagram.com/reel/DSFpOZhjQ60/' },
+    { id:  7, title: 'Sistema Editorial 90D',        category: 'produccion', categoryLabel: 'Producci\u00f3n Completa', thumbnail: '/images/portafolio/portafolio-07.jpg',  videoUrl: 'https://www.instagram.com/reel/DUwRn95iWfG/' },
+    { id:  8, title: 'Identidad JK Training',        category: 'branding',   categoryLabel: 'Branding',            thumbnail: '/images/portafolio/portafolio-08.jpg',  videoUrl: 'https://www.instagram.com/reel/DSdFkP4jmj8/' },
+    { id:  9, title: 'Reel Motivacional Coach',      category: 'reels',      categoryLabel: 'Reels',               thumbnail: '/images/portafolio/portafolio-09.jpg',  videoUrl: 'https://www.instagram.com/reel/DTv5xIcEV5y/' },
+    { id: 10, title: 'Reel Rutina Funcional',        category: 'reels',      categoryLabel: 'Reels',               thumbnail: '/images/portafolio/portafolio-10.jpg',  videoUrl: 'https://www.instagram.com/reel/DSlWF9zETpU/' },
+    { id: 11, title: 'Campañas Digitales Multi-plataforma', category: 'produccion', categoryLabel: 'Producci\u00f3n Completa', thumbnail: '/images/portafolio/portafolio-11.jpg', videoUrl: 'https://www.instagram.com/reel/DUgm7E-jydZ/' },
+    { id: 12, title: 'Reel Ejercicios en Casa',      category: 'reels',      categoryLabel: 'Reels',               thumbnail: '/images/portafolio/portafolio-12.jpg',  videoUrl: 'https://www.instagram.com/reel/DTgfRyeEdkR/' },
+  ];
+
+  return {
+    categories: [
+      { id: 'todos',      label: 'Todos' },
+      { id: 'reels',      label: 'Reels' },
+      { id: 'branding',   label: 'Branding' },
+      { id: 'produccion', label: 'Producción Completa' },
+    ],
+    items,
+    activeFilter: 'todos',
+    lightboxOpen: false,
+    currentIndex: 0,
+
+    get filteredItems() {
+      if (this.activeFilter === 'todos') return this.items;
+      return this.items.filter(i => i.category === this.activeFilter);
+    },
+    get currentItem() {
+      return this.filteredItems[this.currentIndex] || null;
+    },
+
+    init() {},
+    setFilter(id) {
+      this.activeFilter = id;
+      this.currentIndex = 0;
+    },
+    openLightbox(idx) {
+      this.currentIndex = idx;
+      this.lightboxOpen = true;
+      document.body.style.overflow = 'hidden';
+    },
+    closeLightbox() {
+      this.lightboxOpen = false;
+      document.body.style.overflow = '';
+    },
+    prevItem() {
+      const len = this.filteredItems.length;
+      this.currentIndex = (this.currentIndex - 1 + len) % len;
+    },
+    nextItem() {
+      this.currentIndex = (this.currentIndex + 1) % this.filteredItems.length;
+    },
+  };
+}
+</script>
 
 <!-- ============================================================
      TEAM / CREATOR — QUIÉN ESTÁ DETRÁS
