@@ -32,19 +32,31 @@
 <div class="card" x-data="{
     error: '',
     loading: false,
-    async handleResponse(event) {
-        const xhr = event.detail.xhr;
+    async submit() {
+        this.error = '';
+        this.loading = true;
+        const raw   = document.getElementById('email').value.trim();
+        const pass  = document.getElementById('password').value;
+        const body  = raw.includes('@')
+            ? { email: raw, password: pass }
+            : { username: raw, password: pass };
         try {
-            const data = JSON.parse(xhr.responseText);
+            const res  = await fetch('/api/v1/auth/login', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+            });
+            const data = await res.json();
             if (data.success) {
                 const type = data.data && data.data.user && data.data.user.type;
                 window.location.href = type === 'admin' ? '/admin' : '/portal';
             } else {
-                this.error = (data.error && data.error.message) || 'Credenciales incorrectas. Inténtalo de nuevo.';
+                this.error = (data.error && data.error.message) || 'Credenciales incorrectas.';
                 this.loading = false;
             }
         } catch(e) {
-            this.error = 'Error inesperado. Por favor, intenta de nuevo.';
+            this.error = 'Error de conexión. Intenta de nuevo.';
             this.loading = false;
         }
     }
@@ -80,13 +92,7 @@
         <span x-text="error"></span>
     </div>
 
-    <form id="login-form"
-          hx-post="/api/v1/auth/login"
-          hx-ext="json-enc"
-          hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-          hx-on::before-request="loading = true; error = ''"
-          hx-on::after-request="handleResponse(event)"
-          novalidate>
+    <form id="login-form" @submit.prevent="submit()" novalidate>
 
         <div class="form-group">
             <label class="form-label" for="email">Correo electrónico o usuario</label>
@@ -101,9 +107,7 @@
         </div>
 
         <div class="form-group">
-            <label class="form-label" for="password">
-                Contraseña
-            </label>
+            <label class="form-label" for="password">Contraseña</label>
             <input class="form-input"
                    type="password"
                    id="password"
@@ -117,17 +121,13 @@
                 class="btn btn--primary btn--full"
                 style="margin-top: var(--pw-space-6); position: relative;"
                 :disabled="loading">
-
-            <!-- Loading state -->
-            <span x-show="loading" style="display:flex; align-items:center; gap:var(--pw-space-2); justify-content:center;">
+            <span x-show="loading" style="display:flex;align-items:center;gap:var(--pw-space-2);justify-content:center;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                      style="animation: spin 0.8s linear infinite;" aria-hidden="true">
                     <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
                 </svg>
                 Ingresando...
             </span>
-
-            <!-- Default state -->
             <span x-show="!loading">Ingresar</span>
         </button>
     </form>
@@ -151,16 +151,6 @@
 .btn[disabled] { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
 </style>
 
-<script>
-/* If the user typed a username (no @), send it as `username` field instead of `email` */
-document.getElementById('login-form').addEventListener('htmx:configRequest', function(evt) {
-    var value = evt.detail.parameters['email'] || '';
-    if (value && !value.includes('@')) {
-        delete evt.detail.parameters['email'];
-        evt.detail.parameters['username'] = value;
-    }
-});
-</script>
     </div>
 </div>
 
