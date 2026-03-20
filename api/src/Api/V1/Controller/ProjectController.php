@@ -80,6 +80,62 @@ class ProjectController
     }
 
     /**
+     * GET /api/v1/calendar/events
+     * Returns project events formatted for FullCalendar.js.
+     * Clients see own projects; admins see all.
+     */
+    public function calendarEvents(Request $request, array $vars): never
+    {
+        $user = $this->middleware->requireAuth($request);
+
+        $projects = $user->type === 'admin'
+            ? $this->projects->listAllWithDates()
+            : $this->projects->listWithDatesForClient($user->id);
+
+        $today  = date('Y-m-d');
+        $events = [];
+
+        $completedStatuses = ['entregado', 'facturado', 'pagado'];
+
+        foreach ($projects as $p) {
+            $status   = $p['status'] ?? 'cotizacion';
+            $title    = $p['title'] ?? $p['service_type'] ?? 'Sin título';
+            $deadline = $p['deadline'] ?? null;
+            $start    = $p['start_date'] ?? $deadline;
+
+            // Determine color based on status / overdue
+            $isOverdue = $deadline
+                && $deadline < $today
+                && !in_array($status, $completedStatuses, true);
+
+            if ($isOverdue) {
+                $color = '#E31E24';  // red — overdue
+            } elseif (in_array($status, ['pagado', 'entregado'], true)) {
+                $color = '#00FF87';  // green — completed
+            } elseif (in_array($status, ['en_produccion', 'revision'], true)) {
+                $color = '#00D9FF';  // cyan — in progress
+            } else {
+                $color = '#FACC15';  // yellow — confirmado / cotizacion
+            }
+
+            $events[] = [
+                'id'            => $p['id'],
+                'title'         => $title,
+                'start'         => $start,
+                'end'           => $deadline,
+                'color'         => $color,
+                'url'           => '/proyectos/' . $p['id'],
+                'extendedProps' => [
+                    'status'      => $status,
+                    'client_name' => $p['client_name'] ?? '',
+                ],
+            ];
+        }
+
+        Response::success(['events' => $events]);
+    }
+
+    /**
      * GET /api/v1/projects/{id}/timeline
      */
     public function timeline(Request $request, array $vars): never

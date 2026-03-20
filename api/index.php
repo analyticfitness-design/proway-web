@@ -137,6 +137,9 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('GET',   '/api/v1/projects/{id:\d+}',                 [$projectCtrl, 'show']);
     $r->addRoute('PATCH', '/api/v1/projects/{id:\d+}/status',          [$projectCtrl, 'updateStatus']);
 
+    // Calendar
+    $r->addRoute('GET',   '/api/v1/calendar/events',                   [$projectCtrl, 'calendarEvents']);
+
     // Invoices
     $r->addRoute('GET',   '/api/v1/invoices',                          [$invoiceCtrl, 'index']);
     $r->addRoute('GET',   '/api/v1/invoices/pending',                  [$invoiceCtrl, 'pending']);

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0C0C0F">
-    <title>Mis Proyectos — ProWay Lab</title>
-    <meta name="description" content="Estado de tus proyectos activos en ProWay Lab">
+    <title>Calendario — ProWay Lab</title>
+    <meta name="description" content="Calendario de entregas y fechas de proyectos">
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/images/imagotipo-proway-blanco.png">
@@ -53,7 +53,7 @@
     Dashboard
 </a>
 
-<a href="/proyectos" class="sidebar__link sidebar__link--active">
+<a href="/proyectos" class="sidebar__link">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polygon points="5 3 19 12 5 21 5 3"/>
@@ -62,7 +62,7 @@
     Mis Proyectos
 </a>
 
-<a href="/calendario" class="sidebar__link">
+<a href="/calendario" class="sidebar__link sidebar__link--active">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -136,7 +136,7 @@
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
         <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
     </svg>
-    Cerrar Sesión
+    Cerrar Sesion
 </button>
         </div>
     </aside>
@@ -144,8 +144,8 @@
     <!-- Main content -->
     <main class="main-with-sidebar page-content" id="main-content">
         <div class="page-header">
-            <h1 class="page-title">Mis Proyectos</h1>
-            <div class="flex gap-4"><span id="proj-spinner" class="htmx-indicator" aria-label="Cargando proyectos">
+            <h1 class="page-title">Calendario</h1>
+            <div class="flex gap-4"><span id="cal-spinner" class="htmx-indicator" aria-label="Cargando calendario">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
          style="animation: pw-spin 0.8s linear infinite; color: var(--pw-accent);" aria-hidden="true">
         <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
@@ -153,11 +153,11 @@
 </span>
 
 <button class="btn btn--ghost btn--sm"
-        hx-get="/api/partials/project-list.php"
-        hx-target="#project-list-container"
+        hx-get="/api/partials/calendar.php"
+        hx-target="#calendar-container"
         hx-swap="innerHTML"
         hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-        hx-indicator="#proj-spinner">
+        hx-indicator="#cal-spinner">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <polyline points="23 4 23 10 17 10"/>
         <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
@@ -168,52 +168,31 @@
         </div>
 
 
-<div id="project-list-container"
-     hx-get="/api/partials/project-list.php"
-     hx-trigger="load"
-     hx-swap="innerHTML"
-     hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-     hx-indicator="#proj-spinner"
-     style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--pw-space-4);">
-
-    <!-- Skeleton cards while loading -->
-    <div class="project-card loading-skeleton" aria-hidden="true">
-        <div class="project-card__header">
-            <span class="skeleton-text" style="width: 65%; height: 16px;"></span>
-            <span class="skeleton-text" style="width: 70px; height: 22px; border-radius: var(--pw-radius-full);"></span>
-        </div>
-        <div class="project-card__footer">
-            <span class="skeleton-text" style="width: 100px;"></span>
-        </div>
-    </div>
-    <div class="project-card loading-skeleton" aria-hidden="true">
-        <div class="project-card__header">
-            <span class="skeleton-text" style="width: 65%; height: 16px;"></span>
-            <span class="skeleton-text" style="width: 70px; height: 22px; border-radius: var(--pw-radius-full);"></span>
-        </div>
-        <div class="project-card__footer">
-            <span class="skeleton-text" style="width: 100px;"></span>
-        </div>
-    </div>
-    <div class="project-card loading-skeleton" aria-hidden="true">
-        <div class="project-card__header">
-            <span class="skeleton-text" style="width: 65%; height: 16px;"></span>
-            <span class="skeleton-text" style="width: 70px; height: 22px; border-radius: var(--pw-radius-full);"></span>
-        </div>
-        <div class="project-card__footer">
-            <span class="skeleton-text" style="width: 100px;"></span>
-        </div>
-    </div>
-    <div class="project-card loading-skeleton" aria-hidden="true">
-        <div class="project-card__header">
-            <span class="skeleton-text" style="width: 65%; height: 16px;"></span>
-            <span class="skeleton-text" style="width: 70px; height: 22px; border-radius: var(--pw-radius-full);"></span>
-        </div>
-        <div class="project-card__footer">
-            <span class="skeleton-text" style="width: 100px;"></span>
-        </div>
+<div class="card" style="overflow:visible;">
+    <div class="card__header">
+        <h2 class="card__title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="vertical-align:-3px; margin-right:6px; color:var(--pw-accent);">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            Fechas de Proyectos
+        </h2>
     </div>
 
+    <div id="calendar-container"
+         hx-get="/api/partials/calendar.php"
+         hx-trigger="load"
+         hx-swap="innerHTML"
+         hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
+         hx-indicator="#cal-spinner"
+         style="padding: var(--pw-space-4);">
+
+        <!-- Skeleton while loading -->
+        <div class="loading-skeleton" aria-hidden="true" style="min-height:400px; display:flex; align-items:center; justify-content:center;">
+            <p style="color: var(--pw-text-muted);">Cargando calendario...</p>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -223,13 +202,6 @@
     50%       { opacity: 0.35; }
 }
 .loading-skeleton { pointer-events: none; animation: pw-skeleton-pulse 1.4s ease-in-out infinite; }
-.skeleton-text {
-    display: inline-block;
-    height: 14px;
-    background: var(--pw-border-2);
-    border-radius: var(--pw-radius-sm);
-    animation: pw-skeleton-pulse 1.4s ease-in-out infinite;
-}
 .htmx-indicator { opacity: 0; transition: opacity 0.2s; pointer-events: none; }
 .htmx-request .htmx-indicator,
 .htmx-indicator.htmx-request { opacity: 1; }
@@ -259,6 +231,6 @@ document.body.addEventListener('htmx:responseError', function(evt) {
 </script>
 
     <!-- JS: HTMX + Alpine.js (injected by Vite) -->
-<script type="module" src="/dist/assets/main.js"></script>
+    <script type="module" src="/dist/assets/main.js?v=3"></script>
 </body>
 </html>

@@ -62,6 +62,18 @@ class CachedProjectRepository implements ProjectRepository
         return $this->inner->create($data);
     }
 
+    // Calendar queries bypass cache — always fresh data.
+
+    public function findAllWithDates(): array
+    {
+        return $this->inner->findAllWithDates();
+    }
+
+    public function findAllWithDatesForClient(int $clientId): array
+    {
+        return $this->inner->findAllWithDatesForClient($clientId);
+    }
+
     // Admin queries bypass cache — always fresh data.
 
     public function findAll(): array

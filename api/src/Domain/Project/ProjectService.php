@@ -37,6 +37,20 @@ class ProjectService
         return $this->repo->create($data);
     }
 
+    // ── Calendar methods ─────────────────────────────────────────────────────
+
+    /** All projects with start_date or deadline (admin view). */
+    public function listAllWithDates(): array
+    {
+        return $this->repo->findAllWithDates();
+    }
+
+    /** Projects with dates for a specific client. */
+    public function listWithDatesForClient(int $clientId): array
+    {
+        return $this->repo->findAllWithDatesForClient($clientId);
+    }
+
     // ── Admin-scope methods ────────────────────────────────────────────────────
 
     public function listAll(): array

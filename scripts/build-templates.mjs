@@ -35,6 +35,7 @@ const PAGES = [
     { src: 'pages/client/projects.njk',        out: 'proyectos.html' },
     { src: 'pages/client/project-detail.njk',  out: 'proyecto.html' },
     { src: 'pages/client/invoices.njk',        out: 'facturas.html' },
+    { src: 'pages/client/calendar.njk',        out: 'calendario.html' },
     { src: 'pages/client/profile.njk',         out: 'perfil.html' },
 
     // Admin

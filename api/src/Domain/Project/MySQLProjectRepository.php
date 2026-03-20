@@ -64,6 +64,32 @@ class MySQLProjectRepository implements ProjectRepository
         return (int) $this->db->lastInsertId();
     }
 
+    public function findAllWithDates(): array
+    {
+        $stmt = $this->db->query(
+            'SELECT p.*, c.nombre AS client_name, c.code AS client_code
+             FROM projects p
+             LEFT JOIN clients c ON c.id = p.client_id
+             WHERE p.start_date IS NOT NULL OR p.deadline IS NOT NULL
+             ORDER BY COALESCE(p.deadline, p.start_date) ASC'
+        );
+        return $stmt->fetchAll();
+    }
+
+    public function findAllWithDatesForClient(int $clientId): array
+    {
+        $stmt = $this->db->prepare(
+            'SELECT p.*, c.nombre AS client_name, c.code AS client_code
+             FROM projects p
+             LEFT JOIN clients c ON c.id = p.client_id
+             WHERE p.client_id = ?
+               AND (p.start_date IS NOT NULL OR p.deadline IS NOT NULL)
+             ORDER BY COALESCE(p.deadline, p.start_date) ASC'
+        );
+        $stmt->execute([$clientId]);
+        return $stmt->fetchAll();
+    }
+
     public function findAll(): array
     {
         $stmt = $this->db->query(
