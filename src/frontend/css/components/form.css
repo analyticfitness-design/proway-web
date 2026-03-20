@@ -54,3 +54,16 @@
     font-size: var(--pw-text-xs);
     color: var(--pw-text-dim);
 }
+
+/* ── Form responsive ──────────────────────── */
+@media (max-width: 480px) {
+    .form-group {
+        margin-bottom: var(--pw-space-4);
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+        padding: var(--pw-space-2) var(--pw-space-3);
+        font-size: var(--pw-text-sm);
+    }
+}

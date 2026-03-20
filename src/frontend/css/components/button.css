@@ -87,3 +87,31 @@
     margin-left: var(--pw-space-2);
 }
 @keyframes pw-spin { to { transform: rotate(360deg); } }
+
+/* ── Button responsive ────────────────────── */
+@media (max-width: 768px) {
+    .btn--primary {
+        clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+    }
+    .btn--lg {
+        padding: var(--pw-space-3) var(--pw-space-6);
+        font-size: var(--pw-text-base);
+    }
+}
+
+@media (max-width: 480px) {
+    .btn--primary {
+        clip-path: polygon(3px 0, 100% 0, calc(100% - 3px) 100%, 0 100%);
+    }
+    .btn {
+        padding: var(--pw-space-2) var(--pw-space-4);
+        font-size: var(--pw-text-xs);
+    }
+    .btn--sm {
+        padding: var(--pw-space-1) var(--pw-space-3);
+    }
+    .btn--lg {
+        padding: var(--pw-space-3) var(--pw-space-5);
+        font-size: var(--pw-text-sm);
+    }
+}

@@ -62,5 +62,44 @@
     border-top: 1px solid var(--pw-border);
 }
 
+/* ── Modal responsive ─────────────────────── */
+@media (max-width: 768px) {
+    .modal-overlay {
+        padding: var(--pw-space-3);
+        align-items: flex-end;
+    }
+    .modal {
+        padding: var(--pw-space-5);
+        max-width: 100%;
+        max-height: 85vh;
+        border-radius: var(--pw-radius-md) var(--pw-radius-md) 0 0;
+    }
+    .modal--lg { max-width: 100%; }
+    .modal__title {
+        font-size: var(--pw-text-lg);
+    }
+    .modal__footer {
+        flex-direction: column;
+        gap: var(--pw-space-2);
+    }
+    .modal__footer .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-overlay {
+        padding: 0;
+    }
+    .modal {
+        padding: var(--pw-space-4);
+        border-radius: var(--pw-radius-md) var(--pw-radius-md) 0 0;
+        max-height: 90vh;
+    }
+    .modal__title {
+        font-size: var(--pw-text-base);
+    }
+}
+
 /* Alpine.js transition classes */
 [x-cloak] { display: none !important; }

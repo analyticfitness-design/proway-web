@@ -110,6 +110,20 @@
 @media (max-width: 768px) {
     .sidebar { transform: translateX(-100%); }
     .sidebar.is-open { transform: translateX(0); }
-    .main-with-sidebar { margin-left: 0; padding-top: 60px; }
-    .mobile-menu-toggle { display: flex; }
+    .main-with-sidebar { margin-left: 0; padding-top: 56px; }
+    .mobile-menu-toggle {
+        display: flex;
+        top: var(--pw-space-3);
+        left: var(--pw-space-3);
+    }
+}
+
+@media (max-width: 480px) {
+    .main-with-sidebar { padding-top: 48px; }
+    .mobile-menu-toggle {
+        top: var(--pw-space-2);
+        left: var(--pw-space-2);
+        padding: 6px;
+    }
+    .mobile-menu-toggle svg { width: 20px; height: 20px; }
 }

@@ -86,3 +86,48 @@
     letter-spacing: 0.1em;
     color: var(--pw-text-muted);
 }
+
+/* ── Card responsive ──────────────────────── */
+@media (max-width: 768px) {
+    .card {
+        padding: var(--pw-space-4);
+    }
+    .card__header {
+        flex-wrap: wrap;
+        gap: var(--pw-space-2);
+    }
+    .card__title {
+        font-size: var(--pw-text-base);
+    }
+    .stat-card {
+        padding: var(--pw-space-4);
+    }
+    .stat-card__value {
+        font-size: var(--pw-text-2xl);
+    }
+    .project-card {
+        padding: var(--pw-space-4);
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: var(--pw-space-3);
+        border-radius: var(--pw-radius);
+    }
+    .card__title {
+        font-size: var(--pw-text-sm);
+    }
+    .stat-card {
+        padding: var(--pw-space-3);
+    }
+    .stat-card__value {
+        font-size: var(--pw-text-xl);
+    }
+    .stat-card__label {
+        font-size: 8px;
+    }
+    .project-card {
+        padding: var(--pw-space-3);
+    }
+}

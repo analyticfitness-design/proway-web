@@ -43,3 +43,35 @@
 }
 
 .table--striped tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+
+/* ── Table responsive ─────────────────────── */
+@media (max-width: 768px) {
+    .table-wrapper {
+        margin: 0 calc(-1 * var(--pw-space-4));
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+    .table thead th {
+        padding: var(--pw-space-2) var(--pw-space-3);
+        font-size: 8px;
+    }
+    .table tbody td {
+        padding: var(--pw-space-3);
+        font-size: var(--pw-text-xs);
+    }
+}
+
+@media (max-width: 480px) {
+    .table-wrapper {
+        margin: 0 calc(-1 * var(--pw-space-3));
+    }
+    .table thead th {
+        padding: var(--pw-space-2);
+        font-size: 7px;
+        letter-spacing: 0.1em;
+    }
+    .table tbody td {
+        padding: var(--pw-space-2);
+    }
+}
