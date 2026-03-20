@@ -1,25 +1,25 @@
-/* ProWay Design System v1 — Design Tokens */
+/* ProWay Design System v2 — Design Tokens (Landing-aligned) */
 :root {
-    /* ── Brand Colors ────────────────────────────── */
-    --pw-black:      #0a0a0f;
-    --pw-dark:       #0d0d15;
-    --pw-panel:      #12121e;
-    --pw-surface:    #16162a;
-    --pw-border:     #1e1e30;
-    --pw-border-2:   #2a2a40;
-    --pw-accent:     #6c63ff;     /* Purple — signature */
-    --pw-accent-2:   #00d4aa;     /* Teal — success */
-    --pw-accent-dim: rgba(108,99,255,0.15);
-    --pw-danger:     #ff4757;
+    /* ── Brand Colors (Cyan system = landing) ────── */
+    --pw-black:      #0C0C0F;
+    --pw-dark:       #111114;
+    --pw-panel:      #191920;
+    --pw-surface:    #1E1E24;
+    --pw-border:     #252528;
+    --pw-border-2:   #333338;
+    --pw-accent:     #00D9FF;     /* Cyan — signature */
+    --pw-accent-2:   #00FF87;     /* Green — success */
+    --pw-accent-dim: rgba(0,217,255,0.08);
+    --pw-danger:     #E31E24;
     --pw-warning:    #ffa502;
-    --pw-text:       #e0e0f0;
-    --pw-text-muted: #888899;
-    --pw-text-dim:   #555566;
+    --pw-text:       #FFFFFF;
+    --pw-text-muted: #A1A1AA;
+    --pw-text-dim:   #52525B;
 
     /* ── Typography ──────────────────────────────── */
     --pw-font-body:    'Inter', system-ui, -apple-system, sans-serif;
-    --pw-font-mono:    'JetBrains Mono', 'Cascadia Code', 'Courier New', monospace;
-    --pw-font-display: 'Sora', 'Inter', sans-serif;
+    --pw-font-mono:    'Roboto Mono', 'Cascadia Code', 'Courier New', monospace;
+    --pw-font-display: 'Montserrat', 'Inter', sans-serif;
 
     --pw-text-xs:   0.72rem;
     --pw-text-sm:   0.85rem;
@@ -60,8 +60,8 @@
     --pw-shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
     --pw-shadow:    0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px var(--pw-border);
     --pw-shadow-lg: 0 12px 48px rgba(0,0,0,0.5), 0 0 0 1px var(--pw-border);
-    --pw-glow:      0 0 20px rgba(108,99,255,0.3);
-    --pw-glow-teal: 0 0 20px rgba(0,212,170,0.25);
+    --pw-glow:       0 0 20px rgba(0,217,255,0.3);
+    --pw-glow-green: 0 0 20px rgba(0,255,135,0.25);
 
     /* ── Transitions ─────────────────────────────── */
     --pw-transition:    200ms cubic-bezier(0.4,0,0.2,1);

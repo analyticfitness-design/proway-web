@@ -1,5 +1,5 @@
 /* ProWay Design System v1 — Base Reset + Typography */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@400;500;600;700&display=swap');
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -44,7 +44,7 @@ a {
     text-decoration: none;
     transition: color var(--pw-transition);
 }
-a:hover { color: #8b84ff; }
+a:hover { color: #33E4FF; text-shadow: 0 0 18px rgba(0,217,255,0.3); }
 
 code, pre {
     font-family: var(--pw-font-mono);
