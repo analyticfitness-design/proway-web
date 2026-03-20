@@ -71,6 +71,28 @@ class MySQLClientRepository implements ClientRepository
         }
     }
 
+    public function countByPlan(): array
+    {
+        $stmt = $this->db->query(
+            "SELECT plan_type, COUNT(*) AS total FROM clients WHERE status = 'activo' GROUP BY plan_type ORDER BY total DESC"
+        );
+        return $stmt->fetchAll();
+    }
+
+    public function newByMonth(int $months = 6): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT DATE_FORMAT(created_at, '%Y-%m') AS month,
+                    COUNT(*) AS total
+             FROM clients
+             WHERE created_at >= DATE_SUB(DATE_FORMAT(NOW(), '%Y-%m-01'), INTERVAL ? MONTH)
+             GROUP BY month
+             ORDER BY month ASC"
+        );
+        $stmt->execute([$months - 1]);
+        return $stmt->fetchAll();
+    }
+
     public function update(int $id, array $data): bool
     {
         $allowed = ['name', 'email', 'phone', 'company', 'plan_type', 'status'];

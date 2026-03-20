@@ -48,4 +48,9 @@ class ProjectService
     {
         return $this->repo->countActive();
     }
+
+    public function countByStatus(): array
+    {
+        return $this->repo->countByStatus();
+    }
 }

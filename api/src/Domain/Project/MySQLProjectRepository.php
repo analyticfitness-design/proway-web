@@ -82,4 +82,12 @@ class MySQLProjectRepository implements ProjectRepository
         );
         return (int) $stmt->fetchColumn();
     }
+
+    public function countByStatus(): array
+    {
+        $stmt = $this->db->query(
+            'SELECT status, COUNT(*) AS total FROM projects GROUP BY status ORDER BY total DESC'
+        );
+        return $stmt->fetchAll();
+    }
 }

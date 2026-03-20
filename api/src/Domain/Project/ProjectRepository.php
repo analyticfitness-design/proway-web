@@ -17,4 +17,6 @@ interface ProjectRepository
     public function findAll(): array;
     /** Count projects in active states (produccion, revision, entrega). */
     public function countActive(): int;
+    /** Count projects grouped by status. */
+    public function countByStatus(): array;
 }

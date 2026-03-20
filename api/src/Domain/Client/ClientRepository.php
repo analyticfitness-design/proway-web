@@ -11,4 +11,8 @@ interface ClientRepository
     public function findAllActive(): array;
     public function update(int $id, array $data): bool;
     public function create(array $data): int;
+    /** Count active clients grouped by plan_type. */
+    public function countByPlan(): array;
+    /** Count new clients grouped by month (last N months). */
+    public function newByMonth(int $months = 6): array;
 }

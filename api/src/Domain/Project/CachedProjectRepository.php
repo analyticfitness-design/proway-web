@@ -73,4 +73,9 @@ class CachedProjectRepository implements ProjectRepository
     {
         return $this->inner->countActive();
     }
+
+    public function countByStatus(): array
+    {
+        return $this->inner->countByStatus();
+    }
 }

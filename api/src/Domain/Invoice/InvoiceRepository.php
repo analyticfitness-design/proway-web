@@ -21,4 +21,6 @@ interface InvoiceRepository
     public function sumPaidThisMonth(): float;
     /** Insert a new invoice and return its auto-increment id. */
     public function create(array $data): int;
+    /** SUM total_cop grouped by month for paid invoices (last N months). */
+    public function revenueByMonth(int $months = 6): array;
 }

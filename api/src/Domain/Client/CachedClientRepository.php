@@ -88,6 +88,16 @@ class CachedClientRepository implements ClientRepository
         return $id;
     }
 
+    public function countByPlan(): array
+    {
+        return $this->inner->countByPlan();
+    }
+
+    public function newByMonth(int $months = 6): array
+    {
+        return $this->inner->newByMonth($months);
+    }
+
     public function update(int $id, array $data): bool
     {
         $result = $this->inner->update($id, $data);

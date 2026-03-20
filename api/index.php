@@ -9,6 +9,8 @@ use ProWay\Api\V1\Controller\AuthController;
 use ProWay\Api\V1\Controller\ClientController;
 use ProWay\Api\V1\Controller\InvoiceController;
 use ProWay\Api\V1\Controller\PaymentController;
+use ProWay\Api\V1\Controller\DeliverableController;
+use ProWay\Api\V1\Controller\NotificationController;
 use ProWay\Api\V1\Controller\ProjectController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
@@ -23,6 +25,12 @@ use ProWay\Domain\Invoice\MySQLInvoiceRepository;
 use ProWay\Domain\Project\CachedProjectRepository;
 use ProWay\Domain\Project\MySQLProjectRepository;
 use ProWay\Domain\Project\ProjectService;
+use ProWay\Domain\Deliverable\DeliverableService;
+use ProWay\Domain\Deliverable\MySQLDeliverableRepository;
+use ProWay\Domain\Notification\NotificationService;
+use ProWay\Domain\Notification\MySQLNotificationRepository;
+use ProWay\Domain\ActivityLog\ActivityLogService;
+use ProWay\Domain\ActivityLog\MySQLActivityLogRepository;
 use ProWay\Domain\Payment\WompiService;
 use ProWay\Infrastructure\Cache\CacheFactory;
 use ProWay\Infrastructure\Database\Connection;
@@ -30,6 +38,7 @@ use ProWay\Infrastructure\Email\MailjetService;
 use ProWay\Infrastructure\Http\Request;
 use ProWay\Infrastructure\Http\Response;
 use ProWay\Infrastructure\Http\Router;
+use ProWay\Infrastructure\Pdf\PdfRenderer;
 
 // ── CORS (existing logic preserved) ──────────────────────────────────────────
 $allowedOrigins = array_filter(explode(',', getenv('ALLOWED_ORIGINS') ?: ''));
@@ -63,22 +72,29 @@ $clientService  = new ClientService(new CachedClientRepository(new MySQLClientRe
 $projectService = new ProjectService(new CachedProjectRepository(new MySQLProjectRepository($pdo), $cache));
 $invoiceService = new InvoiceService(new CachedInvoiceRepository(new MySQLInvoiceRepository($pdo), $cache));
 
+$deliverableService  = new DeliverableService(new MySQLDeliverableRepository($pdo));
+$notificationService = new NotificationService(new MySQLNotificationRepository($pdo));
+$activityLogService  = new ActivityLogService(new MySQLActivityLogRepository($pdo));
+
 $wompi   = new WompiService();
 $mailer  = new MailjetService();
 
 $authCtrl    = new AuthController($auth, $mw);
 $clientCtrl  = new ClientController($clientService, $mw);
-$projectCtrl = new ProjectController($projectService, $mw);
-$invoiceCtrl = new InvoiceController($invoiceService, $mw);
+$projectCtrl = new ProjectController($projectService, $mw, $activityLogService);
+$pdfRenderer = new PdfRenderer();
+$invoiceCtrl = new InvoiceController($invoiceService, $mw, $clientService, $pdfRenderer);
 $paymentCtrl = new PaymentController($invoiceService, $clientService, $wompi, $mailer, $mw);
-$adminCtrl   = new AdminController($invoiceService, $projectService, $clientService, $mw, $mailer);
+$adminCtrl        = new AdminController($invoiceService, $projectService, $clientService, $mw, $mailer, $notificationService, $activityLogService);
+$notifCtrl        = new NotificationController($notificationService, $mw);
+$deliverableCtrl  = new DeliverableController($deliverableService, $mw);
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',  [$authCtrl, 'login']);
@@ -100,6 +116,7 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('GET',   '/api/v1/invoices/pending',                  [$invoiceCtrl, 'pending']);
     $r->addRoute('POST',  '/api/v1/invoices/{id:\d+}/pay',             [$invoiceCtrl, 'pay']);
     $r->addRoute('PATCH', '/api/v1/invoices/{id:\d+}/status',          [$invoiceCtrl, 'updateStatus']);
+    $r->addRoute('GET',   '/api/v1/invoices/{id:\d+}/pdf',            [$invoiceCtrl, 'downloadPdf']);
 
     // Payments (Wompi)
     $r->addRoute('POST', '/api/v1/payments/checkout', [$paymentCtrl, 'checkout']);
@@ -111,6 +128,18 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('POST', '/api/v1/admin/clients',            [$adminCtrl, 'createClient']);
     $r->addRoute('POST', '/api/v1/admin/invoices', [$adminCtrl, 'createInvoice']);
     $r->addRoute('POST', '/api/v1/admin/projects', [$adminCtrl, 'createProject']);
+
+    // Notifications
+    $r->addRoute('GET',   '/api/v1/notifications/unread-count',     [$notifCtrl, 'unreadCount']);
+    $r->addRoute('GET',   '/api/v1/notifications',                  [$notifCtrl, 'index']);
+    $r->addRoute('PATCH', '/api/v1/notifications/{id:\d+}/read',    [$notifCtrl, 'markRead']);
+
+    // Project Timeline
+    $r->addRoute('GET',   '/api/v1/projects/{id:\d+}/timeline',     [$projectCtrl, 'timeline']);
+
+    // Deliverables
+    $r->addRoute('GET',  '/api/v1/deliverables',        [$deliverableCtrl, 'listByProject']);
+    $r->addRoute('POST', '/api/v1/admin/deliverables',   [$deliverableCtrl, 'upload']);
 });
 
 $request  = new Request();

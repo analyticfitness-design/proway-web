@@ -79,6 +79,11 @@ class InvoiceService
         return $this->repo->create($data);
     }
 
+    public function revenueByMonth(int $months = 6): array
+    {
+        return $this->repo->revenueByMonth($months);
+    }
+
     private function generateNumber(): string
     {
         return 'INV-' . date('Y') . '-' . str_pad((string) random_int(1, 99999), 5, '0', STR_PAD_LEFT);

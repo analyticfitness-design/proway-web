@@ -31,4 +31,14 @@ class ClientService
     {
         return $this->repo->update($id, $data);
     }
+
+    public function countByPlan(): array
+    {
+        return $this->repo->countByPlan();
+    }
+
+    public function newByMonth(int $months = 6): array
+    {
+        return $this->repo->newByMonth($months);
+    }
 }

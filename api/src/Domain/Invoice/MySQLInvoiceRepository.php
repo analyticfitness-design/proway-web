@@ -113,4 +113,19 @@ class MySQLInvoiceRepository implements InvoiceRepository
         $stmt->execute([$status, $id]);
         return $stmt->rowCount() > 0;
     }
+
+    public function revenueByMonth(int $months = 6): array
+    {
+        $stmt = $this->db->prepare(
+            "SELECT DATE_FORMAT(paid_at, '%Y-%m') AS month,
+                    COALESCE(SUM(total_cop), 0) AS total
+             FROM invoices
+             WHERE status = 'pagada'
+               AND paid_at >= DATE_SUB(DATE_FORMAT(NOW(), '%Y-%m-01'), INTERVAL ? MONTH)
+             GROUP BY month
+             ORDER BY month ASC"
+        );
+        $stmt->execute([$months - 1]);
+        return $stmt->fetchAll();
+    }
 }

@@ -79,7 +79,7 @@ if (empty($invoices)) {
                         Pagar
                     </button>
                     <?php endif; ?>
-                    <a href="/api/partials/invoice-pdf.php?id=<?= $invoiceId ?>&autoprint=0"
+                    <a href="/api/v1/invoices/<?= $invoiceId ?>/pdf"
                        target="_blank"
                        class="btn btn--ghost btn--sm"
                        title="Ver / Descargar PDF">

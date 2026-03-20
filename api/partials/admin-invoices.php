@@ -71,7 +71,7 @@ if (empty($invoices)) {
                 <td><?= $dueDate ?></td>
                 <td>
                     <?php if ($invId > 0): ?>
-                    <a href="/api/partials/invoice-pdf.php?id=<?= $invId ?>&autoprint=0"
+                    <a href="/api/v1/invoices/<?= $invId ?>/pdf"
                        target="_blank"
                        class="btn btn--ghost btn--sm"
                        title="Ver PDF">

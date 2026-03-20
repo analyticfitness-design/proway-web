@@ -83,4 +83,9 @@ class CachedInvoiceRepository implements InvoiceRepository
     {
         return $this->inner->updateStatus($id, $status);
     }
+
+    public function revenueByMonth(int $months = 6): array
+    {
+        return $this->inner->revenueByMonth($months);
+    }
 }
