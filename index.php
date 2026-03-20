@@ -20,12 +20,23 @@ if (str_starts_with($uri, '/api/')) {
 
 // ── Static page router: clean URL → .html file ────────────────────────────
 $pageMap = [
-    '/'                => 'login.html',
+    // Paginas publicas
+    '/'                => 'public/index.html',
+    '/servicios'       => 'public/servicios.html',
+    '/portafolio'      => 'public/portafolio.html',
+    '/metodo'          => 'public/metodo.html',
+    '/contacto'        => 'public/contacto.html',
+
+    // Auth
     '/login'           => 'login.html',
+
+    // Portal cliente (requiere auth en JS)
     '/portal'          => 'portal.html',
     '/proyectos'       => 'proyectos.html',
     '/facturas'        => 'facturas.html',
     '/perfil'          => 'perfil.html',
+
+    // Admin
     '/admin'           => 'admin.html',
     '/admin/proyectos' => 'admin/proyectos.html',
     '/admin/clientes'  => 'admin/clientes.html',
@@ -69,4 +80,4 @@ header('Content-Type: text/html; charset=utf-8');
 echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>404 — ProWay Lab</title>'
     . '<style>body{font-family:system-ui,sans-serif;background:#0a0a0f;color:#e2e8f0;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}</style></head>'
     . '<body><div style="text-align:center"><h1 style="color:#6366f1">404</h1><p>Página no encontrada</p>'
-    . '<a href="/login" style="color:#818cf8">← Volver al portal</a></div></body></html>';
+    . '<a href="/" style="color:#818cf8">← Volver al inicio</a></div></body></html>';
