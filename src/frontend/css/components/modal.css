@@ -1,9 +1,9 @@
-/* ProWay DS — Modal Component (Alpine.js controlled) */
+/* ProWay DS — Modal Component (Landing-aligned, Alpine.js) */
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px);
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -14,13 +14,14 @@
 .modal {
     background: var(--pw-panel);
     border: 1px solid var(--pw-border-2);
-    border-radius: var(--pw-radius-lg);
+    border-top: 2px solid var(--pw-accent);
+    border-radius: var(--pw-radius-md);
     padding: var(--pw-space-8);
     width: 100%;
     max-width: 520px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: var(--pw-shadow-lg), var(--pw-glow);
+    box-shadow: var(--pw-shadow-lg), 0 0 40px rgba(0,217,255,0.06);
     position: relative;
 }
 
@@ -34,8 +35,11 @@
     margin-bottom: var(--pw-space-6);
 }
 .modal__title {
+    font-family: var(--pw-font-display);
     font-size: var(--pw-text-xl);
-    font-weight: var(--pw-weight-bold);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 .modal__close {
     background: none;
@@ -47,7 +51,7 @@
     line-height: 1;
     transition: color var(--pw-transition);
 }
-.modal__close:hover { color: var(--pw-text); }
+.modal__close:hover { color: var(--pw-accent); }
 
 .modal__footer {
     display: flex;

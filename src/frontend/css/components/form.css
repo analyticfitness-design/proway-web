@@ -1,4 +1,4 @@
-/* ProWay DS — Form Component */
+/* ProWay DS — Form Component (Landing-aligned) */
 .form-group {
     display: flex;
     flex-direction: column;
@@ -7,10 +7,12 @@
 }
 
 .form-label {
-    font-size: var(--pw-text-sm);
-    font-weight: var(--pw-weight-medium);
+    font-family: var(--pw-font-mono);
+    font-size: 9px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
     color: var(--pw-text-muted);
-    letter-spacing: 0.02em;
 }
 
 .form-input,
@@ -30,7 +32,7 @@
 .form-textarea:focus {
     outline: none;
     border-color: var(--pw-accent);
-    box-shadow: 0 0 0 3px var(--pw-accent-dim);
+    box-shadow: 0 0 0 3px rgba(0,217,255,0.1), 0 0 12px rgba(0,217,255,0.08);
 }
 .form-input::placeholder { color: var(--pw-text-dim); }
 
@@ -39,14 +41,16 @@
 .form-input--error,
 .form-select--error { border-color: var(--pw-danger); }
 .form-input--error:focus,
-.form-select--error:focus { box-shadow: 0 0 0 3px rgba(255,71,87,0.15); }
+.form-select--error:focus { box-shadow: 0 0 0 3px rgba(227,30,36,0.12); }
 
 .form-error {
+    font-family: var(--pw-font-mono);
     font-size: var(--pw-text-xs);
     color: var(--pw-danger);
 }
 
 .form-hint {
+    font-family: var(--pw-font-mono);
     font-size: var(--pw-text-xs);
     color: var(--pw-text-dim);
 }
