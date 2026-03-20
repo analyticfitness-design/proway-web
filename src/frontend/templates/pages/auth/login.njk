@@ -1,10 +1,14 @@
 {% extends "layouts/auth.njk" %}
 
-{% block title %}Iniciar Sesión — ProWay Lab{% endblock %}
+{% block title %}Iniciar Sesion — ProWay Lab{% endblock %}
 {% block description %}Accede a tu portal de cliente ProWay Lab{% endblock %}
 
 {% block content %}
-<div class="card" x-data="{
+<div style="text-align:center; margin-bottom: var(--pw-space-5);">
+    <span class="auth-badge">Sistema activo</span>
+</div>
+
+<div class="card" style="background: var(--pw-panel); border: 1px solid var(--pw-border);" x-data="{
     error: '',
     loading: false,
     async submit() {
@@ -31,14 +35,16 @@
                 this.loading = false;
             }
         } catch(e) {
-            this.error = 'Error de conexión. Intenta de nuevo.';
+            this.error = 'Error de conexion. Intenta de nuevo.';
             this.loading = false;
         }
     }
 }">
-    <div class="card__header" style="text-align:center; padding-bottom: var(--pw-space-4);">
-        <h2 class="card__title" style="font-size: var(--pw-text-xl); font-weight: var(--pw-weight-semi);">Bienvenido de vuelta</h2>
-        <p style="color: var(--pw-text-muted); font-size: var(--pw-text-sm); margin-top: var(--pw-space-1);">
+    <div style="text-align:center; padding-bottom: var(--pw-space-4);">
+        <h2 style="font-family: var(--pw-font-display); font-size: var(--pw-text-xl); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;">
+            Bienvenido de vuelta
+        </h2>
+        <p style="font-family: var(--pw-font-mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--pw-text-muted); margin-top: var(--pw-space-2);">
             Ingresa a tu portal de cliente
         </p>
     </div>
@@ -50,8 +56,8 @@
          x-transition:enter-end="opacity-100 transform translate-y-0"
          x-cloak
          style="
-             background: rgba(255,71,87,0.1);
-             border: 1px solid rgba(255,71,87,0.3);
+             background: rgba(227,30,36,0.08);
+             border: 1px solid rgba(227,30,36,0.25);
              border-radius: var(--pw-radius-sm);
              padding: var(--pw-space-3) var(--pw-space-4);
              margin-bottom: var(--pw-space-4);
@@ -70,7 +76,9 @@
     <form id="login-form" @submit.prevent="submit()" novalidate>
 
         <div class="form-group">
-            <label class="form-label" for="email">Correo electrónico o usuario</label>
+            <label class="form-label" for="email" style="font-family: var(--pw-font-mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;">
+                Correo electronico o usuario
+            </label>
             <input class="form-input"
                    type="text"
                    id="email"
@@ -78,18 +86,22 @@
                    placeholder="tu@email.com"
                    required
                    autocomplete="username"
-                   inputmode="email">
+                   inputmode="email"
+                   style="background: var(--pw-dark);">
         </div>
 
         <div class="form-group">
-            <label class="form-label" for="password">Contraseña</label>
+            <label class="form-label" for="password" style="font-family: var(--pw-font-mono); font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase;">
+                Contrasena
+            </label>
             <input class="form-input"
                    type="password"
                    id="password"
                    name="password"
                    placeholder="••••••••"
                    required
-                   autocomplete="current-password">
+                   autocomplete="current-password"
+                   style="background: var(--pw-dark);">
         </div>
 
         <button type="submit"
@@ -107,12 +119,9 @@
         </button>
     </form>
 
-    <p style="text-align:center; margin-top: var(--pw-space-5); font-size: var(--pw-text-sm); color: var(--pw-text-muted);">
-        ¿Problemas para acceder?
-        <a href="mailto:hola@prowaylab.com"
-           style="color: var(--pw-accent); text-decoration: none;"
-           onmouseover="this.style.textDecoration='underline'"
-           onmouseout="this.style.textDecoration='none'">
+    <p style="text-align:center; margin-top: var(--pw-space-5); font-family: var(--pw-font-mono); font-size: 10px; letter-spacing: 0.1em; color: var(--pw-text-dim);">
+        Problemas?
+        <a href="mailto:hola@prowaylab.com" style="color: var(--pw-accent); text-decoration: none;">
             Contacta soporte
         </a>
     </p>
@@ -121,8 +130,6 @@
 <style>
 @keyframes spin { to { transform: rotate(360deg); } }
 [x-cloak] { display: none !important; }
-
-/* HTMX request state — disable button visually */
 .btn[disabled] { opacity: 0.6; cursor: not-allowed; pointer-events: none; }
 </style>
 

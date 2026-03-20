@@ -1,11 +1,131 @@
 {% extends "layouts/base.njk" %}
 
+{% block head %}
+<style>
+    /* Auth layout — hero background (landing style) */
+    .auth-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: var(--pw-space-6);
+        position: relative;
+        overflow: hidden;
+        background: #0C0C0F;
+    }
+
+    /* Animated grid */
+    .auth-grid {
+        position: absolute; inset: 0;
+        background-image:
+            linear-gradient(rgba(0,217,255,0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,217,255,0.035) 1px, transparent 1px);
+        background-size: 64px 64px;
+        mask-image: radial-gradient(ellipse 85% 65% at 50% 50%, black 30%, transparent 100%);
+        pointer-events: none;
+    }
+
+    /* Glow orb */
+    .auth-orb {
+        position: absolute; top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        width: 700px; height: 700px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(0,217,255,0.06) 0%, transparent 65%);
+        pointer-events: none;
+        animation: auth-orb-pulse 6s ease-in-out infinite;
+    }
+    @keyframes auth-orb-pulse {
+        0%, 100% { opacity: 0.7; transform: translate(-50%,-50%) scale(1); }
+        50% { opacity: 1; transform: translate(-50%,-50%) scale(1.06); }
+    }
+
+    /* Scan line */
+    .auth-scan {
+        position: absolute; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, #00D9FF, transparent);
+        opacity: 0.25;
+        animation: auth-scan 5s ease-in-out infinite;
+        pointer-events: none;
+    }
+    @keyframes auth-scan {
+        0% { top: 0%; }
+        100% { top: 100%; }
+    }
+
+    /* Grain overlay */
+    .auth-page::after {
+        content: '';
+        position: fixed; inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+        background-size: 180px 180px;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.5;
+    }
+
+    /* Content wrapper */
+    .auth-content {
+        position: relative;
+        z-index: 10;
+        width: 100%;
+        max-width: 420px;
+    }
+
+    /* Logo */
+    .auth-logo {
+        text-align: center;
+        margin-bottom: var(--pw-space-8);
+    }
+    .auth-logo-text {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 900;
+        font-size: clamp(24px, 4vw, 32px);
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #FFFFFF;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .auth-logo-text b { color: #00D9FF; }
+
+    /* Badge */
+    .auth-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 9px;
+        letter-spacing: 0.35em;
+        text-transform: uppercase;
+        color: #00D9FF;
+        border: 1px solid rgba(0,217,255,0.3);
+        padding: 6px 14px;
+        margin-bottom: var(--pw-space-6);
+    }
+    .auth-badge::before {
+        content: '';
+        width: 5px; height: 5px;
+        border-radius: 50%;
+        background: #00D9FF;
+        animation: auth-pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes auth-pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.35; transform: scale(0.6); }
+    }
+</style>
+{% endblock %}
+
 {% block body %}
-<div class="page" style="display:flex; align-items:center; justify-content:center; min-height:100vh; padding: var(--pw-space-6);">
-    <div style="width:100%; max-width:420px;">
-        <div style="text-align:center; margin-bottom: var(--pw-space-8);">
-            <a href="/">
-                <img src="/images/logo-proway-blanco.png" alt="ProWay Lab" height="40" style="margin:0 auto;">
+<div class="auth-page">
+    <div class="auth-grid"></div>
+    <div class="auth-orb"></div>
+    <div class="auth-scan"></div>
+
+    <div class="auth-content">
+        <div class="auth-logo">
+            <a href="/" class="auth-logo-text">
+                <b>Proway</b>.Lab
             </a>
         </div>
 
