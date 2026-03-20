@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Método ProWay — 6 Fases de Ingeniería de Marca</title>
+    <meta name="description" content="El Método ProWay de 6 fases: Diagnóstico, Arquitectura, Planificación, Producción, Distribución y Medición. Sistema probado para coaches fitness en Colombia y LATAM.">
+    <meta property="og:title" content="El Método ProWay — 6 Fases de Ingeniería de Marca">
+    <meta property="og:description" content="No improvisamos. No adivinamos. Ejecutamos un sistema probado de 6 fases para transformar entrenadores en marcas rentables.">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#00D9FF">
+    <meta property="og:image" content="og-image.svg">
+    <meta property="og:url" content="https://prowaylab.com/metodo.html">
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800&family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ================================================
+           CSS VARIABLES
+           ================================================ */
+        :root {
+            --bg:          #0C0C0F;
+            --surface:     #111114;
+            --surface-2:   #191920;
+            --border:      #252528;
+            --blue:        #00D9FF;
+            --blue-dim:    rgba(0,217,255,0.08);
+            --blue-glow:   rgba(0,217,255,0.25);
+            --red:         #E31E24;
+            --red-dim:     rgba(227,30,36,0.10);
+            --green:       #00FF87;
+            --green-dim:   rgba(0,255,135,0.08);
+            --white:       #FFFFFF;
+            --gray:        #A1A1AA;
+            --dark:        #52525B;
+            --font-h:      'Montserrat', sans-serif;
+            --font-b:      'Inter', sans-serif;
+            --font-m:      'Roboto Mono', monospace;
+        }
+
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        body {
+            background: var(--bg);
+            color: var(--white);
+            font-family: var(--font-b);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Noise overlay */
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            background-size: 180px 180px;
+            pointer-events: none; z-index: 9999; opacity: 0.5;
+        }
+
+        /* ================================================
+           PROGRESS BAR
+           ================================================ */
+        #progress {
+            position: fixed; top: 0; left: 0; height: 2px;
+            background: var(--blue);
+            box-shadow: 0 0 10px var(--blue-glow);
+            z-index: 9997; width: 0; transition: width 0.08s;
+        }
+
+        /* ================================================
+           NAVBAR
+           ================================================ */
+        #nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            padding: 22px 0; transition: all 0.4s ease;
+        }
+        #nav.scrolled {
+            background: rgba(12,12,15,0.96); backdrop-filter: blur(20px);
+            padding: 14px 0; border-bottom: 1px solid var(--border);
+        }
+        .nav-wrap {
+            max-width: 1300px; margin: 0 auto; padding: 0 32px;
+            display: flex; align-items: center; justify-content: space-between; gap: 24px;
+        }
+        .nav-logo {
+            display: flex; align-items: center; gap: 10px; text-decoration: none;
+        }
+        .nav-wordmark {
+            font-family: var(--font-h); font-weight: 900; font-size: 17px;
+            letter-spacing: 0.18em; text-transform: uppercase; color: var(--white);
+        }
+        .nav-wordmark b { color: var(--blue); }
+        .nav-links { display: flex; gap: 28px; list-style: none; align-items: center; }
+        .nav-links a {
+            font-family: var(--font-m); font-size: 10px; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--gray); text-decoration: none;
+            transition: color 0.35s ease, text-shadow 0.35s ease;
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            width: 100%;
+            height: 1px;
+            background: #00D9FF;
+            box-shadow: 0 0 8px rgba(0,217,255,0.9), 0 0 20px rgba(0,217,255,0.4);
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nav-links a:hover {
+            color: #fff;
+            text-shadow: 0 0 18px rgba(0,217,255,0.55);
+        }
+        .nav-links a:hover::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+        .nav-links a.active { color: var(--blue); }
+        .nav-btn {
+            font-family: var(--font-h); font-weight: 700; font-size: 11px;
+            letter-spacing: 0.15em; text-transform: uppercase; color: #000;
+            background: var(--blue); padding: 10px 22px; text-decoration: none;
+            clip-path: polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+            transition: all 0.3s;
+        }
+        .nav-btn:hover { background: #33E4FF; transform: translateY(-1px); box-shadow: 0 8px 30px var(--blue-glow); }
+        .nav-access {
+            font-family:var(--font-m); font-size:10px; letter-spacing:0.18em;
+            text-transform:uppercase; color:var(--gray); text-decoration:none;
+            border:1px solid var(--border); padding:8px 16px;
+            transition:color 0.3s, border-color 0.3s; white-space:nowrap;
+        }
+        .nav-access:hover { color:var(--blue); border-color:rgba(0,217,255,0.5); }
+        .nav-ham { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+        .nav-ham span { width: 22px; height: 1.5px; background: var(--white); transition: all 0.3s; }
+
+        /* Mobile overlay */
+        .nav-mob {
+            display: none; position: fixed; inset: 0; background: rgba(12,12,15,0.98);
+            backdrop-filter: blur(20px); z-index: 999; flex-direction: column;
+            align-items: center; justify-content: center; gap: 28px;
+        }
+        .nav-mob.open { display: flex; }
+        .nav-mob a {
+            font-family: var(--font-h); font-weight: 800; font-size: 28px;
+            letter-spacing: 0.06em; text-transform: uppercase; color: var(--gray); text-decoration: none; transition: color 0.3s;
+        }
+        .nav-mob a:hover, .nav-mob a.active { color: var(--blue); }
+        .nav-mob-close {
+            position: absolute; top: 20px; right: 28px; font-size: 28px;
+            color: var(--gray); background: none; border: none; cursor: pointer; line-height: 1;
+        }
+
+        /* ================================================
+           LAYOUT UTILITIES
+           ================================================ */
+        .section { padding: 100px 0; }
+        .section-sm { padding: 70px 0; }
+        .wrap { max-width: 1300px; margin: 0 auto; padding: 0 32px; }
+
+        .sec-label {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.45em;
+            text-transform: uppercase; color: var(--blue);
+            display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+        }
+        .sec-label::before { content: ''; width: 20px; height: 1px; background: var(--blue); }
+
+        .sec-title {
+            font-family: var(--font-h); font-weight: 900;
+            font-size: clamp(36px, 5.5vw, 68px); line-height: 0.95;
+            letter-spacing: -0.025em; text-transform: uppercase;
+        }
+        .sec-sub {
+            font-size: clamp(15px, 1.4vw, 17px); line-height: 1.7; color: var(--gray);
+            max-width: 640px; margin-top: 20px;
+        }
+
+        .text-blue  { color: var(--blue); }
+        .text-red   { color: var(--red); }
+        .text-green { color: var(--green); }
+        .text-gray  { color: var(--gray); }
+
+        /* Reveal */
+        .rv { opacity: 0; transform: translateY(28px); transition: opacity 0.75s ease, transform 0.75s ease; }
+        .rv.on { opacity: 1; transform: none; }
+        .rv.d1 { transition-delay: 0.1s; }
+        .rv.d2 { transition-delay: 0.2s; }
+        .rv.d3 { transition-delay: 0.3s; }
+        .rv.d4 { transition-delay: 0.4s; }
+        .rv.d5 { transition-delay: 0.5s; }
+        .rv.d6 { transition-delay: 0.6s; }
+
+        /* ================================================
+           HERO
+           ================================================ */
+        #hero {
+            min-height: 78vh; display: flex; align-items: center;
+            position: relative; overflow: hidden; padding-top: 110px;
+        }
+
+        /* Animated grid */
+        .h-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(0,217,255,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,217,255,0.035) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse 85% 65% at 50% 50%, black 30%, transparent 100%);
+        }
+        .h-grid-lg {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(0,217,255,0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,217,255,0.08) 1px, transparent 1px);
+            background-size: 320px 320px;
+            mask-image: radial-gradient(ellipse 55% 45% at 50% 50%, black 10%, transparent 65%);
+        }
+
+        /* Glow orb */
+        .h-orb {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 900px; height: 900px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,217,255,0.05) 0%, transparent 65%);
+            pointer-events: none;
+            animation: orb-pulse 6s ease-in-out infinite;
+        }
+        @keyframes orb-pulse {
+            0%,100% { opacity: 0.7; transform: translate(-50%,-50%) scale(1); }
+            50%      { opacity: 1;   transform: translate(-50%,-50%) scale(1.06); }
+        }
+
+        /* Scan line */
+        .h-scan {
+            position: absolute; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--blue), transparent);
+            opacity: 0.35;
+            animation: scan 6s linear infinite;
+        }
+        @keyframes scan { 0% { top: -1%; } 100% { top: 101%; } }
+
+        /* Phase counter decoration */
+        .h-phase-counter {
+            position: absolute; right: 0; top: 0; bottom: 0;
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: flex-end; padding-right: 5%;
+            pointer-events: none; overflow: hidden;
+        }
+        .h-phase-counter-num {
+            font-family: var(--font-h); font-weight: 900;
+            font-size: clamp(200px, 26vw, 360px);
+            line-height: 1; letter-spacing: -0.05em;
+            color: rgba(0,217,255,0.03);
+            user-select: none;
+        }
+
+        .h-content {
+            position: relative; z-index: 10;
+            max-width: 1300px; margin: 0 auto; padding: 0 32px;
+            padding-bottom: 90px;
+        }
+
+        .h-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.4em;
+            text-transform: uppercase; color: var(--blue);
+            border: 1px solid rgba(0,217,255,0.3); padding: 7px 16px;
+            margin-bottom: 28px;
+        }
+        .h-badge::before {
+            content: ''; width: 5px; height: 5px; border-radius: 50%;
+            background: var(--blue); animation: pd 2.2s ease-in-out infinite;
+        }
+        @keyframes pd {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50%      { opacity: 0.35; transform: scale(0.6); }
+        }
+
+        .h-title {
+            font-family: var(--font-h); font-weight: 900;
+            font-size: clamp(52px, 9vw, 120px); line-height: 0.9;
+            letter-spacing: -0.03em; text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+
+        .h-sub {
+            font-size: clamp(15px, 1.5vw, 18px); line-height: 1.65; color: var(--gray);
+            max-width: 600px; margin-bottom: 48px;
+        }
+
+        .h-metrics {
+            display: flex; gap: 48px; flex-wrap: wrap;
+            padding-top: 36px; border-top: 1px solid var(--border);
+        }
+        .h-metric-n {
+            font-family: var(--font-m); font-size: 38px; font-weight: 700;
+            color: var(--blue); line-height: 1;
+        }
+        .h-metric-l { font-size: 10px; color: var(--dark); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 5px; }
+
+        #hero::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* ================================================
+           SECTION: LAS 6 FASES
+           ================================================ */
+        #fases { padding: 110px 0; }
+
+        .fases-header { margin-bottom: 72px; }
+
+        /* Phase card grid */
+        .fases-grid {
+            display: flex; flex-direction: column; gap: 2px;
+        }
+
+        .fase-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 3px solid transparent;
+            padding: 0;
+            transition: border-color 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
+            cursor: default;
+            overflow: hidden;
+        }
+        .fase-card:hover {
+            border-left-color: var(--blue);
+            background: var(--surface-2);
+            box-shadow: 0 0 0 1px rgba(0,217,255,0.08), 0 16px 48px rgba(0,217,255,0.06);
+        }
+
+        .fase-card-inner {
+            display: grid;
+            grid-template-columns: 72px 1fr auto;
+            align-items: stretch;
+            min-height: 120px;
+        }
+
+        /* Number column */
+        .fase-num-col {
+            display: flex; align-items: center; justify-content: center;
+            border-right: 1px solid var(--border);
+            padding: 24px 0;
+            position: relative;
+        }
+        .fase-num {
+            font-family: var(--font-m); font-size: 11px; font-weight: 700;
+            letter-spacing: 0.1em; color: var(--dark);
+            writing-mode: vertical-lr; text-orientation: mixed;
+            transform: rotate(180deg);
+        }
+        .fase-card:hover .fase-num { color: var(--blue); }
+
+        /* Main content */
+        .fase-body {
+            padding: 32px 40px; display: flex; flex-direction: column; gap: 10px;
+        }
+        .fase-tag {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.35em;
+            text-transform: uppercase; color: var(--blue);
+        }
+        .fase-name {
+            font-family: var(--font-h); font-weight: 900;
+            font-size: clamp(18px, 2.2vw, 26px); letter-spacing: -0.01em;
+            text-transform: uppercase; color: var(--white);
+        }
+        .fase-desc {
+            font-size: 14px; line-height: 1.7; color: var(--gray);
+            max-width: 720px;
+        }
+        .fase-pills {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;
+        }
+        .fase-pill {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--dark);
+            border: 1px solid var(--border); padding: 4px 10px;
+        }
+        .fase-card:hover .fase-pill { border-color: rgba(0,217,255,0.2); color: var(--gray); }
+
+        /* ============================================================
+           PHASE-SPECIFIC HOVER ACCENT COLORS
+           Each phase has its own color reflecting its meaning
+        ============================================================ */
+
+        /* F01 — Diagnóstico: Cyan (analytical, brand primary) */
+        .fases-grid .fase-card:nth-child(1):hover {
+            border-left-color: #00D9FF;
+            box-shadow: 0 0 0 1px rgba(0,217,255,0.10), 0 16px 48px rgba(0,217,255,0.07);
+        }
+        .fases-grid .fase-card:nth-child(1):hover .fase-num,
+        .fases-grid .fase-card:nth-child(1):hover .fase-tag { color: #00D9FF; }
+        .fases-grid .fase-card:nth-child(1):hover .fase-pill { border-color: rgba(0,217,255,0.28); }
+        .fases-grid .fase-card:nth-child(1):hover .fase-dur-n { color: #00D9FF; }
+
+        /* F02 — Arquitectura: Amber (structure, blueprints) */
+        .fases-grid .fase-card:nth-child(2):hover {
+            border-left-color: #F59E0B;
+            box-shadow: 0 0 0 1px rgba(245,158,11,0.10), 0 16px 48px rgba(245,158,11,0.07);
+        }
+        .fases-grid .fase-card:nth-child(2):hover .fase-num,
+        .fases-grid .fase-card:nth-child(2):hover .fase-tag { color: #F59E0B; }
+        .fases-grid .fase-card:nth-child(2):hover .fase-pill { border-color: rgba(245,158,11,0.28); }
+        .fases-grid .fase-card:nth-child(2):hover .fase-dur-n { color: #F59E0B; }
+
+        /* F03 — Planificación: Violet (strategy, thinking) */
+        .fases-grid .fase-card:nth-child(3):hover {
+            border-left-color: #A78BFA;
+            box-shadow: 0 0 0 1px rgba(167,139,250,0.10), 0 16px 48px rgba(167,139,250,0.07);
+        }
+        .fases-grid .fase-card:nth-child(3):hover .fase-num,
+        .fases-grid .fase-card:nth-child(3):hover .fase-tag { color: #A78BFA; }
+        .fases-grid .fase-card:nth-child(3):hover .fase-pill { border-color: rgba(167,139,250,0.28); }
+        .fases-grid .fase-card:nth-child(3):hover .fase-dur-n { color: #A78BFA; }
+
+        /* F04 — Producción: Red (energy, camera, action — brand red) */
+        .fases-grid .fase-card:nth-child(4):hover {
+            border-left-color: #E31E24;
+            box-shadow: 0 0 0 1px rgba(227,30,36,0.10), 0 16px 48px rgba(227,30,36,0.07);
+        }
+        .fases-grid .fase-card:nth-child(4):hover .fase-num,
+        .fases-grid .fase-card:nth-child(4):hover .fase-tag { color: #E31E24; }
+        .fases-grid .fase-card:nth-child(4):hover .fase-pill { border-color: rgba(227,30,36,0.28); }
+        .fases-grid .fase-card:nth-child(4):hover .fase-dur-n { color: #E31E24; }
+
+        /* F05 — Distribución: Green (growth, reach — brand green) */
+        .fases-grid .fase-card:nth-child(5):hover {
+            border-left-color: #00FF87;
+            box-shadow: 0 0 0 1px rgba(0,255,135,0.10), 0 16px 48px rgba(0,255,135,0.07);
+        }
+        .fases-grid .fase-card:nth-child(5):hover .fase-num,
+        .fases-grid .fase-card:nth-child(5):hover .fase-tag { color: #00FF87; }
+        .fases-grid .fase-card:nth-child(5):hover .fase-pill { border-color: rgba(0,255,135,0.28); }
+        .fases-grid .fase-card:nth-child(5):hover .fase-dur-n { color: #00FF87; }
+
+        /* F06 — Medición: Sky Blue (data, precision, clarity) */
+        .fases-grid .fase-card:nth-child(6):hover {
+            border-left-color: #38BDF8;
+            box-shadow: 0 0 0 1px rgba(56,189,248,0.10), 0 16px 48px rgba(56,189,248,0.07);
+        }
+        .fases-grid .fase-card:nth-child(6):hover .fase-num,
+        .fases-grid .fase-card:nth-child(6):hover .fase-tag { color: #38BDF8; }
+        .fases-grid .fase-card:nth-child(6):hover .fase-pill { border-color: rgba(56,189,248,0.28); }
+        .fases-grid .fase-card:nth-child(6):hover .fase-dur-n { color: #38BDF8; }
+
+        /* Duration meta */
+        .fase-meta-col {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 24px 32px; border-left: 1px solid var(--border); min-width: 120px;
+            gap: 4px;
+        }
+        .fase-dur-n {
+            font-family: var(--font-m); font-size: 24px; font-weight: 700;
+            color: var(--white); line-height: 1;
+        }
+        .fase-dur-l {
+            font-family: var(--font-m); font-size: 8px; letter-spacing: 0.3em;
+            text-transform: uppercase; color: var(--dark); text-align: center;
+        }
+
+        /* Ongoing badge */
+        .fase-ongoing {
+            font-family: var(--font-m); font-size: 8px; letter-spacing: 0.25em;
+            text-transform: uppercase; color: var(--green);
+            background: var(--green-dim); border: 1px solid rgba(0,255,135,0.2);
+            padding: 4px 10px; white-space: nowrap;
+        }
+
+        /* ================================================
+           SECTION: POR QUE FUNCIONA (3 PILARES)
+           ================================================ */
+        #pilares { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+        .pilares-header { margin-bottom: 64px; }
+
+        .pilares-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+        }
+
+        .pilar-card {
+            background: var(--bg); padding: 52px 40px;
+            position: relative; overflow: hidden;
+            transition: background 0.3s ease;
+        }
+        .pilar-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--blue); opacity: 0; transition: opacity 0.35s;
+        }
+        .pilar-card:hover::before { opacity: 1; }
+        .pilar-card:hover { background: #0e0e12; }
+
+        .pilar-icon {
+            width: 52px; height: 52px; margin-bottom: 28px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--border); position: relative;
+        }
+        .pilar-icon svg { width: 22px; height: 22px; }
+        .pilar-icon::after {
+            content: '';
+            position: absolute; inset: -1px;
+            background: radial-gradient(circle at 50% 0%, rgba(0,217,255,0.12), transparent 70%);
+            opacity: 0; transition: opacity 0.35s;
+        }
+        .pilar-card:hover .pilar-icon::after { opacity: 1; }
+
+        .pilar-label {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.35em;
+            text-transform: uppercase; color: var(--blue); margin-bottom: 14px;
+        }
+        .pilar-name {
+            font-family: var(--font-h); font-weight: 900; font-size: 32px;
+            letter-spacing: -0.02em; text-transform: uppercase;
+            color: var(--white); margin-bottom: 18px; line-height: 1;
+        }
+        .pilar-desc {
+            font-size: 14px; line-height: 1.75; color: var(--gray);
+        }
+
+        .pilar-stat {
+            margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);
+            display: flex; align-items: baseline; gap: 8px;
+        }
+        .pilar-stat-n {
+            font-family: var(--font-m); font-size: 28px; font-weight: 700; color: var(--blue);
+        }
+        .pilar-stat-l {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--dark);
+        }
+
+        /* ================================================
+           SECTION: TIMELINE 90 DIAS
+           ================================================ */
+        #timeline { padding: 110px 0; }
+
+        .timeline-header { margin-bottom: 72px; }
+
+        /* Horizontal timeline track */
+        .timeline-track {
+            position: relative; margin: 0 0 48px 0;
+        }
+        .timeline-track-line {
+            position: absolute; top: 32px; left: 0; right: 0; height: 1px;
+            background: var(--border);
+        }
+        .timeline-track-prog {
+            position: absolute; top: 32px; left: 0; height: 1px;
+            background: linear-gradient(90deg, var(--blue), rgba(0,217,255,0.3));
+            box-shadow: 0 0 12px var(--blue-glow);
+            transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+            width: 0;
+        }
+        .timeline-track-prog.animated { width: 100%; }
+
+        .timeline-nodes {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+            position: relative; padding-top: 0;
+        }
+
+        .tl-node {
+            display: flex; flex-direction: column; align-items: flex-start; padding-right: 20px;
+        }
+        .tl-node:last-child { padding-right: 0; }
+
+        .tl-dot-wrap {
+            display: flex; align-items: center; margin-bottom: 24px; width: 100%;
+        }
+        .tl-dot {
+            width: 14px; height: 14px; border-radius: 50%;
+            border: 2px solid var(--blue); background: var(--bg);
+            position: relative; flex-shrink: 0;
+            box-shadow: 0 0 0 4px rgba(0,217,255,0.08);
+            transition: background 0.4s, box-shadow 0.4s;
+        }
+        .tl-node.active .tl-dot {
+            background: var(--blue);
+            box-shadow: 0 0 0 6px rgba(0,217,255,0.18), 0 0 20px var(--blue-glow);
+        }
+
+        .tl-content { padding-right: 8px; }
+
+        .tl-period {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.35em;
+            text-transform: uppercase; color: var(--blue); margin-bottom: 10px;
+        }
+        .tl-phase-name {
+            font-family: var(--font-h); font-weight: 800; font-size: 18px;
+            letter-spacing: -0.01em; text-transform: uppercase;
+            color: var(--white); margin-bottom: 10px; line-height: 1.1;
+        }
+        .tl-phase-desc {
+            font-size: 13px; line-height: 1.65; color: var(--gray);
+        }
+        .tl-deliverables {
+            margin-top: 16px; display: flex; flex-direction: column; gap: 6px;
+        }
+        .tl-del {
+            display: flex; align-items: flex-start; gap: 8px;
+            font-family: var(--font-m); font-size: 10px; letter-spacing: 0.05em;
+            color: var(--dark);
+        }
+        .tl-del::before {
+            content: '/'; color: var(--blue); flex-shrink: 0; font-size: 10px;
+        }
+
+        /* ================================================
+           SECTION: ESCALERA DE RESULTADOS
+           ================================================ */
+        #escalera { padding: 100px 0; background: var(--surface); border-top: 1px solid var(--border); }
+
+        .escalera-header { margin-bottom: 64px; }
+
+        .escalera-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+        }
+
+        .esc-card {
+            background: var(--bg); padding: 44px 36px;
+            position: relative; overflow: hidden;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+        }
+        .esc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 64px rgba(0,217,255,0.1);
+        }
+        .esc-card::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--blue), transparent);
+            opacity: 0; transition: opacity 0.35s;
+        }
+        .esc-card:hover::after { opacity: 1; }
+
+        .esc-step {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.4em;
+            text-transform: uppercase; color: var(--dark); margin-bottom: 20px;
+        }
+        .esc-name {
+            font-family: var(--font-h); font-weight: 900;
+            font-size: clamp(20px, 2vw, 26px); letter-spacing: -0.01em;
+            text-transform: uppercase; color: var(--white); margin-bottom: 6px;
+        }
+        .esc-dur {
+            font-family: var(--font-m); font-size: 10px; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--gray); margin-bottom: 20px;
+        }
+        .esc-price {
+            font-family: var(--font-m); font-size: 32px; font-weight: 700;
+            color: var(--blue); line-height: 1; margin-bottom: 4px;
+        }
+        .esc-price-unit {
+            font-family: var(--font-m); font-size: 10px; letter-spacing: 0.2em;
+            color: var(--dark); text-transform: uppercase; margin-bottom: 28px;
+        }
+        .esc-desc {
+            font-size: 13px; line-height: 1.7; color: var(--gray); margin-bottom: 28px;
+        }
+        .esc-list {
+            list-style: none; display: flex; flex-direction: column; gap: 8px;
+        }
+        .esc-list li {
+            font-family: var(--font-m); font-size: 10px; letter-spacing: 0.05em;
+            color: var(--dark); display: flex; align-items: flex-start; gap: 8px;
+        }
+        .esc-list li::before { content: '+'; color: var(--blue); font-weight: 700; flex-shrink: 0; }
+
+        /* ================================================
+           CTA FINAL
+           ================================================ */
+        #cta-final { padding: 120px 0; position: relative; overflow: hidden; }
+
+        .cta-bg-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(0,217,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,217,255,0.025) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+        }
+        .cta-orb {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 700px; height: 700px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,217,255,0.06) 0%, transparent 65%);
+            pointer-events: none;
+            animation: orb-pulse 5s ease-in-out infinite;
+        }
+
+        .cta-content {
+            position: relative; z-index: 2;
+            text-align: center; max-width: 760px; margin: 0 auto;
+        }
+
+        .cta-tag {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.45em;
+            text-transform: uppercase; color: var(--blue);
+            display: inline-flex; align-items: center; gap: 10px; margin-bottom: 28px;
+        }
+        .cta-tag::before, .cta-tag::after {
+            content: ''; width: 24px; height: 1px; background: rgba(0,217,255,0.4);
+        }
+
+        .cta-title {
+            font-family: var(--font-h); font-weight: 900;
+            font-size: clamp(40px, 7vw, 90px); line-height: 0.92;
+            letter-spacing: -0.03em; text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+        .cta-title em { font-style: normal; color: var(--blue); }
+
+        .cta-sub {
+            font-size: 16px; line-height: 1.65; color: var(--gray);
+            margin-bottom: 52px;
+        }
+
+        .cta-btns {
+            display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+        }
+
+        .btn-p {
+            font-family: var(--font-h); font-weight: 800; font-size: 12px;
+            letter-spacing: 0.15em; text-transform: uppercase; color: #000;
+            background: var(--blue); padding: 18px 38px; text-decoration: none;
+            clip-path: polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);
+            display: inline-block; transition: all 0.3s;
+        }
+        .btn-p:hover { background: #33E4FF; transform: translateY(-2px); box-shadow: 0 16px 48px rgba(0,217,255,0.4); }
+
+        .btn-g {
+            font-family: var(--font-h); font-weight: 700; font-size: 12px;
+            letter-spacing: 0.15em; text-transform: uppercase; color: var(--gray);
+            border: 1px solid var(--border); padding: 17px 38px;
+            text-decoration: none; display: inline-block; transition: all 0.3s;
+        }
+        .btn-g:hover { border-color: var(--blue); color: var(--blue); }
+
+        .cta-note {
+            margin-top: 32px; font-family: var(--font-m); font-size: 10px;
+            letter-spacing: 0.2em; text-transform: uppercase; color: var(--dark);
+        }
+
+        /* ================================================
+           FOOTER
+           ================================================ */
+        #footer {
+            border-top: 1px solid var(--border);
+            padding: 64px 0 40px;
+        }
+        .ft-grid {
+            display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 48px;
+            margin-bottom: 48px;
+        }
+        .ft-brand {}
+        .ft-wm {
+            font-family: var(--font-h); font-weight: 900; font-size: 22px;
+            letter-spacing: 0.16em; text-transform: uppercase; color: var(--white);
+            margin-bottom: 14px;
+        }
+        .ft-wm b { color: var(--blue); }
+        .ft-brand p { font-size: 13px; line-height: 1.7; color: var(--gray); margin-bottom: 16px; max-width: 280px; }
+        .ft-loc {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.25em;
+            text-transform: uppercase; color: var(--dark);
+        }
+        .ft-loc b { color: var(--red); }
+        .ft-col-t {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.35em;
+            text-transform: uppercase; color: var(--blue); margin-bottom: 18px;
+        }
+        .ft-lnks { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .ft-lnks a {
+            font-size: 13px; color: var(--gray); text-decoration: none; transition: color 0.3s;
+        }
+        .ft-lnks a:hover { color: var(--blue); }
+        .ft-bot {
+            padding-top: 28px; border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+        }
+        .ft-copy {
+            font-family: var(--font-m); font-size: 9px; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--dark);
+        }
+
+        /* ================================================
+           SEPARATOR
+           ================================================ */
+        .sep-line {
+            width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        /* ================================================
+           RESPONSIVE
+           ================================================ */
+        @media (max-width: 1024px) {
+            .pilares-grid { grid-template-columns: 1fr; gap: 2px; }
+            .pilares-grid .pilar-card { padding: 44px 32px; }
+            .escalera-grid { grid-template-columns: 1fr; gap: 2px; }
+            .timeline-nodes { grid-template-columns: 1fr 1fr; gap: 48px 24px; }
+            .ft-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links, .nav-btn, .nav-access { display: none; }
+            .nav-ham { display: flex; }
+            .nav-mob a.active { color: var(--blue); }
+
+            .section { padding: 72px 0; }
+            #fases { padding: 72px 0; }
+            #pilares { padding: 72px 0; }
+            #timeline { padding: 72px 0; }
+            #escalera { padding: 72px 0; }
+            #cta-final { padding: 80px 0; }
+
+            .fase-card-inner {
+                grid-template-columns: 0px 1fr;
+            }
+            .fase-num-col { display: none; }
+            .fase-meta-col { min-width: 80px; padding: 20px 16px; }
+            .fase-body { padding: 24px 20px; }
+            .fase-dur-n { font-size: 18px; }
+
+            .h-phase-counter { display: none; }
+
+            .timeline-nodes { grid-template-columns: 1fr; gap: 40px; }
+
+            .ft-grid { grid-template-columns: 1fr; gap: 36px; }
+
+            .cta-btns { flex-direction: column; align-items: center; }
+            .btn-p, .btn-g { width: 100%; max-width: 340px; text-align: center; }
+        }
+
+        @media (max-width: 480px) {
+            .wrap { padding: 0 16px; }
+            .h-metrics { gap: 20px; flex-direction: column; }
+            .h-metric-n { font-size: 28px; }
+            .fase-card-inner { grid-template-columns: 1fr; }
+            .fase-meta-col { border-left: none; border-top: 1px solid var(--border); flex-direction: row; gap: 12px; }
+            .fase-body { padding: 18px 16px; }
+            .fase-name { font-size: 16px; }
+            .pilar-card { padding: 36px 20px; }
+            .pilar-name { font-size: 26px; }
+            .esc-card { padding: 32px 20px; }
+            .esc-price { font-size: 26px; }
+            .sec-title { font-size: clamp(28px, 8vw, 42px); }
+            .cta-title { font-size: clamp(32px, 10vw, 56px); }
+            .cta-btns { flex-direction: column; align-items: center; }
+            .btn-p, .btn-g { width: 100%; max-width: 100%; text-align: center; }
+            #hero { min-height: auto; padding-top: 80px; padding-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress bar -->
+    <div id="progress"></div>
+
+    <!-- ================================================
+         NAVBAR
+         ================================================ -->
+    <nav id="nav">
+        <div class="nav-wrap">
+            <a href="/" class="nav-logo"><span class="nav-wordmark">PROWAY<b>.LAB</b></span></a>
+            <ul class="nav-links">
+                <li><a href="/metodo" class="active">Método</a></li>
+                <li><a href="/servicios">Servicios</a></li>
+                <li><a href="/portafolio">Casos</a></li>
+                <li><a href="/portafolio">Portafolio</a></li>
+                <li><a href="/contacto">Blog</a></li>
+            </ul>
+            <a href="/login" class="nav-access">Acceso Clientes</a>
+            <a href="https://wa.me/573124904720?text=Hola%20ProWay%20Lab%2C%20quiero%20cotizar" class="nav-btn">Cotizar ahora</a>
+            <div class="nav-ham" id="ham"><span></span><span></span><span></span></div>
+        </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="nav-mob" id="mob">
+        <button class="nav-mob-close" id="mobClose">&times;</button>
+        <a href="/metodo" class="active" onclick="closeM()">Método</a>
+        <a href="/servicios" onclick="closeM()">Servicios</a>
+        <a href="/portafolio" onclick="closeM()">Casos</a>
+        <a href="/portafolio" onclick="closeM()">Portafolio</a>
+        <a href="/contacto" onclick="closeM()">Blog</a>
+        <a href="/login" onclick="closeM()" style="color:var(--gray)">Acceso Clientes</a>
+        <a href="https://wa.me/573124904720" onclick="closeM()" style="color:var(--blue)">Cotizar &rarr;</a>
+    </div>
+
+    <!-- ================================================
+         HERO
+         ================================================ -->
+    <section id="hero">
+        <div class="h-grid"></div>
+        <div class="h-grid-lg"></div>
+        <div class="h-orb"></div>
+        <div class="h-scan"></div>
+
+        <!-- Decorative large number -->
+        <div class="h-phase-counter">
+            <div class="h-phase-counter-num">6</div>
+        </div>
+
+        <div class="h-content">
+            <div class="h-badge rv">METODOLOGIA PROBADA &middot; 2026</div>
+
+            <h1 class="h-title rv d1">
+                EL MÉTODO<br>
+                PROWAY<br>
+                <span class="text-blue">6 FASES</span>
+            </h1>
+
+            <p class="h-sub rv d2">
+                No improvisamos. No adivinamos. Ejecutamos un sistema probado que ha funcionado para coaches en Colombia y LATAM.
+            </p>
+
+            <div class="h-metrics rv d3">
+                <div>
+                    <div class="h-metric-n">6</div>
+                    <div class="h-metric-l">Fases del sistema</div>
+                </div>
+                <div>
+                    <div class="h-metric-n">90D</div>
+                    <div class="h-metric-l">Ciclo de ejecución</div>
+                </div>
+                <div>
+                    <div class="h-metric-n">100%</div>
+                    <div class="h-metric-l">Basado en datos</div>
+                </div>
+                <div>
+                    <div class="h-metric-n">0</div>
+                    <div class="h-metric-l">Improvisación</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         LAS 6 FASES
+         ================================================ -->
+    <section id="fases">
+        <div class="wrap">
+            <div class="fases-header">
+                <div class="sec-label rv">Sistema ProWay Lab</div>
+                <h2 class="sec-title rv d1">LAS<br><span class="text-blue">6 FASES</span></h2>
+                <p class="sec-sub rv d2">Cada fase tiene un propósito definido, entregables concretos y un criterio de avance. No pasamos a la siguiente fase sin completar la anterior.</p>
+            </div>
+
+            <div class="fases-grid">
+
+                <!-- FASE 01: DIAGNÓSTICO -->
+                <div class="fase-card rv d1">
+                    <div class="fase-card-inner">
+                        <div class="fase-num-col">
+                            <span class="fase-num">FASE 01</span>
+                        </div>
+                        <div class="fase-body">
+                            <div class="fase-tag">Fase 01 &mdash; Semana 1</div>
+                            <div class="fase-name">Diagnóstico</div>
+                            <p class="fase-desc">Auditoría completa de la marca actual. Analizamos audiencia objetivo, benchmarking de competencia, contenido actual, y mapeamos oportunidades reales de posicionamiento en el nicho fitness. Sin diagnóstico, cualquier estrategia es adivinanza.</p>
+                            <div class="fase-pills">
+                                <span class="fase-pill">Auditoría de perfil</span>
+                                <span class="fase-pill">Análisis de competencia</span>
+                                <span class="fase-pill">Buyer persona</span>
+                                <span class="fase-pill">Mapa de oportunidades</span>
+                            </div>
+                        </div>
+                        <div class="fase-meta-col">
+                            <div class="fase-dur-n">1</div>
+                            <div class="fase-dur-l">Semana</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FASE 02: ARQUITECTURA -->
+                <div class="fase-card rv d2">
+                    <div class="fase-card-inner">
+                        <div class="fase-num-col">
+                            <span class="fase-num">FASE 02</span>
+                        </div>
+                        <div class="fase-body">
+                            <div class="fase-tag">Fase 02 &mdash; Semana 2</div>
+                            <div class="fase-name">Arquitectura</div>
+                            <p class="fase-desc">Definimos identidad visual, tono de comunicación, paleta de colores, tipografía y positioning único. Tú eres el método, nosotros le damos forma al sistema. El resultado es un brand book operativo, no decorativo.</p>
+                            <div class="fase-pills">
+                                <span class="fase-pill">Brand book</span>
+                                <span class="fase-pill">Identidad visual</span>
+                                <span class="fase-pill">Tono de voz</span>
+                                <span class="fase-pill">Positioning statement</span>
+                            </div>
+                        </div>
+                        <div class="fase-meta-col">
+                            <div class="fase-dur-n">1</div>
+                            <div class="fase-dur-l">Semana</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FASE 03: PLANIFICACIÓN -->
+                <div class="fase-card rv d3">
+                    <div class="fase-card-inner">
+                        <div class="fase-num-col">
+                            <span class="fase-num">FASE 03</span>
+                        </div>
+                        <div class="fase-body">
+                            <div class="fase-tag">Fase 03 &mdash; Semana 3</div>
+                            <div class="fase-name">Planificación</div>
+                            <p class="fase-desc">Calendario editorial de 90 días por plataforma, formatos por red social, horarios óptimos y estrategia basada en datos reales de audiencia. Sin improvisar. Banco de 50 a 100 ideas documentadas y priorizadas por potencial de alcance.</p>
+                            <div class="fase-pills">
+                                <span class="fase-pill">Calendario 90 días</span>
+                                <span class="fase-pill">Banco de ideas</span>
+                                <span class="fase-pill">Guiones</span>
+                                <span class="fase-pill">Horarios óptimos</span>
+                            </div>
+                        </div>
+                        <div class="fase-meta-col">
+                            <div class="fase-dur-n">1</div>
+                            <div class="fase-dur-l">Semana</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FASE 04: PRODUCCIÓN -->
+                <div class="fase-card rv d4">
+                    <div class="fase-card-inner">
+                        <div class="fase-num-col">
+                            <span class="fase-num">FASE 04</span>
+                        </div>
+                        <div class="fase-body">
+                            <div class="fase-tag">Fase 04 &mdash; Continua</div>
+                            <div class="fase-name">Producción</div>
+                            <p class="fase-desc">Filmación, edición profesional, thumbnails, reels y carruseles. Estándar visual ProWay Lab en cada entrega. Mínimo 3 reels y 2 carruseles por semana. Cada pieza con concepto, guion, motion y color grading alineados al brand book.</p>
+                            <div class="fase-pills">
+                                <span class="fase-pill">Reels semanales</span>
+                                <span class="fase-pill">Carruseles</span>
+                                <span class="fase-pill">Motion graphics</span>
+                                <span class="fase-pill">Color grading</span>
+                                <span class="fase-pill">Sound design</span>
+                            </div>
+                        </div>
+                        <div class="fase-meta-col">
+                            <span class="fase-ongoing">Continua</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FASE 05: DISTRIBUCIÓN -->
+                <div class="fase-card rv d5">
+                    <div class="fase-card-inner">
+                        <div class="fase-num-col">
+                            <span class="fase-num">FASE 05</span>
+                        </div>
+                        <div class="fase-body">
+                            <div class="fase-tag">Fase 05 &mdash; Continua</div>
+                            <div class="fase-name">Distribución</div>
+                            <p class="fase-desc">Publicación optimizada para Instagram, YouTube y TikTok. Hashtags estratégicos y formatos específicos por plataforma. Gestión de DMs y comentarios orientada a conversión. El contenido más inteligente publicado en el momento equivocado no existe.</p>
+                            <div class="fase-pills">
+                                <span class="fase-pill">Programación</span>
+                                <span class="fase-pill">Hashtags estratégicos</span>
+                                <span class="fase-pill">Gestión DMs</span>
+                                <span class="fase-pill">Engagement</span>
+                            </div>
+                        </div>
+                        <div class="fase-meta-col">
+                            <span class="fase-ongoing">Continua</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FASE 06: MEDICIÓN -->
+                <div class="fase-card rv d6">
+                    <div class="fase-card-inner">
+                        <div class="fase-num-col">
+                            <span class="fase-num">FASE 06</span>
+                        </div>
+                        <div class="fase-body">
+                            <div class="fase-tag">Fase 06 &mdash; Semanal</div>
+                            <div class="fase-name">Medición</div>
+                            <p class="fase-desc">KPIs semanales, reporte mensual, ajuste continuo. Lo que no se mide, no existe. Dashboard personalizado con alcance, impresiones, tasa de conversión y crecimiento de audiencia. Optimizamos basado en lo que los datos dicen, no en lo que sentimos.</p>
+                            <div class="fase-pills">
+                                <span class="fase-pill">Dashboard KPIs</span>
+                                <span class="fase-pill">Reporte mensual</span>
+                                <span class="fase-pill">Optimización</span>
+                                <span class="fase-pill">A/B testing</span>
+                            </div>
+                        </div>
+                        <div class="fase-meta-col">
+                            <div class="fase-dur-n">52</div>
+                            <div class="fase-dur-l">Reportes / año</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         POR QUE FUNCIONA — 3 PILARES
+         ================================================ -->
+    <section id="pilares">
+        <div class="wrap">
+            <div class="pilares-header">
+                <div class="sec-label rv">Fundamentos del sistema</div>
+                <h2 class="sec-title rv d1">POR QUÉ<br><span class="text-blue">FUNCIONA</span></h2>
+                <p class="sec-sub rv d2">Tres principios no negociables que diferencian a ProWay Lab de cualquier agencia de contenido genérica.</p>
+            </div>
+
+            <div class="pilares-grid">
+
+                <!-- PILAR 1: SISTEMA -->
+                <div class="pilar-card rv d1">
+                    <div class="pilar-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.5">
+                            <rect x="3" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="14" width="7" height="7" rx="1"/>
+                            <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        </svg>
+                    </div>
+                    <div class="pilar-label">Pilar 01</div>
+                    <div class="pilar-name">Sistema</div>
+                    <p class="pilar-desc">Cada acción está documentada y tiene un propósito. Nada al azar. Trabajamos con procesos replicables que garantizan consistencia sin importar la semana, el estado de ánimo o las circunstancias externas.</p>
+                    <div class="pilar-stat">
+                        <div class="pilar-stat-n">6</div>
+                        <div class="pilar-stat-l">fases documentadas con criterios de avance</div>
+                    </div>
+                </div>
+
+                <!-- PILAR 2: DATOS -->
+                <div class="pilar-card rv d2">
+                    <div class="pilar-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.5">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                    </div>
+                    <div class="pilar-label">Pilar 02</div>
+                    <div class="pilar-name">Datos</div>
+                    <p class="pilar-desc">Tomamos decisiones con métricas, no con intuición. Alcance, retención, tasa de conversión en DMs, crecimiento semana a semana. Cada decisión editorial está respaldada por números que podemos defender.</p>
+                    <div class="pilar-stat">
+                        <div class="pilar-stat-n">100%</div>
+                        <div class="pilar-stat-l">decisiones respaldadas por métricas reales</div>
+                    </div>
+                </div>
+
+                <!-- PILAR 3: CONSISTENCIA -->
+                <div class="pilar-card rv d3">
+                    <div class="pilar-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <div class="pilar-label">Pilar 03</div>
+                    <div class="pilar-name">Consistencia</div>
+                    <p class="pilar-desc">El contenido de calidad sostenida supera siempre al contenido viral y esporádico. No te vamos a prometer un video viral. Te prometemos un sistema que construye autoridad mes a mes, sin depender de la suerte.</p>
+                    <div class="pilar-stat">
+                        <div class="pilar-stat-n">90D</div>
+                        <div class="pilar-stat-l">ciclo mínimo donde la consistencia demuestra resultados</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         TIMELINE 90 DÍAS
+         ================================================ -->
+    <section id="timeline">
+        <div class="wrap">
+            <div class="timeline-header">
+                <div class="sec-label rv">Ruta de ejecución</div>
+                <h2 class="sec-title rv d1">TIMELINE<br><span class="text-blue">90 DÍAS</span></h2>
+                <p class="sec-sub rv d2">Desde el primer contacto hasta el primer reporte mensual. Así se ve el proceso cuando funciona de forma correcta.</p>
+            </div>
+
+            <!-- Track visual -->
+            <div class="timeline-track rv d2">
+                <div class="timeline-track-line"></div>
+                <div class="timeline-track-prog" id="tlProg"></div>
+            </div>
+
+            <div class="timeline-nodes">
+
+                <div class="tl-node active rv d1">
+                    <div class="tl-dot-wrap">
+                        <div class="tl-dot"></div>
+                    </div>
+                    <div class="tl-content">
+                        <div class="tl-period">Semana 1 &mdash; 2</div>
+                        <div class="tl-phase-name">Diagnóstico &amp;<br>Arquitectura</div>
+                        <p class="tl-phase-desc">Cimientos de la marca. Entendemos quién eres, a quién le hablas y qué te diferencia antes de producir un solo pixel.</p>
+                        <ul class="tl-deliverables">
+                            <li class="tl-del">Auditoría completa</li>
+                            <li class="tl-del">Brand book v1</li>
+                            <li class="tl-del">Positioning statement</li>
+                            <li class="tl-del">Buyer persona definido</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tl-node rv d2">
+                    <div class="tl-dot-wrap">
+                        <div class="tl-dot"></div>
+                    </div>
+                    <div class="tl-content">
+                        <div class="tl-period">Semana 3 &mdash; 4</div>
+                        <div class="tl-phase-name">Planificación &amp;<br>Primer contenido</div>
+                        <p class="tl-phase-desc">Calendario editorial completo de 90 días. Banco de ideas documentado. Primeros guiones aprobados. Primera semana de contenido en producción.</p>
+                        <ul class="tl-deliverables">
+                            <li class="tl-del">Calendario 90 días</li>
+                            <li class="tl-del">50+ ideas categoriz.</li>
+                            <li class="tl-del">Primeros guiones</li>
+                            <li class="tl-del">Producción activa</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tl-node rv d3">
+                    <div class="tl-dot-wrap">
+                        <div class="tl-dot"></div>
+                    </div>
+                    <div class="tl-content">
+                        <div class="tl-period">Mes 2</div>
+                        <div class="tl-phase-name">Producción<br>activa</div>
+                        <p class="tl-phase-desc">Ritmo completo de contenido. Reels, carruseles, stories. Distribución optimizada. Engagement y gestión de comunidad. Primeras métricas reales para ajustar.</p>
+                        <ul class="tl-deliverables">
+                            <li class="tl-del">3 reels/semana</li>
+                            <li class="tl-del">2 carruseles/semana</li>
+                            <li class="tl-del">Gestión de comunidad</li>
+                            <li class="tl-del">Primer reporte mes 1</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tl-node rv d4">
+                    <div class="tl-dot-wrap">
+                        <div class="tl-dot"></div>
+                    </div>
+                    <div class="tl-content">
+                        <div class="tl-period">Mes 3</div>
+                        <div class="tl-phase-name">Optimización<br>con data</div>
+                        <p class="tl-phase-desc">Los datos de 60 días dicen exactamente qué funciona. Ajustamos formatos, horarios, temas y ganchos. Ciclo de mejora continua basada en evidencia, no en suposiciones.</p>
+                        <ul class="tl-deliverables">
+                            <li class="tl-del">Dashboard actualizado</li>
+                            <li class="tl-del">Pivotes estratégicos</li>
+                            <li class="tl-del">A/B testing activo</li>
+                            <li class="tl-del">Proyección Q2</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         ESCALERA DE PRODUCTOS
+         ================================================ -->
+    <section id="escalera">
+        <div class="wrap">
+            <div class="escalera-header">
+                <div class="sec-label rv">Cómo empezar</div>
+                <h2 class="sec-title rv d1">ELIGE TU<br><span class="text-blue">PUNTO DE ENTRADA</span></h2>
+                <p class="sec-sub rv d2">Tres formas de comenzar a trabajar con el Método ProWay, según dónde estés hoy y qué tan rápido quieres moverte.</p>
+            </div>
+
+            <div class="escalera-grid">
+
+                <div class="esc-card rv d1">
+                    <div class="esc-step">Paso 01 &mdash; Entrada</div>
+                    <div class="esc-name">Auditoría ProWay</div>
+                    <div class="esc-dur">48 &mdash; 72 horas</div>
+                    <div class="esc-price">$150K</div>
+                    <div class="esc-price-unit">COP &mdash; pago único</div>
+                    <p class="esc-desc">Diagnóstico completo de tu marca actual. Identificamos exactamente qué está frenando tu crecimiento y entregamos un plan de acción concreto.</p>
+                    <ul class="esc-list">
+                        <li>Análisis de perfil actual</li>
+                        <li>Benchmarking vs competencia</li>
+                        <li>Mapa de oportunidades</li>
+                        <li>Plan de acción 30 días</li>
+                        <li>Sesión de presentación de resultados</li>
+                    </ul>
+                </div>
+
+                <div class="esc-card rv d2">
+                    <div class="esc-step">Paso 02 &mdash; Núcleo</div>
+                    <div class="esc-name">Sistema ProWay 30D</div>
+                    <div class="esc-dur">30 días de ejecución</div>
+                    <div class="esc-price">$800K</div>
+                    <div class="esc-price-unit">COP &mdash; ciclo 30 días</div>
+                    <p class="esc-desc">Ejecutamos las fases 1 a 4 del método. Diagnóstico, arquitectura, planificación y primer mes de producción activa.</p>
+                    <ul class="esc-list">
+                        <li>Brand book completo</li>
+                        <li>Calendario 90 días</li>
+                        <li>Banco de 50 ideas</li>
+                        <li>12 piezas de contenido</li>
+                        <li>Guiones y dirección creativa</li>
+                        <li>Reporte final de métricas</li>
+                    </ul>
+                </div>
+
+                <div class="esc-card rv d3">
+                    <div class="esc-step">Paso 03 &mdash; Escala</div>
+                    <div class="esc-name">Gestión ProWay</div>
+                    <div class="esc-dur">Mensual recurrente</div>
+                    <div class="esc-price">$1.5M</div>
+                    <div class="esc-price-unit">COP &mdash; por mes</div>
+                    <p class="esc-desc">Las 6 fases del método ejecutadas de forma continua. Producción, distribución y medición mes a mes. Tu marca en piloto automático estratégico.</p>
+                    <ul class="esc-list">
+                        <li>Producción completa mensual</li>
+                        <li>Distribución y programación</li>
+                        <li>Gestión de comunidad</li>
+                        <li>Dashboard semanal</li>
+                        <li>Reporte mensual ejecutivo</li>
+                        <li>Estrategia de crecimiento Q a Q</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         CTA FINAL
+         ================================================ -->
+    <section id="cta-final">
+        <div class="cta-bg-grid"></div>
+        <div class="cta-orb"></div>
+
+        <div class="wrap">
+            <div class="cta-content">
+                <div class="cta-tag rv">Siguiente paso</div>
+
+                <h2 class="cta-title rv d1">
+                    LISTO PARA<br>
+                    APLICAR EL<br>
+                    <em>MÉTODO</em>
+                </h2>
+
+                <p class="cta-sub rv d2">
+                    Empieza con una auditoría. Entiende exactamente en qué punto está tu marca y qué necesitas para escalar. Sin compromisos, sin contratos eternos.
+                </p>
+
+                <div class="cta-btns rv d3">
+                    <a href="https://wa.me/573124904720?text=Hola%20ProWay%20Lab%2C%20quiero%20cotizar%20el%20m%C3%A9todo" class="btn-p">Hablar por WhatsApp</a>
+                    <a href="/servicios" class="btn-g">Ver servicios completos</a>
+                </div>
+
+                <p class="cta-note rv d4">Diagnóstico disponible en 48 horas &mdash; Colombia y LATAM</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         FOOTER
+         ================================================ -->
+    <footer id="footer">
+        <div class="wrap">
+            <div class="ft-grid">
+                <div class="ft-brand">
+                    <div class="ft-wm">PROWAY<b>.LAB</b></div>
+                    <p>Ingeniería de marcas fitness para entrenadores en Colombia y LATAM.</p>
+                    <div class="ft-loc"><b>&#9632;</b> Colombia &mdash; LATAM &middot; 2026</div>
+                </div>
+                <div>
+                    <div class="ft-col-t">Navegación</div>
+                    <ul class="ft-lnks">
+                        <li><a href="/metodo">Método</a></li>
+                        <li><a href="/servicios">Servicios</a></li>
+                        <li><a href="/portafolio">Casos de Éxito</a></li>
+                        <li><a href="/portafolio">Portafolio</a></li>
+                        <li><a href="/contacto">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="ft-col-t">Contacto</div>
+                    <ul class="ft-lnks">
+                        <li><a href="https://wa.me/573124904720">WhatsApp directo</a></li>
+                        <li><a href="mailto:info@prowaylab.com">info@prowaylab.com</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="ft-bot">
+                <div class="ft-copy">&copy; 2026 ProWay Lab &mdash; Ingeniería de Marcas Fitness.</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ================================================
+         SCRIPTS
+         ================================================ -->
+    <script>
+        /* ---- Navbar scroll ---- */
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 40);
+        }, { passive: true });
+
+        /* ---- Progress bar ---- */
+        const prog = document.getElementById('progress');
+        window.addEventListener('scroll', () => {
+            const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+            prog.style.width = Math.min(pct, 100) + '%';
+        }, { passive: true });
+
+        /* ---- Mobile menu ---- */
+        const ham = document.getElementById('ham');
+        const mob = document.getElementById('mob');
+        const mobClose = document.getElementById('mobClose');
+        ham.addEventListener('click', () => mob.classList.add('open'));
+        mobClose.addEventListener('click', () => mob.classList.remove('open'));
+        function closeM() { mob.classList.remove('open'); }
+
+        /* ---- Scroll reveal (IntersectionObserver) ---- */
+        const rvEls = document.querySelectorAll('.rv');
+        const rvObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('on');
+                    rvObs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        rvEls.forEach(el => rvObs.observe(el));
+
+        /* ---- Timeline progress bar animation ---- */
+        const tlProg = document.getElementById('tlProg');
+        const tlTrack = document.querySelector('.timeline-track');
+        const tlObs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    tlProg.classList.add('animated');
+                    tlObs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        if (tlTrack) tlObs.observe(tlTrack);
+
+        /* ---- Navbar active state on scroll (sections) ---- */
+        // Already handled via class in HTML for this page
+    </script>
+
+
+
+<!-- ProWay Chat Widget -->
+<script src="/js/chat-widget.js" defer></script>
+
+    <script src="/js/analytics.js" defer></script>
+    <script src="/js/wa-widget.js" defer></script>
+</body>
+</html>
