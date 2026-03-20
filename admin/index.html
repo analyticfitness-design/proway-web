@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!-- ProWay Design System -->
-    <link rel="stylesheet" href="/dist/assets/module.css?v=2">
+    <link rel="stylesheet" href="/dist/assets/module.css?v=3">
 
 </head>
 <body>
@@ -135,7 +135,7 @@
      hx-swap="innerHTML"
      hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
      hx-indicator="#global-spinner"
-     style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--pw-space-4); margin-bottom: var(--pw-space-8);">
+     class="stats-grid">
 
     <!-- Skeleton placeholders -->
     <div class="stat-card loading-skeleton" aria-hidden="true">
@@ -157,6 +157,7 @@
 </div>
 
 <!-- Recent clients -->
+<div class="section-label">Clientes Recientes</div>
 <div class="card">
     <div class="card__header">
         <h2 class="card__title">Clientes Recientes</h2>

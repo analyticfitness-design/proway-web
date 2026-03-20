@@ -56,6 +56,10 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    background: linear-gradient(135deg, #FFFFFF 0%, var(--pw-accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 /* Divider */
@@ -71,6 +75,25 @@
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--pw-space-4);
     margin-bottom: var(--pw-space-8);
+}
+
+/* ── Section label (landing sec-label pattern) ──────── */
+.section-label {
+    font-family: var(--pw-font-mono);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--pw-accent);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: var(--pw-space-4);
+}
+.section-label::before {
+    content: '';
+    width: 20px;
+    height: 1px;
+    background: var(--pw-accent);
 }
 
 /* ── Responsive: Tablet & Mobile (max-width: 768px) ─────── */

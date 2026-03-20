@@ -1,11 +1,28 @@
 /* ProWay DS — Card Component (Landing-aligned) */
 .card {
+    position: relative;
+    overflow: hidden;
     background: var(--pw-panel);
     border: 1px solid var(--pw-border);
     border-radius: var(--pw-radius-md);
     padding: var(--pw-space-6);
     box-shadow: var(--pw-shadow);
     transition: border-color var(--pw-transition), box-shadow var(--pw-transition), transform var(--pw-transition);
+}
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--pw-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+.card:hover::before {
+    transform: scaleX(1);
 }
 .card:hover {
     border-color: var(--pw-border-2);
@@ -33,12 +50,29 @@
 
 /* Stat card */
 .stat-card {
+    position: relative;
+    overflow: hidden;
     background: var(--pw-panel);
     border: 1px solid var(--pw-border);
     border-left: 4px solid var(--pw-accent);
     border-radius: var(--pw-radius-md);
     padding: var(--pw-space-5) var(--pw-space-6);
     transition: transform var(--pw-transition), box-shadow var(--pw-transition);
+}
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--pw-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+.stat-card:hover::before {
+    transform: scaleX(1);
 }
 .stat-card:hover {
     transform: translateY(-2px);
