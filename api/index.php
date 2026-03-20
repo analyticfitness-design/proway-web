@@ -53,7 +53,9 @@ use ProWay\Infrastructure\Http\Response;
 use ProWay\Infrastructure\Http\Router;
 use ProWay\Domain\Report\MonthlyReportService;
 use ProWay\Domain\Report\ReportPdfRenderer;
+use ProWay\Domain\WhatsApp\WhatsAppNotifier;
 use ProWay\Infrastructure\Pdf\PdfRenderer;
+use ProWay\Infrastructure\WhatsApp\WhatsAppService;
 
 // ── CORS (existing logic preserved) ──────────────────────────────────────────
 $allowedOrigins = array_filter(explode(',', getenv('ALLOWED_ORIGINS') ?: ''));
@@ -95,16 +97,20 @@ $errorLogService     = new ErrorLogService(new MySQLErrorLogRepository($pdo));
 $wompi   = new WompiService();
 $mailer  = new MailjetService();
 
+// WhatsApp Business API
+$whatsAppService  = new WhatsAppService();
+$whatsAppNotifier = new WhatsAppNotifier($whatsAppService, $clientService);
+
 $authCtrl    = new AuthController($auth, $mw, $mailer);
 $clientCtrl  = new ClientController($clientService, $mw);
-$projectCtrl = new ProjectController($projectService, $mw, $activityLogService);
+$projectCtrl = new ProjectController($projectService, $mw, $activityLogService, $whatsAppNotifier);
 $pdfRenderer = new PdfRenderer();
 $invoiceCtrl = new InvoiceController($invoiceService, $mw, $clientService, $pdfRenderer);
 $paymentCtrl = new PaymentController($invoiceService, $clientService, $wompi, $mailer, $mw);
-$adminCtrl        = new AdminController($invoiceService, $projectService, $clientService, $mw, $mailer, $notificationService, $activityLogService);
+$adminCtrl        = new AdminController($invoiceService, $projectService, $clientService, $mw, $mailer, $notificationService, $activityLogService, $whatsAppNotifier);
 $notifCtrl        = new NotificationController($notificationService, $mw);
 $errorLogCtrl     = new ErrorLogController($errorLogService, $mw);
-$deliverableCtrl  = new DeliverableController($deliverableService, $mw);
+$deliverableCtrl  = new DeliverableController($deliverableService, $mw, $projectService, $whatsAppNotifier);
 
 // Social Metrics
 $socialProfileRepo   = new MySQLSocialProfileRepository($pdo);

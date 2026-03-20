@@ -6,6 +6,7 @@ namespace ProWay\Api\V1\Controller;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Domain\ActivityLog\ActivityLogService;
 use ProWay\Domain\Project\ProjectService;
+use ProWay\Domain\WhatsApp\WhatsAppNotifier;
 use ProWay\Infrastructure\Http\Request;
 use ProWay\Infrastructure\Http\Response;
 
@@ -15,6 +16,7 @@ class ProjectController
         private readonly ProjectService     $projects,
         private readonly AuthMiddleware     $middleware,
         private readonly ?ActivityLogService $activityLog = null,
+        private readonly ?WhatsAppNotifier   $whatsApp = null,
     ) {}
 
     /**
@@ -69,6 +71,20 @@ class ProjectController
                     $user->id,
                     ['new_status' => $status],
                 );
+            } catch (\Throwable) {
+                // Never block primary operation
+            }
+
+            // WhatsApp notification
+            try {
+                $project = $this->projects->get($projectId);
+                if ($project !== null) {
+                    $this->whatsApp?->notifyProjectStatusChange(
+                        (int) $project['client_id'],
+                        $project['title'] ?? $project['service_type'] ?? '',
+                        $status,
+                    );
+                }
             } catch (\Throwable) {
                 // Never block primary operation
             }

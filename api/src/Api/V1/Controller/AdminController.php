@@ -10,6 +10,7 @@ use ProWay\Domain\Client\ClientService;
 use ProWay\Domain\Invoice\InvoiceService;
 use ProWay\Domain\Notification\NotificationService;
 use ProWay\Domain\Project\ProjectService;
+use ProWay\Domain\WhatsApp\WhatsAppNotifier;
 use ProWay\Infrastructure\Email\MailjetService;
 use ProWay\Infrastructure\Http\Request;
 use ProWay\Infrastructure\Http\Response;
@@ -28,6 +29,7 @@ class AdminController
         private readonly ?MailjetService      $mailer = null,
         private readonly ?NotificationService $notifications = null,
         private readonly ?ActivityLogService  $activityLog = null,
+        private readonly ?WhatsAppNotifier    $whatsApp = null,
     ) {}
 
     // ── GET /api/v1/admin/clients/{id} ─────────────────────────────────────────
@@ -137,6 +139,21 @@ class AdminController
                 'Se ha generado una nueva factura por $' . number_format($amountCop, 0, ',', '.') . ' COP.',
                 'invoice',
                 '/facturas',
+            );
+        } catch (\Throwable) {
+            // Never block primary operation
+        }
+
+        // WhatsApp notification
+        try {
+            $invoice = $this->invoices->getById($id);
+            $invoiceNumber = $invoice['invoice_number'] ?? (string) $id;
+            $formattedAmount = number_format($amountCop, 0, ',', '.');
+            $this->whatsApp?->notifyNewInvoice(
+                $clientId,
+                $invoiceNumber,
+                $formattedAmount,
+                'https://prowaylab.com/portal/facturas',
             );
         } catch (\Throwable) {
             // Never block primary operation

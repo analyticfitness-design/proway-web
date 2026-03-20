@@ -5,6 +5,8 @@ namespace ProWay\Api\V1\Controller;
 
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Domain\Deliverable\DeliverableService;
+use ProWay\Domain\Project\ProjectService;
+use ProWay\Domain\WhatsApp\WhatsAppNotifier;
 use ProWay\Infrastructure\Http\Request;
 use ProWay\Infrastructure\Http\Response;
 
@@ -13,6 +15,8 @@ class DeliverableController
     public function __construct(
         private readonly DeliverableService $deliverables,
         private readonly AuthMiddleware     $middleware,
+        private readonly ?ProjectService    $projects = null,
+        private readonly ?WhatsAppNotifier  $whatsApp = null,
     ) {}
 
     /**
@@ -61,6 +65,21 @@ class DeliverableController
                 $_FILES['file'],
                 $description
             );
+
+            // WhatsApp notification
+            try {
+                $project = $this->projects?->get($projectId);
+                if ($project !== null) {
+                    $this->whatsApp?->notifyDeliverableUploaded(
+                        (int) $project['client_id'],
+                        $project['title'] ?? $project['service_type'] ?? '',
+                        $title,
+                    );
+                }
+            } catch (\Throwable) {
+                // Never block primary operation
+            }
+
             Response::success(['deliverable' => $deliverable], 201);
         } catch (\InvalidArgumentException $e) {
             Response::error('VALIDATION', $e->getMessage(), 422);

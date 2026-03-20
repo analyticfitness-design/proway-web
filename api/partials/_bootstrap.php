@@ -25,6 +25,8 @@ use ProWay\Domain\SocialMetrics\MySQLMetricsRepository;
 use ProWay\Domain\SocialMetrics\SocialMetricsService;
 use ProWay\Domain\Message\MessageService;
 use ProWay\Domain\Message\MySQLMessageRepository;
+use ProWay\Domain\WhatsApp\WhatsAppNotifier;
+use ProWay\Infrastructure\WhatsApp\WhatsAppService;
 
 $pdo            = Connection::getInstance();
 $tokens         = new TokenManager($pdo);
@@ -41,3 +43,7 @@ $socialMetricsService = new SocialMetricsService(
     new MySQLMetricsRepository($pdo),
 );
 $messageService = new MessageService(new MySQLMessageRepository($pdo));
+
+// WhatsApp Business API
+$whatsAppService  = new WhatsAppService();
+$whatsAppNotifier = new WhatsAppNotifier($whatsAppService, $clientService);
