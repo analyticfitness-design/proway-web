@@ -153,6 +153,22 @@ document.body.addEventListener('htmx:responseError', function(evt) {
         window.location.href = '/login';
     }
 });
+
+async function changeProjectStatus(projectId, newStatus) {
+    try {
+        const res = await fetch('/api/v1/projects/' + projectId + '/status', {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus }),
+        });
+        if (res.status === 401) { window.location.href = '/login'; return; }
+        if (!res.ok) { alert('Error al cambiar status'); return; }
+        htmx.trigger('#admin-projects-container', 'load');
+    } catch (e) {
+        alert('Error de conexión');
+    }
+}
 </script>
 
 {# ── Modal: Nuevo Proyecto ────────────────────────────────── #}

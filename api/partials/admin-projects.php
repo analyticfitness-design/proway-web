@@ -59,9 +59,12 @@ if (empty($projects)) {
                 <td><?= $name ?></td>
                 <td><?= $type ?></td>
                 <td>
-                    <span class="badge <?= htmlspecialchars($statusInfo['class'], ENT_QUOTES, 'UTF-8') ?>">
-                        <?= htmlspecialchars($statusInfo['label'], ENT_QUOTES, 'UTF-8') ?>
-                    </span>
+                    <select onchange="changeProjectStatus(<?= (int)$proj['id'] ?>, this.value)"
+                            class="form-input" style="width:auto;padding:4px 8px;font-size:.8rem;">
+                        <?php foreach (PROJECT_STATUS_MAP as $key => $info): ?>
+                        <option value="<?= $key ?>"<?= $key === $status ? ' selected' : '' ?>><?= htmlspecialchars($info['label'], ENT_QUOTES, 'UTF-8') ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </td>
                 <td><?= $date ?></td>
             </tr>
