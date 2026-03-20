@@ -40,8 +40,9 @@ const PAGES = [
     // Admin
     { src: 'pages/admin/dashboard.njk',    out: 'admin.html' },
     { src: 'pages/admin/projects.njk',     out: 'admin/proyectos.html' },
-    { src: 'pages/admin/clients.njk',      out: 'admin/clientes.html' },
-    { src: 'pages/admin/invoices.njk',     out: 'admin/facturas.html' },
+    { src: 'pages/admin/clients.njk',        out: 'admin/clientes.html' },
+    { src: 'pages/admin/client-detail.njk', out: 'admin/cliente-detalle.html' },
+    { src: 'pages/admin/invoices.njk',      out: 'admin/facturas.html' },
 ];
 
 let ok = 0;

@@ -71,7 +71,7 @@ $clientCtrl  = new ClientController($clientService, $mw);
 $projectCtrl = new ProjectController($projectService, $mw);
 $invoiceCtrl = new InvoiceController($invoiceService, $mw);
 $paymentCtrl = new PaymentController($invoiceService, $clientService, $wompi, $mailer, $mw);
-$adminCtrl   = new AdminController($invoiceService, $projectService, $clientService, $mw);
+$adminCtrl   = new AdminController($invoiceService, $projectService, $clientService, $mw, $mailer);
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
@@ -106,8 +106,9 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('POST', '/api/v1/payments/webhook',  [$paymentCtrl, 'webhook']);
 
     // Admin
-    $r->addRoute('GET',  '/api/v1/admin/stats',    [$adminCtrl, 'stats']);
-    $r->addRoute('POST', '/api/v1/admin/clients',  [$adminCtrl, 'createClient']);
+    $r->addRoute('GET',  '/api/v1/admin/stats',              [$adminCtrl, 'stats']);
+    $r->addRoute('GET',  '/api/v1/admin/clients/{id:\d+}',   [$adminCtrl, 'showClient']);
+    $r->addRoute('POST', '/api/v1/admin/clients',            [$adminCtrl, 'createClient']);
     $r->addRoute('POST', '/api/v1/admin/invoices', [$adminCtrl, 'createInvoice']);
     $r->addRoute('POST', '/api/v1/admin/projects', [$adminCtrl, 'createProject']);
 });

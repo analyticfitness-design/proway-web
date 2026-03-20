@@ -45,6 +45,15 @@ if (preg_match('#^/proyectos/(\d+)$#', $normalized)) {
     }
 }
 
+if (preg_match('#^/admin/clientes/(\d+)$#', $normalized)) {
+    $file = __DIR__ . '/admin/cliente-detalle.html';
+    if (file_exists($file)) {
+        header('Content-Type: text/html; charset=utf-8');
+        readfile($file);
+        exit;
+    }
+}
+
 if (isset($pageMap[$normalized])) {
     $file = __DIR__ . '/' . $pageMap[$normalized];
     if (file_exists($file)) {

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0a0a0f">
+    <title>Detalle de Cliente — Admin ProWay Lab</title>
+    <meta name="description" content="Información detallada del cliente">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/imagotipo-proway-blanco.png">
+
+    <!-- Preconnect for fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- ProWay Design System -->
+    <link rel="stylesheet" href="/dist/assets/module.css">
+
+</head>
+<body>
+    <div id="toast-container" aria-live="polite"></div>
+
+<div class="page flex">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar" x-data="{ open: false }" :class="{ 'is-open': open }">
+        <div class="sidebar__logo">
+            <img src="/images/imagotipo-proway-blanco.png" alt="PW" width="28" height="28">
+            <span class="sidebar__logo-text">ProWay</span>
+        </div>
+
+        <nav class="sidebar__nav">
+<span class="sidebar__section-title">Administración</span>
+
+<a href="/admin" class="sidebar__link">
+    <span class="sidebar__link-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+        </svg>
+    </span>
+    Dashboard
+</a>
+
+<a href="/admin/clientes" class="sidebar__link sidebar__link--active">
+    <span class="sidebar__link-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+    </span>
+    Clientes
+</a>
+
+<a href="/admin/proyectos" class="sidebar__link">
+    <span class="sidebar__link-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+    </span>
+    Proyectos
+</a>
+
+<a href="/admin/facturas" class="sidebar__link">
+    <span class="sidebar__link-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+        </svg>
+    </span>
+    Facturas
+</a>
+        </nav>
+
+        <div class="sidebar__footer">
+<button class="btn btn--ghost btn--full"
+        style="justify-content:flex-start; gap: var(--pw-space-2);"
+        @click="fetch('/api/v1/auth/logout', {method:'POST', credentials:'include'}).then(() => window.location.href = '/login')">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+    </svg>
+    Cerrar Sesión
+</button>
+        </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-with-sidebar page-content" id="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Detalle de Cliente</h1>
+            <div class="flex gap-4"><a href="/admin/clientes" class="btn btn--ghost btn--sm">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+    </svg>
+    Volver a Clientes
+</a>
+</div>
+        </div>
+
+
+<div x-data="clientDetail()" x-init="load()">
+
+    <!-- Loading state -->
+    <template x-if="loading">
+        <div style="text-align:center; padding: var(--pw-space-8);">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 style="animation: pw-spin 0.8s linear infinite; color: var(--pw-accent);" aria-hidden="true">
+                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            </svg>
+            <p style="margin-top: var(--pw-space-2); color: var(--pw-text-muted);">Cargando datos del cliente...</p>
+        </div>
+    </template>
+
+    <!-- Error state -->
+    <template x-if="error">
+        <div class="card" style="text-align:center; padding: var(--pw-space-8);">
+            <p style="color: var(--pw-danger);" x-text="error"></p>
+            <a href="/admin/clientes" class="btn btn--ghost" style="margin-top: var(--pw-space-4);">Volver a Clientes</a>
+        </div>
+    </template>
+
+    <!-- Client info -->
+    <template x-if="client && !loading">
+        <div>
+            <!-- Client card -->
+            <div class="card" style="margin-bottom: var(--pw-space-5);">
+                <div class="card__header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h2 class="card__title" x-text="client.name" style="margin-bottom: var(--pw-space-1);"></h2>
+                        <p style="color: var(--pw-text-muted); font-size: var(--pw-text-sm);" x-text="client.email"></p>
+                    </div>
+                    <div style="display:flex; gap: var(--pw-space-2); align-items:center;">
+                        <span class="badge" :class="'badge--' + (client.status === 'activo' ? 'success' : client.status === 'prospecto' ? 'warning' : 'muted')"
+                              x-text="client.status"></span>
+                        <button class="btn btn--ghost btn--sm" @click="editing = !editing"
+                                x-text="editing ? 'Cancelar' : 'Editar'"></button>
+                    </div>
+                </div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--pw-space-4); padding: var(--pw-space-4);">
+                    <div>
+                        <span style="font-size:var(--pw-text-xs); color:var(--pw-text-muted); text-transform:uppercase;">Código</span>
+                        <p style="font-weight:600;" x-text="client.code || '—'"></p>
+                    </div>
+                    <div>
+                        <span style="font-size:var(--pw-text-xs); color:var(--pw-text-muted); text-transform:uppercase;">Plan</span>
+                        <p style="font-weight:600;" x-text="client.plan_type || '—'"></p>
+                    </div>
+                    <div>
+                        <span style="font-size:var(--pw-text-xs); color:var(--pw-text-muted); text-transform:uppercase;">Teléfono</span>
+                        <p style="font-weight:600;" x-text="client.phone || '—'"></p>
+                    </div>
+                    <div>
+                        <span style="font-size:var(--pw-text-xs); color:var(--pw-text-muted); text-transform:uppercase;">Empresa</span>
+                        <p style="font-weight:600;" x-text="client.company || '—'"></p>
+                    </div>
+                    <div>
+                        <span style="font-size:var(--pw-text-xs); color:var(--pw-text-muted); text-transform:uppercase;">Registro</span>
+                        <p style="font-weight:600;" x-text="client.created_at ? new Date(client.created_at).toLocaleDateString('es-CO') : '—'"></p>
+                    </div>
+                </div>
+
+                <!-- Inline edit form -->
+                <template x-if="editing">
+                    <form @submit.prevent="save()" style="padding: var(--pw-space-4); border-top: 1px solid var(--pw-border-1);">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--pw-space-3);">
+                            <div class="form-group">
+                                <label class="form-label">Nombre</label>
+                                <input class="form-input" x-model="editForm.nombre">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Teléfono</label>
+                                <input class="form-input" x-model="editForm.telefono">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: var(--pw-space-3);">
+                            <label class="form-label">Notas</label>
+                            <textarea class="form-input" x-model="editForm.notas" rows="2"></textarea>
+                        </div>
+                        <div style="display:flex; gap:var(--pw-space-2); justify-content:flex-end; margin-top:var(--pw-space-4);">
+                            <button type="button" class="btn btn--ghost btn--sm" @click="editing = false">Cancelar</button>
+                            <button type="submit" class="btn btn--primary btn--sm" :disabled="saving">
+                                <span x-show="!saving">Guardar</span>
+                                <span x-show="saving">Guardando...</span>
+                            </button>
+                        </div>
+                    </form>
+                </template>
+            </div>
+
+            <!-- Projects -->
+            <div class="card" style="margin-bottom: var(--pw-space-5);">
+                <div class="card__header">
+                    <h3 class="card__title" style="font-size: var(--pw-text-base);">
+                        Proyectos
+                        <span style="color:var(--pw-text-muted); font-weight:normal;" x-text="'(' + projects.length + ')'"></span>
+                    </h3>
+                </div>
+                <template x-if="projects.length === 0">
+                    <p style="padding: var(--pw-space-4); color: var(--pw-text-muted); text-align:center;">Sin proyectos</p>
+                </template>
+                <template x-if="projects.length > 0">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Servicio</th>
+                                    <th>Estado</th>
+                                    <th>Precio</th>
+                                    <th>Deadline</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="p in projects" :key="p.id">
+                                    <tr>
+                                        <td x-text="p.project_code"></td>
+                                        <td x-text="p.service_type"></td>
+                                        <td><span class="badge" x-text="p.status"></span></td>
+                                        <td x-text="'$' + Number(p.price_cop).toLocaleString('es-CO')"></td>
+                                        <td x-text="p.deadline || '—'"></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Invoices -->
+            <div class="card">
+                <div class="card__header">
+                    <h3 class="card__title" style="font-size: var(--pw-text-base);">
+                        Facturas
+                        <span style="color:var(--pw-text-muted); font-weight:normal;" x-text="'(' + invoices.length + ')'"></span>
+                    </h3>
+                </div>
+                <template x-if="invoices.length === 0">
+                    <p style="padding: var(--pw-space-4); color: var(--pw-text-muted); text-align:center;">Sin facturas</p>
+                </template>
+                <template x-if="invoices.length > 0">
+                    <div class="table-wrapper">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Número</th>
+                                    <th>Monto</th>
+                                    <th>Estado</th>
+                                    <th>Vencimiento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="inv in invoices" :key="inv.id">
+                                    <tr>
+                                        <td x-text="inv.invoice_number"></td>
+                                        <td x-text="'$' + Number(inv.total_cop).toLocaleString('es-CO')"></td>
+                                        <td><span class="badge" :class="'badge--' + (inv.status === 'pagada' ? 'success' : inv.status === 'vencida' ? 'danger' : 'warning')"
+                                                  x-text="inv.status"></span></td>
+                                        <td x-text="inv.due_date || '—'"></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+            </div>
+
+        </div>
+    </template>
+</div>
+
+<style>
+@keyframes pw-spin { to { transform: rotate(360deg); } }
+</style>
+
+<script>
+function clientDetail() {
+    const clientId = window.location.pathname.split('/').pop();
+
+    return {
+        client: null,
+        projects: [],
+        invoices: [],
+        loading: true,
+        error: '',
+        editing: false,
+        saving: false,
+        editForm: { nombre: '', telefono: '', notas: '' },
+
+        async load() {
+            try {
+                const res = await fetch('/api/v1/admin/clients/' + clientId, { credentials: 'include' });
+                if (res.status === 401) { window.location.href = '/login'; return; }
+                if (!res.ok) { this.error = 'Cliente no encontrado'; this.loading = false; return; }
+                const data = await res.json();
+                this.client   = data.data.client;
+                this.projects = data.data.projects || [];
+                this.invoices = data.data.invoices || [];
+                this.editForm = {
+                    nombre:   this.client.name   || '',
+                    telefono: this.client.phone   || '',
+                    notas:    this.client.notes   || '',
+                };
+            } catch (e) {
+                this.error = 'Error al cargar datos';
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async save() {
+            this.saving = true;
+            try {
+                const res = await fetch('/api/v1/clients/' + this.client.id, {
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(this.editForm),
+                });
+                if (res.ok) {
+                    this.editing = false;
+                    this.load();
+                }
+            } finally {
+                this.saving = false;
+            }
+        },
+    };
+}
+</script>
+    </main>
+</div>
+
+    <!-- JS: HTMX + Alpine.js (injected by Vite) -->
+<script type="module" src="/dist/assets/admin.js"></script>
+</body>
+</html>

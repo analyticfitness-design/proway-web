@@ -8,6 +8,7 @@ use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Domain\Client\ClientService;
 use ProWay\Domain\Invoice\InvoiceService;
 use ProWay\Domain\Project\ProjectService;
+use ProWay\Infrastructure\Email\MailjetService;
 use ProWay\Infrastructure\Http\Request;
 use ProWay\Infrastructure\Http\Response;
 
@@ -18,11 +19,34 @@ use ProWay\Infrastructure\Http\Response;
 class AdminController
 {
     public function __construct(
-        private readonly InvoiceService $invoices,
-        private readonly ProjectService $projects,
-        private readonly ClientService  $clients,
-        private readonly AuthMiddleware $middleware,
+        private readonly InvoiceService  $invoices,
+        private readonly ProjectService  $projects,
+        private readonly ClientService   $clients,
+        private readonly AuthMiddleware  $middleware,
+        private readonly ?MailjetService $mailer = null,
     ) {}
+
+    // ── GET /api/v1/admin/clients/{id} ─────────────────────────────────────────
+    public function showClient(Request $request, array $vars): never
+    {
+        $this->requireAdmin($request);
+
+        $id     = (int) $vars['id'];
+        $client = $this->clients->getById($id);
+
+        if ($client === null) {
+            Response::error('NOT_FOUND', 'Client not found', 404);
+        }
+
+        $projects = $this->projects->listForClient($id);
+        $invoices = $this->invoices->listForClient($id);
+
+        Response::success([
+            'client'   => $client,
+            'projects' => $projects,
+            'invoices' => $invoices,
+        ]);
+    }
 
     // ── POST /api/v1/admin/clients ────────────────────────────────────────────
     public function createClient(Request $request, array $vars): never
@@ -61,6 +85,14 @@ class AdminController
                 Response::error('CONFLICT', 'Ya existe un cliente con ese email', 409);
             }
             throw $e;
+        }
+
+        // Send welcome email with credentials
+        if ($this->mailer !== null) {
+            $this->mailer->sendWelcome([
+                'name'  => $name,
+                'email' => $email,
+            ]);
         }
 
         Response::success(['id' => $id, 'code' => $code], 201);
