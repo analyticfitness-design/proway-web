@@ -69,6 +69,26 @@ Alpine.data('profileForm', () => ({
 
 Alpine.start()
 
+// ── Onboarding redirect ──────────────────────────────────────────────────────────
+// On portal pages (not the onboarding page itself), check if onboarding is pending
+// and redirect the client to complete it.
+;(async function checkOnboarding() {
+    const path = window.location.pathname
+    const portalPages = ['/portal', '/proyectos', '/proyecto', '/facturas', '/calendario', '/perfil']
+    if (!portalPages.some(p => path === p || path.startsWith(p + '?'))) return
+
+    try {
+        const res = await fetch('/api/v1/clients/me/profile', { credentials: 'include' })
+        if (!res.ok) return
+        const body = await res.json()
+        if (body.success && body.data?.profile?.onboarding_done === 0) {
+            window.location.href = '/onboarding'
+        }
+    } catch (_) {
+        // Silently fail — don't block the page
+    }
+})()
+
 // ── Wompi checkout ─────────────────────────────────────────────────────────────
 // Global function called via onclick from HTMX-loaded invoice table rows.
 // Uses textContent and safe DOM methods — no innerHTML with dynamic content.

@@ -15,6 +15,7 @@ use ProWay\Api\V1\Controller\NotificationController;
 use ProWay\Api\V1\Controller\ProjectController;
 use ProWay\Api\V1\Controller\SocialMetricsController;
 use ProWay\Api\V1\Controller\MessageController;
+use ProWay\Api\V1\Controller\OnboardingController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
@@ -113,12 +114,15 @@ $socialMetricsCtrl   = new SocialMetricsController($socialMetricsService, $mw);
 $messageService = new MessageService(new MySQLMessageRepository($pdo));
 $messageCtrl    = new MessageController($messageService, $mw, $notificationService);
 
+// Onboarding
+$onboardingCtrl = new OnboardingController($pdo, $clientService, $mw, $mailer);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -186,6 +190,11 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('GET',  '/api/v1/projects/{id:\d+}/messages',        [$messageCtrl, 'listMessages']);
     $r->addRoute('POST', '/api/v1/projects/{id:\d+}/messages',        [$messageCtrl, 'send']);
     $r->addRoute('GET',  '/api/v1/projects/{id:\d+}/messages/unread', [$messageCtrl, 'unreadCount']);
+
+    // Onboarding
+    $r->addRoute('GET',  '/api/v1/clients/me/profile',              [$onboardingCtrl, 'getProfile']);
+    $r->addRoute('PUT',  '/api/v1/clients/me/profile',              [$onboardingCtrl, 'updateProfile']);
+    $r->addRoute('POST', '/api/v1/clients/me/onboarding-complete',  [$onboardingCtrl, 'completeOnboarding']);
 });
 
 $request  = new Request();

@@ -36,6 +36,7 @@ $pageMap = [
     '/facturas'        => 'facturas.html',
     '/calendario'      => 'calendario.html',
     '/perfil'          => 'perfil.html',
+    '/onboarding'      => 'onboarding.html',
 
     // Admin
     '/admin'           => 'admin.html',

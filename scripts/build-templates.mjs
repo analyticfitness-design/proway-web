@@ -37,6 +37,7 @@ const PAGES = [
     { src: 'pages/client/invoices.njk',        out: 'facturas.html' },
     { src: 'pages/client/calendar.njk',        out: 'calendario.html' },
     { src: 'pages/client/profile.njk',         out: 'perfil.html' },
+    { src: 'pages/client/onboarding.njk',      out: 'onboarding.html' },
 
     // Admin
     { src: 'pages/admin/dashboard.njk',    out: 'admin.html' },
