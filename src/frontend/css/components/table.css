@@ -1,4 +1,4 @@
-/* ProWay DS — Table Component */
+/* ProWay DS — Table Component (Landing-aligned) */
 .table-wrapper {
     overflow-x: auto;
     border-radius: var(--pw-radius-md);
@@ -15,10 +15,11 @@
     background: var(--pw-surface);
     padding: var(--pw-space-3) var(--pw-space-4);
     text-align: left;
-    font-size: var(--pw-text-xs);
-    font-weight: var(--pw-weight-semi);
+    font-family: var(--pw-font-mono);
+    font-size: 9px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.2em;
     color: var(--pw-text-muted);
     border-bottom: 1px solid var(--pw-border);
     white-space: nowrap;
@@ -26,10 +27,14 @@
 
 .table tbody tr {
     border-bottom: 1px solid rgba(255,255,255,0.04);
-    transition: background var(--pw-transition);
+    border-left: 3px solid transparent;
+    transition: background var(--pw-transition), border-color var(--pw-transition);
 }
 .table tbody tr:last-child { border-bottom: none; }
-.table tbody tr:hover { background: var(--pw-surface); }
+.table tbody tr:hover {
+    background: var(--pw-surface);
+    border-left-color: var(--pw-accent);
+}
 
 .table tbody td {
     padding: var(--pw-space-4);

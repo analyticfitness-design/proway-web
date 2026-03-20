@@ -1,27 +1,28 @@
-/* ProWay DS — Badge / Status Component */
+/* ProWay DS — Badge / Status Component (Landing-aligned) */
 .badge {
     display: inline-flex;
     align-items: center;
-    padding: 3px 10px;
-    border-radius: var(--pw-radius-full);
-    font-size: var(--pw-text-xs);
-    font-weight: var(--pw-weight-semi);
-    letter-spacing: 0.05em;
+    padding: 4px 10px;
+    border-radius: var(--pw-radius-sm);
+    font-family: var(--pw-font-mono);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     white-space: nowrap;
 }
 
 /* Project/general statuses */
-.badge--pendiente  { background: rgba(255,165,2,0.15);  color: var(--pw-warning);   border: 1px solid rgba(255,165,2,0.3); }
-.badge--progreso   { background: rgba(108,99,255,0.15); color: var(--pw-accent);    border: 1px solid rgba(108,99,255,0.3); }
-.badge--revision   { background: rgba(59,130,246,0.15); color: #60a5fa;             border: 1px solid rgba(59,130,246,0.3); }
-.badge--completado { background: rgba(0,212,170,0.12);  color: var(--pw-accent-2);  border: 1px solid rgba(0,212,170,0.3); }
-.badge--vencido    { background: rgba(255,71,87,0.12);  color: var(--pw-danger);    border: 1px solid rgba(255,71,87,0.3); }
-.badge--activo     { background: rgba(0,212,170,0.12);  color: var(--pw-accent-2);  border: 1px solid rgba(0,212,170,0.3); }
-.badge--inactivo   { background: rgba(255,71,87,0.12);  color: var(--pw-danger);    border: 1px solid rgba(255,71,87,0.3); }
-.badge--enviada    { background: rgba(108,99,255,0.15); color: var(--pw-accent);    border: 1px solid rgba(108,99,255,0.3); }
-.badge--pagada     { background: rgba(0,212,170,0.12);  color: var(--pw-accent-2);  border: 1px solid rgba(0,212,170,0.3); }
+.badge--pendiente  { background: rgba(255,165,2,0.12);   color: var(--pw-warning);   border: 1px solid rgba(255,165,2,0.25); }
+.badge--progreso   { background: rgba(0,217,255,0.08);   color: var(--pw-accent);    border: 1px solid rgba(0,217,255,0.25); }
+.badge--revision   { background: rgba(59,130,246,0.10);  color: #60a5fa;             border: 1px solid rgba(59,130,246,0.25); }
+.badge--completado { background: rgba(0,255,135,0.08);   color: var(--pw-accent-2);  border: 1px solid rgba(0,255,135,0.25); }
+.badge--vencido    { background: rgba(227,30,36,0.10);   color: var(--pw-danger);    border: 1px solid rgba(227,30,36,0.25); }
+.badge--activo     { background: rgba(0,255,135,0.08);   color: var(--pw-accent-2);  border: 1px solid rgba(0,255,135,0.25); }
+.badge--inactivo   { background: rgba(227,30,36,0.10);   color: var(--pw-danger);    border: 1px solid rgba(227,30,36,0.25); }
+.badge--enviada    { background: rgba(0,217,255,0.08);   color: var(--pw-accent);    border: 1px solid rgba(0,217,255,0.25); }
+.badge--pagada     { background: rgba(0,255,135,0.08);   color: var(--pw-accent-2);  border: 1px solid rgba(0,255,135,0.25); }
 
 /* Plan badges */
-.badge--video_individual { background: rgba(108,99,255,0.15); color: var(--pw-accent);   border: 1px solid rgba(108,99,255,0.3); }
-.badge--video_mensual    { background: rgba(0,212,170,0.12);  color: var(--pw-accent-2); border: 1px solid rgba(0,212,170,0.3); }
+.badge--video_individual { background: rgba(0,217,255,0.08);  color: var(--pw-accent);   border: 1px solid rgba(0,217,255,0.25); }
+.badge--video_mensual    { background: rgba(0,255,135,0.08);  color: var(--pw-accent-2); border: 1px solid rgba(0,255,135,0.25); }
