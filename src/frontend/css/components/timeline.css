@@ -1,0 +1,101 @@
+/* ProWay DS — Project Timeline / Activity Log */
+
+.timeline {
+    position: relative;
+    padding-left: var(--pw-space-8);
+}
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 13px;
+    top: 4px;
+    bottom: 4px;
+    width: 1px;
+    background: var(--pw-border-2);
+}
+
+.timeline__item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--pw-space-3);
+    padding-bottom: var(--pw-space-5);
+}
+.timeline__item:last-child { padding-bottom: 0; }
+
+.timeline__dot {
+    position: absolute;
+    left: calc(-1 * var(--pw-space-8) + 4px);
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: var(--pw-radius-full);
+    background: var(--pw-surface);
+    border: 1px solid var(--pw-border-2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--pw-text-dim);
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.timeline__dot--accent {
+    border-color: var(--pw-accent);
+    color: var(--pw-accent);
+    background: rgba(0,217,255,0.08);
+}
+.timeline__dot--success {
+    border-color: var(--pw-accent-2);
+    color: var(--pw-accent-2);
+    background: rgba(0,255,135,0.08);
+}
+.timeline__dot--warning {
+    border-color: var(--pw-warning);
+    color: var(--pw-warning);
+    background: rgba(255,165,2,0.08);
+}
+
+.timeline__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.timeline__action {
+    font-size: var(--pw-text-sm);
+    color: var(--pw-text);
+    line-height: 1.5;
+}
+
+.timeline__time {
+    font-family: var(--pw-font-mono);
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    color: var(--pw-text-dim);
+    margin-top: 4px;
+    display: block;
+}
+
+/* ── Empty state ──────────────────────────────────────── */
+.timeline-empty {
+    padding: var(--pw-space-6) var(--pw-space-4);
+    text-align: center;
+    color: var(--pw-text-dim);
+    font-size: var(--pw-text-sm);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ── Responsive ───────────────────────────────────────── */
+@media (max-width: 480px) {
+    .timeline {
+        padding-left: var(--pw-space-6);
+    }
+    .timeline::before { left: 9px; }
+    .timeline__dot {
+        left: calc(-1 * var(--pw-space-6) + 0px);
+        width: 18px;
+        height: 18px;
+    }
+}

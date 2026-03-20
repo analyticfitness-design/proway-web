@@ -169,6 +169,22 @@
                 </div>
             </template>
 
+            <!-- Activity Timeline -->
+            <div class="card" style="padding:var(--pw-space-5);">
+                <div class="section-label">Actividad del Proyecto</div>
+                <div id="project-timeline"
+                     hx-get="/api/partials/project-timeline.php"
+                     hx-vals='js:{"project_id": window.location.pathname.split("/").filter(Boolean)[1]}'
+                     hx-trigger="load delay:300ms"
+                     hx-swap="innerHTML">
+                    <div style="text-align:center;padding:var(--pw-space-4);">
+                        <span class="skeleton-text" style="width:60%;height:14px;display:block;margin:0 auto var(--pw-space-3);"></span>
+                        <span class="skeleton-text" style="width:80%;height:14px;display:block;margin:0 auto var(--pw-space-3);"></span>
+                        <span class="skeleton-text" style="width:40%;height:14px;display:block;margin:0 auto;"></span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </template>
 

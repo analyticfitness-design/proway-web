@@ -9,6 +9,8 @@
 @import './components/table.css';
 @import './components/sidebar.css';
 @import './components/toast.css';
+@import './components/notification.css';
+@import './components/timeline.css';
 
 /* ── Layout Utilities ────────────────────────────── */
 .container {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ProWay\Api\V1\Controller;
 
 use ProWay\Api\V1\Middleware\AuthMiddleware;
+use ProWay\Domain\ActivityLog\ActivityLogService;
 use ProWay\Domain\Project\ProjectService;
 use ProWay\Infrastructure\Http\Request;
 use ProWay\Infrastructure\Http\Response;
@@ -11,8 +12,9 @@ use ProWay\Infrastructure\Http\Response;
 class ProjectController
 {
     public function __construct(
-        private readonly ProjectService  $projects,
-        private readonly AuthMiddleware  $middleware,
+        private readonly ProjectService     $projects,
+        private readonly AuthMiddleware     $middleware,
+        private readonly ?ActivityLogService $activityLog = null,
     ) {}
 
     /**
@@ -46,7 +48,7 @@ class ProjectController
      */
     public function updateStatus(Request $request, array $vars): never
     {
-        $this->middleware->requireAdmin($request);
+        $user = $this->middleware->requireAdmin($request);
 
         $status = $request->input('status');
         if (empty($status)) {
@@ -54,10 +56,45 @@ class ProjectController
         }
 
         try {
-            $ok = $this->projects->updateStatus((int) $vars['id'], $status);
+            $projectId = (int) $vars['id'];
+            $ok = $this->projects->updateStatus($projectId, $status);
+
+            // Log status change to activity timeline
+            try {
+                $this->activityLog?->log(
+                    $projectId,
+                    'status_change',
+                    "Estado cambiado a \"{$status}\"",
+                    $user->type,
+                    $user->id,
+                    ['new_status' => $status],
+                );
+            } catch (\Throwable) {
+                // Never block primary operation
+            }
+
             Response::success(['updated' => $ok]);
         } catch (\InvalidArgumentException $e) {
             Response::error('VALIDATION', $e->getMessage(), 422);
         }
+    }
+
+    /**
+     * GET /api/v1/projects/{id}/timeline
+     */
+    public function timeline(Request $request, array $vars): never
+    {
+        $this->middleware->requireAuth($request);
+
+        $projectId = (int) $vars['id'];
+        $project = $this->projects->get($projectId);
+
+        if ($project === null) {
+            Response::error('NOT_FOUND', 'Project not found', 404);
+        }
+
+        $entries = $this->activityLog?->getTimeline($projectId) ?? [];
+
+        Response::success(['timeline' => $entries]);
     }
 }
