@@ -14,6 +14,7 @@ use ProWay\Api\V1\Controller\ErrorLogController;
 use ProWay\Api\V1\Controller\NotificationController;
 use ProWay\Api\V1\Controller\ProjectController;
 use ProWay\Api\V1\Controller\SocialMetricsController;
+use ProWay\Api\V1\Controller\MessageController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
@@ -39,6 +40,8 @@ use ProWay\Domain\SocialMetrics\MySQLSocialProfileRepository;
 use ProWay\Domain\SocialMetrics\MySQLSocialPostRepository;
 use ProWay\Domain\SocialMetrics\MySQLMetricsRepository;
 use ProWay\Domain\SocialMetrics\SocialMetricsService;
+use ProWay\Domain\Message\MessageService;
+use ProWay\Domain\Message\MySQLMessageRepository;
 use ProWay\Domain\Payment\WompiService;
 use ProWay\Infrastructure\Cache\CacheFactory;
 use ProWay\Infrastructure\Database\Connection;
@@ -106,12 +109,16 @@ $metricsRepo         = new MySQLMetricsRepository($pdo);
 $socialMetricsService = new SocialMetricsService($socialProfileRepo, $socialPostRepo, $metricsRepo);
 $socialMetricsCtrl   = new SocialMetricsController($socialMetricsService, $mw);
 
+// Messages
+$messageService = new MessageService(new MySQLMessageRepository($pdo));
+$messageCtrl    = new MessageController($messageService, $mw, $notificationService);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -171,6 +178,11 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('PATCH',  '/api/v1/social-posts/{id:\d+}/proway',       [$socialMetricsCtrl, 'toggleProWay']);
     $r->addRoute('GET',    '/api/v1/social-metrics/dashboard',            [$socialMetricsCtrl, 'clientDashboard']);
     $r->addRoute('GET',    '/api/v1/social-metrics/profiles/{id:\d+}/metrics', [$socialMetricsCtrl, 'profileMetrics']);
+
+    // Messages (Project Chat)
+    $r->addRoute('GET',  '/api/v1/projects/{id:\d+}/messages',        [$messageCtrl, 'listMessages']);
+    $r->addRoute('POST', '/api/v1/projects/{id:\d+}/messages',        [$messageCtrl, 'send']);
+    $r->addRoute('GET',  '/api/v1/projects/{id:\d+}/messages/unread', [$messageCtrl, 'unreadCount']);
 });
 
 $request  = new Request();

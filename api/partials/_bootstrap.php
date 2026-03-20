@@ -23,6 +23,8 @@ use ProWay\Domain\SocialMetrics\MySQLSocialProfileRepository;
 use ProWay\Domain\SocialMetrics\MySQLSocialPostRepository;
 use ProWay\Domain\SocialMetrics\MySQLMetricsRepository;
 use ProWay\Domain\SocialMetrics\SocialMetricsService;
+use ProWay\Domain\Message\MessageService;
+use ProWay\Domain\Message\MySQLMessageRepository;
 
 $pdo            = Connection::getInstance();
 $tokens         = new TokenManager($pdo);
@@ -38,3 +40,4 @@ $socialMetricsService = new SocialMetricsService(
     new MySQLSocialPostRepository($pdo),
     new MySQLMetricsRepository($pdo),
 );
+$messageService = new MessageService(new MySQLMessageRepository($pdo));
