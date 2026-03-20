@@ -19,6 +19,10 @@ use ProWay\Domain\ActivityLog\ActivityLogService;
 use ProWay\Domain\ActivityLog\MySQLActivityLogRepository;
 use ProWay\Domain\ErrorLog\ErrorLogService;
 use ProWay\Domain\ErrorLog\MySQLErrorLogRepository;
+use ProWay\Domain\SocialMetrics\MySQLSocialProfileRepository;
+use ProWay\Domain\SocialMetrics\MySQLSocialPostRepository;
+use ProWay\Domain\SocialMetrics\MySQLMetricsRepository;
+use ProWay\Domain\SocialMetrics\SocialMetricsService;
 
 $pdo            = Connection::getInstance();
 $tokens         = new TokenManager($pdo);
@@ -29,3 +33,8 @@ $invoiceService = new InvoiceService(new MySQLInvoiceRepository($pdo));
 $notifService   = new NotificationService(new MySQLNotificationRepository($pdo));
 $activityService = new ActivityLogService(new MySQLActivityLogRepository($pdo));
 $errorLogService = new ErrorLogService(new MySQLErrorLogRepository($pdo));
+$socialMetricsService = new SocialMetricsService(
+    new MySQLSocialProfileRepository($pdo),
+    new MySQLSocialPostRepository($pdo),
+    new MySQLMetricsRepository($pdo),
+);

@@ -13,6 +13,7 @@ use ProWay\Api\V1\Controller\DeliverableController;
 use ProWay\Api\V1\Controller\ErrorLogController;
 use ProWay\Api\V1\Controller\NotificationController;
 use ProWay\Api\V1\Controller\ProjectController;
+use ProWay\Api\V1\Controller\SocialMetricsController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
@@ -34,6 +35,10 @@ use ProWay\Domain\ActivityLog\ActivityLogService;
 use ProWay\Domain\ActivityLog\MySQLActivityLogRepository;
 use ProWay\Domain\ErrorLog\ErrorLogService;
 use ProWay\Domain\ErrorLog\MySQLErrorLogRepository;
+use ProWay\Domain\SocialMetrics\MySQLSocialProfileRepository;
+use ProWay\Domain\SocialMetrics\MySQLSocialPostRepository;
+use ProWay\Domain\SocialMetrics\MySQLMetricsRepository;
+use ProWay\Domain\SocialMetrics\SocialMetricsService;
 use ProWay\Domain\Payment\WompiService;
 use ProWay\Infrastructure\Cache\CacheFactory;
 use ProWay\Infrastructure\Database\Connection;
@@ -94,12 +99,19 @@ $notifCtrl        = new NotificationController($notificationService, $mw);
 $errorLogCtrl     = new ErrorLogController($errorLogService, $mw);
 $deliverableCtrl  = new DeliverableController($deliverableService, $mw);
 
+// Social Metrics
+$socialProfileRepo   = new MySQLSocialProfileRepository($pdo);
+$socialPostRepo      = new MySQLSocialPostRepository($pdo);
+$metricsRepo         = new MySQLMetricsRepository($pdo);
+$socialMetricsService = new SocialMetricsService($socialProfileRepo, $socialPostRepo, $metricsRepo);
+$socialMetricsCtrl   = new SocialMetricsController($socialMetricsService, $mw);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -151,6 +163,14 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     // Error Logs
     $r->addRoute('POST', '/api/v1/errors',              [$errorLogCtrl, 'store']);
     $r->addRoute('GET',  '/api/v1/admin/errors',         [$errorLogCtrl, 'index']);
+
+    // Social Metrics
+    $r->addRoute('GET',    '/api/v1/admin/social-profiles',              [$socialMetricsCtrl, 'listProfiles']);
+    $r->addRoute('POST',   '/api/v1/admin/social-profiles',              [$socialMetricsCtrl, 'addProfile']);
+    $r->addRoute('DELETE', '/api/v1/admin/social-profiles/{id:\d+}',     [$socialMetricsCtrl, 'removeProfile']);
+    $r->addRoute('PATCH',  '/api/v1/social-posts/{id:\d+}/proway',       [$socialMetricsCtrl, 'toggleProWay']);
+    $r->addRoute('GET',    '/api/v1/social-metrics/dashboard',            [$socialMetricsCtrl, 'clientDashboard']);
+    $r->addRoute('GET',    '/api/v1/social-metrics/profiles/{id:\d+}/metrics', [$socialMetricsCtrl, 'profileMetrics']);
 });
 
 $request  = new Request();
