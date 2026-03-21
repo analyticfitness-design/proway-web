@@ -17,6 +17,7 @@ use ProWay\Api\V1\Controller\SocialMetricsController;
 use ProWay\Api\V1\Controller\MessageController;
 use ProWay\Api\V1\Controller\OnboardingController;
 use ProWay\Api\V1\Controller\ReportController;
+use ProWay\Api\V1\Controller\ApprovalController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
@@ -54,6 +55,8 @@ use ProWay\Infrastructure\Http\Router;
 use ProWay\Domain\Report\MonthlyReportService;
 use ProWay\Domain\Report\ReportPdfRenderer;
 use ProWay\Domain\WhatsApp\WhatsAppNotifier;
+use ProWay\Domain\Approval\ApprovalService;
+use ProWay\Domain\Approval\MySQLApprovalRepository;
 use ProWay\Infrastructure\Pdf\PdfRenderer;
 use ProWay\Infrastructure\WhatsApp\WhatsAppService;
 
@@ -131,12 +134,17 @@ $reportService     = new MonthlyReportService($pdo, $projectService, $deliverabl
 $reportPdfRenderer = new ReportPdfRenderer();
 $reportCtrl        = new ReportController($reportService, $reportPdfRenderer, $mw);
 
+// Approvals
+$approvalRepo    = new MySQLApprovalRepository($pdo);
+$approvalService = new ApprovalService($approvalRepo);
+$approvalCtrl    = new ApprovalController($approvalService, $mw, $notificationService, $activityLogService, $approvalRepo);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -215,6 +223,10 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('POST', '/api/v1/admin/reports/generate',  [$reportCtrl, 'generate']);
     $r->addRoute('GET',  '/api/v1/reports/{id:\d+}/pdf',    [$reportCtrl, 'downloadPdf']);
     $r->addRoute('GET',  '/api/v1/clients/me/reports',      [$reportCtrl, 'clientReports']);
+
+    // Approvals
+    $r->addRoute('POST', '/api/v1/deliverables/{id:\d+}/approve', [$approvalCtrl, 'review']);
+    $r->addRoute('GET',  '/api/v1/admin/approvals',               [$approvalCtrl, 'listAll']);
 });
 
 $request  = new Request();
