@@ -6,6 +6,40 @@ import Alpine from 'alpinejs'
 
 window.Alpine = Alpine
 
+// ── PWA: Service Worker registration ─────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
+// ── PWA: Install prompt banner ───────────────────────────────────────────────
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    document.dispatchEvent(new CustomEvent('pwa:installable'));
+});
+
+Alpine.data('pwaInstall', () => ({
+    canInstall: false,
+
+    init() {
+        if (deferredInstallPrompt) this.canInstall = true;
+        document.addEventListener('pwa:installable', () => { this.canInstall = true; });
+    },
+
+    async install() {
+        if (!deferredInstallPrompt) return;
+        deferredInstallPrompt.prompt();
+        const { outcome } = await deferredInstallPrompt.userChoice;
+        if (outcome === 'accepted') this.canInstall = false;
+        deferredInstallPrompt = null;
+    },
+
+    dismiss() {
+        this.canInstall = false;
+    },
+}))
+
 // ── Alpine: profileForm component ─────────────────────────────────────────────
 Alpine.data('profileForm', () => ({
     id: null,

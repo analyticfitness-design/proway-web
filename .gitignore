@@ -17,4 +17,5 @@ api/.phpunit.result.cache
 playwright-report/
 test-results/
 *.png
+!images/pwa-icon-*.png
 docs/

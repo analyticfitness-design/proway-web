@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0C0C0F">
+    <title>Sin conexion — ProWay Lab</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: #0C0C0F;
+            color: #FFFFFF;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .offline {
+            text-align: center;
+            max-width: 420px;
+        }
+
+        .offline__icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            opacity: 0.6;
+        }
+
+        .offline__icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .offline__logo {
+            height: 32px;
+            margin-bottom: 2rem;
+            opacity: 0.85;
+        }
+
+        .offline__title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #00D9FF, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .offline__text {
+            color: #94a3b8;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .offline__btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, #00D9FF, #00b4d8);
+            color: #0C0C0F;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .offline__btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 24px rgba(0, 217, 255, 0.3);
+        }
+
+        .offline__btn:active {
+            transform: translateY(0);
+        }
+
+        .offline__hint {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #475569;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline">
+        <img src="/images/imagotipo-proway-blanco.png" alt="ProWay Lab" class="offline__logo">
+
+        <div class="offline__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00D9FF">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949
+                    3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+        </div>
+
+        <h1 class="offline__title">Sin conexion</h1>
+        <p class="offline__text">
+            No hay conexion a internet en este momento.
+            Verifica tu red e intenta nuevamente.
+        </p>
+
+        <button class="offline__btn" onclick="window.location.reload()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0
+                    1.385-2.58a7.5 7.5 0 0113.258-2.078l1.357 1.658M2.985 19.644
+                    l1.385-2.58m13.645-9.716 1.385 2.58a7.5 7.5 0
+                    01-13.258 2.078l-1.357-1.658" />
+            </svg>
+            Reintentar
+        </button>
+
+        <p class="offline__hint">ProWay Lab funciona mejor con una conexion estable.</p>
+    </div>
+</body>
+</html>
