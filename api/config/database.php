@@ -39,6 +39,9 @@ define('WA_ACCESS_TOKEN',    env('WA_ACCESS_TOKEN',    ''));
 define('N8N_API_KEY',        env('N8N_API_KEY',        ''));
 define('N8N_WEBHOOK_URL',    env('N8N_WEBHOOK_URL',    ''));
 
+define('SOCIAL_API_PROVIDER', env('SOCIAL_API_PROVIDER', 'mock'));
+define('SOCIAL_API_KEY',      env('SOCIAL_API_KEY',      ''));
+
 function getDB(): PDO {
     static $pdo = null;
     if ($pdo === null) {
