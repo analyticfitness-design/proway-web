@@ -43,7 +43,11 @@ $pageMap = [
     '/admin/proyectos' => 'admin/proyectos.html',
     '/admin/clientes'  => 'admin/clientes.html',
     '/admin/facturas'  => 'admin/facturas.html',
-    '/admin/kanban'    => 'admin/kanban.html',
+    '/admin/kanban'           => 'admin/kanban.html',
+    '/admin/analytics'        => 'admin/analytics.html',
+    '/admin/content-calendar'  => 'admin/content-calendar.html',
+    '/admin/assets'           => 'admin/assets.html',
+    '/admin/ai-suggestions'   => 'admin/ai-suggestions.html',
 ];
 
 // Normalize trailing slash
