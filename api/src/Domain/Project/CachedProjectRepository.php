@@ -90,4 +90,22 @@ class CachedProjectRepository implements ProjectRepository
     {
         return $this->inner->countByStatus();
     }
+
+    // Kanban queries bypass cache — always fresh data.
+
+    public function findGroupedByStatus(): array
+    {
+        return $this->inner->findGroupedByStatus();
+    }
+
+    public function updateKanbanOrder(int $id, string $status, int $order): bool
+    {
+        $result = $this->inner->updateKanbanOrder($id, $status, $order);
+
+        if ($result) {
+            $this->cache->delete("pw:projects:{$id}");
+        }
+
+        return $result;
+    }
 }

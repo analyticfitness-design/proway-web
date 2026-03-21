@@ -19,6 +19,7 @@ use ProWay\Api\V1\Controller\OnboardingController;
 use ProWay\Api\V1\Controller\ReportController;
 use ProWay\Api\V1\Controller\AnalyticsController;
 use ProWay\Api\V1\Controller\ApprovalController;
+use ProWay\Api\V1\Controller\KanbanController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
@@ -146,12 +147,15 @@ $approvalCtrl    = new ApprovalController($approvalService, $mw, $notificationSe
 $analyticsService = new AnalyticsService(new MySQLAnalyticsRepository($pdo), $cache);
 $analyticsCtrl    = new AnalyticsController($analyticsService, $mw);
 
+// Kanban
+$kanbanCtrl = new KanbanController($projectService, $mw, $activityLogService);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl, $kanbanCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -238,6 +242,10 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     // Analytics
     $r->addRoute('GET', '/api/v1/admin/analytics/summary',     [$analyticsCtrl, 'summary']);
     $r->addRoute('GET', '/api/v1/admin/analytics/projections', [$analyticsCtrl, 'projections']);
+
+    // Kanban
+    $r->addRoute('GET',   '/api/v1/admin/kanban',          [$kanbanCtrl, 'board']);
+    $r->addRoute('PATCH', '/api/v1/admin/kanban/{id:\d+}', [$kanbanCtrl, 'moveCard']);
 });
 
 $request  = new Request();

@@ -116,4 +116,45 @@ class MySQLProjectRepository implements ProjectRepository
         );
         return $stmt->fetchAll();
     }
+
+    // ── Kanban ──────────────────────────────────────────────────────────────
+
+    public function findGroupedByStatus(): array
+    {
+        $stmt = $this->db->query(
+            'SELECT p.*, c.nombre AS client_name, c.code AS client_code
+             FROM projects p
+             LEFT JOIN clients c ON c.id = p.client_id
+             ORDER BY p.kanban_order ASC, p.created_at DESC'
+        );
+        $rows = $stmt->fetchAll();
+
+        $grouped = [
+            'cotizacion'    => [],
+            'confirmado'    => [],
+            'en_produccion' => [],
+            'revision'      => [],
+            'entregado'     => [],
+            'facturado'     => [],
+            'pagado'        => [],
+        ];
+
+        foreach ($rows as $row) {
+            $status = $row['status'] ?? 'cotizacion';
+            if (isset($grouped[$status])) {
+                $grouped[$status][] = $row;
+            }
+        }
+
+        return $grouped;
+    }
+
+    public function updateKanbanOrder(int $id, string $status, int $order): bool
+    {
+        $stmt = $this->db->prepare(
+            'UPDATE projects SET status = ?, kanban_order = ?, updated_at = NOW() WHERE id = ?'
+        );
+        $stmt->execute([$status, $order, $id]);
+        return $stmt->rowCount() > 0;
+    }
 }

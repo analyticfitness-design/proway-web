@@ -25,4 +25,10 @@ interface ProjectRepository
     public function countActive(): int;
     /** Count projects grouped by status. */
     public function countByStatus(): array;
+
+    // ── Kanban queries ───────────────────────────────────────────────────────
+    /** Projects grouped by status, ordered by kanban_order ASC, with client info. */
+    public function findGroupedByStatus(): array;
+    /** Update a project's status and kanban_order in a single UPDATE. */
+    public function updateKanbanOrder(int $id, string $status, int $order): bool;
 }

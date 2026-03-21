@@ -67,4 +67,20 @@ class ProjectService
     {
         return $this->repo->countByStatus();
     }
+
+    // ── Kanban methods ────────────────────────────────────────────────────────
+
+    public function listGroupedByStatus(): array
+    {
+        return $this->repo->findGroupedByStatus();
+    }
+
+    public function reorder(int $id, string $status, int $order): bool
+    {
+        if (!in_array($status, self::VALID_STATUSES, true)) {
+            throw new \InvalidArgumentException("Invalid project status: $status");
+        }
+
+        return $this->repo->updateKanbanOrder($id, $status, $order);
+    }
 }
