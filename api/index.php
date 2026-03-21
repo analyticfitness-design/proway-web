@@ -23,6 +23,7 @@ use ProWay\Api\V1\Controller\KanbanController;
 use ProWay\Api\V1\Controller\BriefController;
 use ProWay\Api\V1\Controller\ContentCalendarController;
 use ProWay\Api\V1\Controller\SurveyController;
+use ProWay\Api\V1\Controller\AssetController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
@@ -70,6 +71,8 @@ use ProWay\Domain\ContentCalendar\ContentCalendarService;
 use ProWay\Domain\ContentCalendar\MySQLContentSlotRepository;
 use ProWay\Domain\Survey\MySQLSurveyRepository;
 use ProWay\Domain\Survey\SurveyService;
+use ProWay\Domain\Asset\AssetService;
+use ProWay\Domain\Asset\MySQLAssetRepository;
 use ProWay\Infrastructure\Pdf\PdfRenderer;
 use ProWay\Infrastructure\WhatsApp\WhatsAppService;
 
@@ -173,12 +176,16 @@ $surveyRepo    = new MySQLSurveyRepository($pdo);
 $surveyService = new SurveyService($surveyRepo);
 $surveyCtrl    = new SurveyController($surveyService, $mw);
 
+// Asset Library
+$assetService = new AssetService(new MySQLAssetRepository($pdo));
+$assetCtrl    = new AssetController($assetService, $mw);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl, $kanbanCtrl, $briefCtrl, $contentCalendarCtrl, $surveyCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl, $kanbanCtrl, $briefCtrl, $contentCalendarCtrl, $surveyCtrl, $assetCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -286,6 +293,14 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('GET',  '/api/v1/surveys/pending',           [$surveyCtrl, 'pending']);
     $r->addRoute('POST', '/api/v1/surveys/{id:\d+}/respond',  [$surveyCtrl, 'respond']);
     $r->addRoute('GET',  '/api/v1/admin/surveys',             [$surveyCtrl, 'adminList']);
+
+    // Asset Library
+    $r->addRoute('GET',  '/api/v1/admin/assets',              [$assetCtrl, 'adminSearch']);
+    $r->addRoute('GET',  '/api/v1/admin/assets/tags',         [$assetCtrl, 'listTags']);
+    $r->addRoute('POST', '/api/v1/admin/assets/tags',         [$assetCtrl, 'createTag']);
+    $r->addRoute('GET',  '/api/v1/admin/assets/{id:\d+}',     [$assetCtrl, 'show']);
+    $r->addRoute('POST', '/api/v1/admin/assets/{id:\d+}/tags', [$assetCtrl, 'updateTags']);
+    $r->addRoute('GET',  '/api/v1/assets',                    [$assetCtrl, 'clientAssets']);
 });
 
 $request  = new Request();

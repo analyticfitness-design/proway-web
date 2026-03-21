@@ -35,6 +35,8 @@ use ProWay\Domain\ContentCalendar\ContentCalendarService;
 use ProWay\Domain\ContentCalendar\MySQLContentSlotRepository;
 use ProWay\Domain\Survey\MySQLSurveyRepository;
 use ProWay\Domain\Survey\SurveyService;
+use ProWay\Domain\Asset\AssetService;
+use ProWay\Domain\Asset\MySQLAssetRepository;
 use ProWay\Domain\WhatsApp\WhatsAppNotifier;
 use ProWay\Infrastructure\WhatsApp\WhatsAppService;
 
@@ -58,6 +60,7 @@ $briefService     = new BriefService(new MySQLBriefRepository($pdo));
 $analyticsService = new AnalyticsService(new MySQLAnalyticsRepository($pdo));
 $contentCalendarService = new ContentCalendarService(new MySQLContentSlotRepository($pdo));
 $surveyService          = new SurveyService(new MySQLSurveyRepository($pdo));
+$assetService           = new AssetService(new MySQLAssetRepository($pdo));
 
 // WhatsApp Business API
 $whatsAppService  = new WhatsAppService();
