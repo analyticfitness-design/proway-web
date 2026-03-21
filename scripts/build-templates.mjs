@@ -46,6 +46,7 @@ const PAGES = [
     { src: 'pages/admin/clients.njk',        out: 'admin/clientes.html' },
     { src: 'pages/admin/client-detail.njk', out: 'admin/cliente-detalle.html' },
     { src: 'pages/admin/invoices.njk',      out: 'admin/facturas.html' },
+    { src: 'pages/admin/analytics.njk',    out: 'admin/analytics.html' },
 ];
 
 let ok = 0;

@@ -1,8 +1,8 @@
 {% extends "layouts/app.njk" %}
 
-{% block title %}Admin Dashboard — ProWay Lab{% endblock %}
-{% block description %}Panel de administración ProWay Lab{% endblock %}
-{% block page_title %}Dashboard{% endblock %}
+{% block title %}Analytics — ProWay Lab{% endblock %}
+{% block description %}Panel de analíticas financieras ProWay Lab{% endblock %}
+{% block page_title %}Analytics PRO{% endblock %}
 
 {% block head %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
@@ -12,7 +12,7 @@
 {% block sidebar_nav %}
 <span class="sidebar__section-title">Administración</span>
 
-<a href="/admin" class="sidebar__link sidebar__link--active">
+<a href="/admin" class="sidebar__link">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
@@ -22,7 +22,7 @@
     Dashboard
 </a>
 
-<a href="/admin/analytics" class="sidebar__link">
+<a href="/admin/analytics" class="sidebar__link sidebar__link--active">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
@@ -88,13 +88,13 @@
 </span>
 
 <button class="btn btn--ghost btn--sm"
-        hx-get="/api/partials/admin-stats.php"
-        hx-target="#admin-stats"
+        hx-get="/api/partials/admin-analytics.php"
+        hx-target="#analytics-kpis"
         hx-swap="innerHTML"
         hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
         hx-indicator="#global-spinner"
         hx-trigger="click"
-        title="Refrescar todo">
+        title="Refrescar métricas">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <polyline points="23 4 23 10 17 10"/>
         <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
@@ -106,16 +106,30 @@
 {# ── Main content ────────────────────────────────────────── #}
 {% block content %}
 
-<!-- Stats row -->
-<div id="admin-stats"
-     hx-get="/api/partials/admin-stats.php"
+<!-- KPI Cards -->
+<div class="section-label">Métricas Financieras</div>
+<div id="analytics-kpis"
+     hx-get="/api/partials/admin-analytics.php"
      hx-trigger="load"
      hx-swap="innerHTML"
      hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
      hx-indicator="#global-spinner"
-     class="stats-grid">
+     class="stats-grid"
+     style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
 
     <!-- Skeleton placeholders -->
+    <div class="stat-card loading-skeleton" aria-hidden="true">
+        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
+        <div class="stat-card__label">Cargando...</div>
+    </div>
+    <div class="stat-card loading-skeleton" aria-hidden="true">
+        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
+        <div class="stat-card__label">Cargando...</div>
+    </div>
+    <div class="stat-card loading-skeleton" aria-hidden="true">
+        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
+        <div class="stat-card__label">Cargando...</div>
+    </div>
     <div class="stat-card loading-skeleton" aria-hidden="true">
         <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
         <div class="stat-card__label">Cargando...</div>
@@ -135,8 +149,9 @@
 </div>
 
 <!-- Charts -->
-<div id="admin-charts"
-     hx-get="/api/partials/admin-charts.php"
+<div class="section-label" style="margin-top: var(--pw-space-4);">Visualizaciones</div>
+<div id="analytics-charts"
+     hx-get="/api/partials/admin-analytics-charts.php"
      hx-trigger="load"
      hx-swap="innerHTML"
      hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
@@ -144,62 +159,24 @@
      style="margin-bottom: var(--pw-space-4);">
 
     <!-- Skeleton chart placeholders -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--pw-space-4); margin-bottom: var(--pw-space-4);">
+        <div class="card loading-skeleton" aria-hidden="true" style="padding: var(--pw-space-4);">
+            <div class="skeleton-text" style="width: 240px; height: 16px; margin-bottom: var(--pw-space-3);"></div>
+            <div class="skeleton-text" style="width: 100%; height: 300px; border-radius: var(--pw-radius-md);"></div>
+        </div>
+        <div class="card loading-skeleton" aria-hidden="true" style="padding: var(--pw-space-4);">
+            <div class="skeleton-text" style="width: 160px; height: 16px; margin-bottom: var(--pw-space-3);"></div>
+            <div class="skeleton-text" style="width: 100%; height: 300px; border-radius: var(--pw-radius-md);"></div>
+        </div>
+    </div>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--pw-space-4);">
         <div class="card loading-skeleton" aria-hidden="true" style="padding: var(--pw-space-4);">
-            <div class="skeleton-text" style="width: 180px; height: 16px; margin-bottom: var(--pw-space-3);"></div>
+            <div class="skeleton-text" style="width: 200px; height: 16px; margin-bottom: var(--pw-space-3);"></div>
             <div class="skeleton-text" style="width: 100%; height: 300px; border-radius: var(--pw-radius-md);"></div>
         </div>
         <div class="card loading-skeleton" aria-hidden="true" style="padding: var(--pw-space-4);">
-            <div class="skeleton-text" style="width: 180px; height: 16px; margin-bottom: var(--pw-space-3);"></div>
+            <div class="skeleton-text" style="width: 220px; height: 16px; margin-bottom: var(--pw-space-3);"></div>
             <div class="skeleton-text" style="width: 100%; height: 300px; border-radius: var(--pw-radius-md);"></div>
-        </div>
-    </div>
-</div>
-
-<!-- Recent clients -->
-<div class="section-label">Clientes Recientes</div>
-<div class="card">
-    <div class="card__header">
-        <h2 class="card__title">Clientes Recientes</h2>
-        <a href="/admin/clientes" class="btn btn--ghost btn--sm">
-            Ver todos
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-            </svg>
-        </a>
-    </div>
-
-    <div id="admin-clients"
-         hx-get="/api/partials/admin-clients.php"
-         hx-trigger="load"
-         hx-swap="innerHTML"
-         hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-         hx-indicator="#global-spinner">
-
-        <!-- Skeleton table -->
-        <div class="table-wrapper" aria-busy="true" aria-label="Cargando clientes">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Plan</th>
-                        <th>Estado</th>
-                        <th>Fecha</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for i in range(0, 5) %}
-                    <tr class="loading-skeleton" aria-hidden="true">
-                        <td><span class="skeleton-text" style="width: 140px;"></span></td>
-                        <td><span class="skeleton-text" style="width: 80px;"></span></td>
-                        <td><span class="skeleton-text" style="width: 70px; border-radius: var(--pw-radius-full);"></span></td>
-                        <td><span class="skeleton-text" style="width: 90px;"></span></td>
-                        <td><span class="skeleton-text" style="width: 60px;"></span></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
         </div>
     </div>
 </div>
@@ -223,6 +200,12 @@
 .htmx-indicator { opacity: 0; transition: opacity 0.2s; pointer-events: none; }
 .htmx-request .htmx-indicator,
 .htmx-indicator.htmx-request { opacity: 1; }
+
+@media (max-width: 768px) {
+    #analytics-kpis {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
 </style>
 
 <script>
