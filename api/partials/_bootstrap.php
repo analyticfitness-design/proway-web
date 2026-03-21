@@ -29,6 +29,8 @@ use ProWay\Domain\Analytics\AnalyticsService;
 use ProWay\Domain\Analytics\MySQLAnalyticsRepository;
 use ProWay\Domain\Approval\ApprovalService;
 use ProWay\Domain\Approval\MySQLApprovalRepository;
+use ProWay\Domain\Brief\BriefService;
+use ProWay\Domain\Brief\MySQLBriefRepository;
 use ProWay\Domain\WhatsApp\WhatsAppNotifier;
 use ProWay\Infrastructure\WhatsApp\WhatsAppService;
 
@@ -48,6 +50,7 @@ $socialMetricsService = new SocialMetricsService(
 );
 $messageService  = new MessageService(new MySQLMessageRepository($pdo));
 $approvalService  = new ApprovalService(new MySQLApprovalRepository($pdo));
+$briefService     = new BriefService(new MySQLBriefRepository($pdo));
 $analyticsService = new AnalyticsService(new MySQLAnalyticsRepository($pdo));
 
 // WhatsApp Business API

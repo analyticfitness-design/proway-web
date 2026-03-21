@@ -20,6 +20,7 @@ use ProWay\Api\V1\Controller\ReportController;
 use ProWay\Api\V1\Controller\AnalyticsController;
 use ProWay\Api\V1\Controller\ApprovalController;
 use ProWay\Api\V1\Controller\KanbanController;
+use ProWay\Api\V1\Controller\BriefController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
@@ -61,6 +62,8 @@ use ProWay\Domain\Analytics\AnalyticsService;
 use ProWay\Domain\Analytics\MySQLAnalyticsRepository;
 use ProWay\Domain\Approval\ApprovalService;
 use ProWay\Domain\Approval\MySQLApprovalRepository;
+use ProWay\Domain\Brief\BriefService;
+use ProWay\Domain\Brief\MySQLBriefRepository;
 use ProWay\Infrastructure\Pdf\PdfRenderer;
 use ProWay\Infrastructure\WhatsApp\WhatsAppService;
 
@@ -150,12 +153,17 @@ $analyticsCtrl    = new AnalyticsController($analyticsService, $mw);
 // Kanban
 $kanbanCtrl = new KanbanController($projectService, $mw, $activityLogService);
 
+// Content Brief
+$briefRepo    = new MySQLBriefRepository($pdo);
+$briefService = new BriefService($briefRepo);
+$briefCtrl    = new BriefController($briefService, $mw, $notificationService, $activityLogService, $briefRepo);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl, $kanbanCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl, $kanbanCtrl, $briefCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -246,6 +254,11 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     // Kanban
     $r->addRoute('GET',   '/api/v1/admin/kanban',          [$kanbanCtrl, 'board']);
     $r->addRoute('PATCH', '/api/v1/admin/kanban/{id:\d+}', [$kanbanCtrl, 'moveCard']);
+
+    // Content Brief
+    $r->addRoute('GET',  '/api/v1/projects/{id:\d+}/brief',        [$briefCtrl, 'show']);
+    $r->addRoute('PUT',  '/api/v1/projects/{id:\d+}/brief',        [$briefCtrl, 'save']);
+    $r->addRoute('POST', '/api/v1/projects/{id:\d+}/brief/submit', [$briefCtrl, 'submit']);
 });
 
 $request  = new Request();
