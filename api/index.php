@@ -22,6 +22,7 @@ use ProWay\Api\V1\Controller\ApprovalController;
 use ProWay\Api\V1\Controller\KanbanController;
 use ProWay\Api\V1\Controller\BriefController;
 use ProWay\Api\V1\Controller\ContentCalendarController;
+use ProWay\Api\V1\Controller\SurveyController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
@@ -67,6 +68,8 @@ use ProWay\Domain\Brief\BriefService;
 use ProWay\Domain\Brief\MySQLBriefRepository;
 use ProWay\Domain\ContentCalendar\ContentCalendarService;
 use ProWay\Domain\ContentCalendar\MySQLContentSlotRepository;
+use ProWay\Domain\Survey\MySQLSurveyRepository;
+use ProWay\Domain\Survey\SurveyService;
 use ProWay\Infrastructure\Pdf\PdfRenderer;
 use ProWay\Infrastructure\WhatsApp\WhatsAppService;
 
@@ -165,12 +168,17 @@ $briefCtrl    = new BriefController($briefService, $mw, $notificationService, $a
 $contentCalendarService = new ContentCalendarService(new MySQLContentSlotRepository($pdo));
 $contentCalendarCtrl    = new ContentCalendarController($contentCalendarService, $mw);
 
+// Surveys
+$surveyRepo    = new MySQLSurveyRepository($pdo);
+$surveyService = new SurveyService($surveyRepo);
+$surveyCtrl    = new SurveyController($surveyService, $mw);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl, $kanbanCtrl, $briefCtrl, $contentCalendarCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl, $kanbanCtrl, $briefCtrl, $contentCalendarCtrl, $surveyCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -273,6 +281,11 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('POST',   '/api/v1/admin/content-calendar',              [$contentCalendarCtrl, 'create']);
     $r->addRoute('PATCH',  '/api/v1/admin/content-calendar/{id:\d+}',     [$contentCalendarCtrl, 'update']);
     $r->addRoute('DELETE', '/api/v1/admin/content-calendar/{id:\d+}',     [$contentCalendarCtrl, 'destroy']);
+
+    // Surveys (NPS / CSAT)
+    $r->addRoute('GET',  '/api/v1/surveys/pending',           [$surveyCtrl, 'pending']);
+    $r->addRoute('POST', '/api/v1/surveys/{id:\d+}/respond',  [$surveyCtrl, 'respond']);
+    $r->addRoute('GET',  '/api/v1/admin/surveys',             [$surveyCtrl, 'adminList']);
 });
 
 $request  = new Request();
