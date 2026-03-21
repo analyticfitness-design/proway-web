@@ -21,6 +21,7 @@ use ProWay\Api\V1\Controller\AnalyticsController;
 use ProWay\Api\V1\Controller\ApprovalController;
 use ProWay\Api\V1\Controller\KanbanController;
 use ProWay\Api\V1\Controller\BriefController;
+use ProWay\Api\V1\Controller\ContentCalendarController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
@@ -64,6 +65,8 @@ use ProWay\Domain\Approval\ApprovalService;
 use ProWay\Domain\Approval\MySQLApprovalRepository;
 use ProWay\Domain\Brief\BriefService;
 use ProWay\Domain\Brief\MySQLBriefRepository;
+use ProWay\Domain\ContentCalendar\ContentCalendarService;
+use ProWay\Domain\ContentCalendar\MySQLContentSlotRepository;
 use ProWay\Infrastructure\Pdf\PdfRenderer;
 use ProWay\Infrastructure\WhatsApp\WhatsAppService;
 
@@ -158,12 +161,16 @@ $briefRepo    = new MySQLBriefRepository($pdo);
 $briefService = new BriefService($briefRepo);
 $briefCtrl    = new BriefController($briefService, $mw, $notificationService, $activityLogService, $briefRepo);
 
+// Content Calendar
+$contentCalendarService = new ContentCalendarService(new MySQLContentSlotRepository($pdo));
+$contentCalendarCtrl    = new ContentCalendarController($contentCalendarService, $mw);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl, $kanbanCtrl, $briefCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl, $kanbanCtrl, $briefCtrl, $contentCalendarCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -259,6 +266,13 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('GET',  '/api/v1/projects/{id:\d+}/brief',        [$briefCtrl, 'show']);
     $r->addRoute('PUT',  '/api/v1/projects/{id:\d+}/brief',        [$briefCtrl, 'save']);
     $r->addRoute('POST', '/api/v1/projects/{id:\d+}/brief/submit', [$briefCtrl, 'submit']);
+
+    // Content Calendar
+    $r->addRoute('GET',    '/api/v1/admin/content-calendar',              [$contentCalendarCtrl, 'adminIndex']);
+    $r->addRoute('GET',    '/api/v1/content-calendar',                    [$contentCalendarCtrl, 'clientIndex']);
+    $r->addRoute('POST',   '/api/v1/admin/content-calendar',              [$contentCalendarCtrl, 'create']);
+    $r->addRoute('PATCH',  '/api/v1/admin/content-calendar/{id:\d+}',     [$contentCalendarCtrl, 'update']);
+    $r->addRoute('DELETE', '/api/v1/admin/content-calendar/{id:\d+}',     [$contentCalendarCtrl, 'destroy']);
 });
 
 $request  = new Request();

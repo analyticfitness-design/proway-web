@@ -48,6 +48,7 @@ const PAGES = [
     { src: 'pages/admin/invoices.njk',      out: 'admin/facturas.html' },
     { src: 'pages/admin/analytics.njk',    out: 'admin/analytics.html' },
     { src: 'pages/admin/kanban.njk',      out: 'admin/kanban.html' },
+    { src: 'pages/admin/content-calendar.njk', out: 'admin/content-calendar.html' },
 ];
 
 let ok = 0;

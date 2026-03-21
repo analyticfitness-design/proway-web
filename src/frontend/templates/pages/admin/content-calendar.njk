@@ -1,12 +1,8 @@
 {% extends "layouts/app.njk" %}
 
-{% block title %}Analytics — ProWay Lab{% endblock %}
-{% block description %}Panel de analíticas financieras ProWay Lab{% endblock %}
-{% block page_title %}Analytics PRO{% endblock %}
-
-{% block head %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
-{% endblock %}
+{% block title %}Calendario de Contenido — Admin ProWay Lab{% endblock %}
+{% block description %}Calendario de planificación de contenido 30/60/90{% endblock %}
+{% block page_title %}Calendario de Contenido{% endblock %}
 
 {# ── Sidebar ─────────────────────────────────────────────── #}
 {% block sidebar_nav %}
@@ -22,7 +18,7 @@
     Dashboard
 </a>
 
-<a href="/admin/analytics" class="sidebar__link sidebar__link--active">
+<a href="/admin/analytics" class="sidebar__link">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
@@ -63,7 +59,7 @@
     Kanban
 </a>
 
-<a href="/admin/content-calendar" class="sidebar__link">
+<a href="/admin/content-calendar" class="sidebar__link sidebar__link--active">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
@@ -95,13 +91,13 @@
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
         <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
     </svg>
-    Cerrar Sesión
+    Cerrar Sesion
 </button>
 {% endblock %}
 
 {# ── Page actions ────────────────────────────────────────── #}
 {% block page_actions %}
-<span id="global-spinner" class="htmx-indicator" aria-label="Actualizando">
+<span id="cal-spinner" class="htmx-indicator" aria-label="Cargando calendario">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
          style="animation: pw-spin 0.8s linear infinite; color: var(--pw-accent);" aria-hidden="true">
         <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
@@ -109,13 +105,12 @@
 </span>
 
 <button class="btn btn--ghost btn--sm"
-        hx-get="/api/partials/admin-analytics.php"
-        hx-target="#analytics-kpis"
+        hx-get="/api/partials/content-calendar.php"
+        hx-target="#calendar-container"
         hx-swap="innerHTML"
         hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-        hx-indicator="#global-spinner"
-        hx-trigger="click"
-        title="Refrescar métricas">
+        hx-indicator="#cal-spinner"
+        title="Actualizar calendario">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <polyline points="23 4 23 10 17 10"/>
         <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
@@ -127,79 +122,65 @@
 {# ── Main content ────────────────────────────────────────── #}
 {% block content %}
 
-<!-- KPI Cards -->
-<div class="section-label">Métricas Financieras</div>
-<div id="analytics-kpis"
-     hx-get="/api/partials/admin-analytics.php"
-     hx-trigger="load"
-     hx-swap="innerHTML"
-     hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-     hx-indicator="#global-spinner"
-     class="stats-grid"
-     style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+<!-- Client filter + horizon tabs -->
+<div style="display:flex;align-items:center;gap:var(--pw-space-3);flex-wrap:wrap;margin-bottom:var(--pw-space-3);"
+     x-data="{ clientId: '', horizon: 30 }">
 
-    <!-- Skeleton placeholders -->
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
+    <div style="display:flex;align-items:center;gap:var(--pw-space-2);">
+        <label style="font-size:0.8rem;font-weight:600;color:var(--pw-text-muted);">Cliente:</label>
+        <select x-model="clientId"
+                @change="htmx.ajax('GET', '/api/partials/content-calendar.php' + (clientId ? '?client_id=' + clientId : ''), '#calendar-container')"
+                style="background:var(--pw-bg);border:1px solid var(--pw-border);border-radius:var(--pw-radius-md);padding:var(--pw-space-1) var(--pw-space-2);font-size:0.82rem;color:var(--pw-text);min-width:180px;">
+            <option value="">Todos los clientes</option>
+        </select>
     </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
-    </div>
-    <div class="stat-card loading-skeleton" aria-hidden="true">
-        <div class="stat-card__value" style="color: var(--pw-text-muted);">—</div>
-        <div class="stat-card__label">Cargando...</div>
+
+    <div style="display:flex;gap:2px;background:var(--pw-bg);border:1px solid var(--pw-border);border-radius:var(--pw-radius-md);padding:2px;">
+        <template x-for="h in [30, 60, 90]" :key="h">
+            <button class="btn btn--ghost btn--sm"
+                    :class="{ 'btn--active-tab': horizon === h }"
+                    @click="horizon = h"
+                    x-text="h + 'd'"
+                    style="font-size:0.75rem;padding:4px 12px;border-radius:var(--pw-radius-sm);"></button>
+        </template>
     </div>
 </div>
 
-<!-- Charts -->
-<div class="section-label" style="margin-top: var(--pw-space-4);">Visualizaciones</div>
-<div id="analytics-charts"
-     hx-get="/api/partials/admin-analytics-charts.php"
+<div id="calendar-container"
+     hx-get="/api/partials/content-calendar.php"
      hx-trigger="load"
      hx-swap="innerHTML"
      hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-     hx-indicator="#global-spinner"
-     style="margin-bottom: var(--pw-space-4);">
+     hx-indicator="#cal-spinner">
 
-    <!-- Skeleton chart placeholders -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--pw-space-4); margin-bottom: var(--pw-space-4);">
-        <div class="card loading-skeleton" aria-hidden="true" style="padding: var(--pw-space-4);">
-            <div class="skeleton-text" style="width: 240px; height: 16px; margin-bottom: var(--pw-space-3);"></div>
-            <div class="skeleton-text" style="width: 100%; height: 300px; border-radius: var(--pw-radius-md);"></div>
+    <!-- Skeleton while loading -->
+    <div aria-busy="true" aria-label="Cargando calendario de contenido">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--pw-space-3);">
+            <div style="display:flex;align-items:center;gap:var(--pw-space-2);">
+                <span class="skeleton-text" style="width:30px;height:30px;border-radius:var(--pw-radius-md);"></span>
+                <span class="skeleton-text" style="width:150px;height:20px;"></span>
+                <span class="skeleton-text" style="width:30px;height:30px;border-radius:var(--pw-radius-md);"></span>
+            </div>
+            <div style="display:flex;gap:0.5rem;">
+                <span class="skeleton-text" style="width:50px;height:12px;"></span>
+                <span class="skeleton-text" style="width:50px;height:12px;"></span>
+                <span class="skeleton-text" style="width:50px;height:12px;"></span>
+            </div>
         </div>
-        <div class="card loading-skeleton" aria-hidden="true" style="padding: var(--pw-space-4);">
-            <div class="skeleton-text" style="width: 160px; height: 16px; margin-bottom: var(--pw-space-3);"></div>
-            <div class="skeleton-text" style="width: 100%; height: 300px; border-radius: var(--pw-radius-md);"></div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--pw-border);border:1px solid var(--pw-border);border-radius:var(--pw-radius-lg);overflow:hidden;">
+            {% for i in range(0, 7) %}
+            <div style="background:var(--pw-panel);padding:var(--pw-space-2);text-align:center;">
+                <span class="skeleton-text" style="width:30px;height:12px;"></span>
+            </div>
+            {% endfor %}
+            {% for i in range(0, 35) %}
+            <div style="background:var(--pw-bg);min-height:80px;padding:var(--pw-space-1);">
+                <span class="skeleton-text" style="width:20px;height:14px;float:right;"></span>
+            </div>
+            {% endfor %}
         </div>
     </div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--pw-space-4);">
-        <div class="card loading-skeleton" aria-hidden="true" style="padding: var(--pw-space-4);">
-            <div class="skeleton-text" style="width: 200px; height: 16px; margin-bottom: var(--pw-space-3);"></div>
-            <div class="skeleton-text" style="width: 100%; height: 300px; border-radius: var(--pw-radius-md);"></div>
-        </div>
-        <div class="card loading-skeleton" aria-hidden="true" style="padding: var(--pw-space-4);">
-            <div class="skeleton-text" style="width: 220px; height: 16px; margin-bottom: var(--pw-space-3);"></div>
-            <div class="skeleton-text" style="width: 100%; height: 300px; border-radius: var(--pw-radius-md);"></div>
-        </div>
-    </div>
+
 </div>
 
 <style>
@@ -209,7 +190,7 @@
     0%, 100% { opacity: 1; }
     50%       { opacity: 0.35; }
 }
-.loading-skeleton { pointer-events: none; }
+.loading-skeleton { pointer-events: none; animation: pw-skeleton-pulse 1.4s ease-in-out infinite; }
 .skeleton-text {
     display: inline-block;
     height: 14px;
@@ -222,10 +203,10 @@
 .htmx-request .htmx-indicator,
 .htmx-indicator.htmx-request { opacity: 1; }
 
-@media (max-width: 768px) {
-    #analytics-kpis {
-        grid-template-columns: repeat(2, 1fr) !important;
-    }
+.btn--active-tab {
+    background: var(--pw-accent, #00D9FF) !important;
+    color: var(--pw-black, #0C0C0F) !important;
+    font-weight: 600 !important;
 }
 </style>
 
@@ -235,6 +216,24 @@ document.body.addEventListener('htmx:responseError', function(evt) {
         window.location.href = '/login';
     }
 });
+
+// Populate client dropdown from API
+(async function() {
+    try {
+        const res = await fetch('/api/v1/clients', { credentials: 'include' });
+        if (!res.ok) return;
+        const json = await res.json();
+        const clients = json.data?.clients || json.data || [];
+        const sel = document.querySelector('#calendar-container')?.previousElementSibling?.querySelector('select');
+        if (!sel || !Array.isArray(clients)) return;
+        clients.forEach(function(c) {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = c.name;
+            sel.appendChild(opt);
+        });
+    } catch(e) {}
+})();
 </script>
 {% endblock %}
 
