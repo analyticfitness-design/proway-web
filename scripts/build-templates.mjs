@@ -50,6 +50,7 @@ const PAGES = [
     { src: 'pages/admin/kanban.njk',      out: 'admin/kanban.html' },
     { src: 'pages/admin/content-calendar.njk', out: 'admin/content-calendar.html' },
     { src: 'pages/admin/assets.njk',            out: 'admin/assets.html' },
+    { src: 'pages/admin/ai-suggestions.njk',   out: 'admin/ai-suggestions.html' },
 ];
 
 let ok = 0;

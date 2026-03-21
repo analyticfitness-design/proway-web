@@ -42,6 +42,9 @@ define('N8N_WEBHOOK_URL',    env('N8N_WEBHOOK_URL',    ''));
 define('SOCIAL_API_PROVIDER', env('SOCIAL_API_PROVIDER', 'mock'));
 define('SOCIAL_API_KEY',      env('SOCIAL_API_KEY',      ''));
 
+define('CLAUDE_API_KEY', env('CLAUDE_API_KEY', ''));
+define('CLAUDE_MODEL',   env('CLAUDE_MODEL',   'claude-sonnet-4-6'));
+
 function getDB(): PDO {
     static $pdo = null;
     if ($pdo === null) {

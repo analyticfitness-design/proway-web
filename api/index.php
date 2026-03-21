@@ -24,6 +24,7 @@ use ProWay\Api\V1\Controller\BriefController;
 use ProWay\Api\V1\Controller\ContentCalendarController;
 use ProWay\Api\V1\Controller\SurveyController;
 use ProWay\Api\V1\Controller\AssetController;
+use ProWay\Api\V1\Controller\AIController;
 use ProWay\Api\V1\Middleware\AuthMiddleware;
 use ProWay\Api\V1\Middleware\RateLimitMiddleware;
 use ProWay\Domain\Auth\AuthService;
@@ -73,6 +74,8 @@ use ProWay\Domain\Survey\MySQLSurveyRepository;
 use ProWay\Domain\Survey\SurveyService;
 use ProWay\Domain\Asset\AssetService;
 use ProWay\Domain\Asset\MySQLAssetRepository;
+use ProWay\Domain\AI\ContentSuggestionService;
+use ProWay\Domain\AI\MySQLSuggestionRepository;
 use ProWay\Infrastructure\Pdf\PdfRenderer;
 use ProWay\Infrastructure\WhatsApp\WhatsAppService;
 
@@ -180,12 +183,16 @@ $surveyCtrl    = new SurveyController($surveyService, $mw);
 $assetService = new AssetService(new MySQLAssetRepository($pdo));
 $assetCtrl    = new AssetController($assetService, $mw);
 
+// AI Content Suggestions
+$suggestionService = new ContentSuggestionService(new MySQLSuggestionRepository($pdo));
+$aiCtrl            = new AIController($suggestionService, $mw);
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 RateLimitMiddleware::check();
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 $router = new Router(function (\FastRoute\RouteCollector $r) use (
-    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl, $kanbanCtrl, $briefCtrl, $contentCalendarCtrl, $surveyCtrl, $assetCtrl
+    $authCtrl, $clientCtrl, $projectCtrl, $invoiceCtrl, $paymentCtrl, $adminCtrl, $deliverableCtrl, $notifCtrl, $errorLogCtrl, $socialMetricsCtrl, $messageCtrl, $onboardingCtrl, $reportCtrl, $approvalCtrl, $analyticsCtrl, $kanbanCtrl, $briefCtrl, $contentCalendarCtrl, $surveyCtrl, $assetCtrl, $aiCtrl
 ) {
     // Auth
     $r->addRoute('POST',  '/api/v1/auth/login',           [$authCtrl, 'login']);
@@ -301,6 +308,11 @@ $router = new Router(function (\FastRoute\RouteCollector $r) use (
     $r->addRoute('GET',  '/api/v1/admin/assets/{id:\d+}',     [$assetCtrl, 'show']);
     $r->addRoute('POST', '/api/v1/admin/assets/{id:\d+}/tags', [$assetCtrl, 'updateTags']);
     $r->addRoute('GET',  '/api/v1/assets',                    [$assetCtrl, 'clientAssets']);
+
+    // AI Content Suggestions
+    $r->addRoute('POST', '/api/v1/admin/ai/suggestions',       [$aiCtrl, 'generate']);
+    $r->addRoute('GET',  '/api/v1/admin/ai/suggestions',       [$aiCtrl, 'list']);
+    $r->addRoute('POST', '/api/v1/admin/ai/trend-analysis',    [$aiCtrl, 'trendAnalysis']);
 });
 
 $request  = new Request();

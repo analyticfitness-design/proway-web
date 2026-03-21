@@ -1,12 +1,12 @@
 {% extends "layouts/app.njk" %}
 
-{% block title %}Kanban — Admin ProWay Lab{% endblock %}
-{% block description %}Tablero Kanban de gestión de proyectos{% endblock %}
-{% block page_title %}Kanban{% endblock %}
+{% block title %}AI Ideas de Contenido — Admin ProWay Lab{% endblock %}
+{% block description %}Genera ideas de contenido fitness con IA para tus clientes en LATAM{% endblock %}
+{% block page_title %}AI Ideas de Contenido{% endblock %}
 
-{# ── Sidebar ─────────────────────────────────────────────── #}
+{# -- Sidebar --------------------------------------------------------- #}
 {% block sidebar_nav %}
-<span class="sidebar__section-title">Administración</span>
+<span class="sidebar__section-title">Administracion</span>
 
 <a href="/admin" class="sidebar__link">
     <span class="sidebar__link-icon" aria-hidden="true">
@@ -50,7 +50,7 @@
     Proyectos
 </a>
 
-<a href="/admin/kanban" class="sidebar__link sidebar__link--active">
+<a href="/admin/kanban" class="sidebar__link">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="12" rx="1"/><rect x="17" y="3" width="5" height="15" rx="1"/>
@@ -82,7 +82,7 @@
     Assets
 </a>
 
-<a href="/admin/ai-suggestions" class="sidebar__link">
+<a href="/admin/ai-suggestions" class="sidebar__link sidebar__link--active">
     <span class="sidebar__link-icon" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
@@ -111,13 +111,13 @@
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
         <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
     </svg>
-    Cerrar Sesión
+    Cerrar Sesion
 </button>
 {% endblock %}
 
-{# ── Page actions ────────────────────────────────────────── #}
+{# -- Page actions ---------------------------------------------------- #}
 {% block page_actions %}
-<span id="kanban-spinner" class="htmx-indicator" aria-label="Actualizando tablero">
+<span id="ai-page-spinner" class="htmx-indicator" aria-label="Cargando">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
          style="animation: pw-spin 0.8s linear infinite; color: var(--pw-accent);" aria-hidden="true">
         <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
@@ -125,12 +125,12 @@
 </span>
 
 <button class="btn btn--ghost btn--sm"
-        hx-get="/api/partials/admin-kanban.php"
-        hx-target="#kanban-container"
+        hx-get="/api/partials/admin-ai-suggestions.php"
+        hx-target="#ai-suggestions-root"
         hx-swap="innerHTML"
         hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-        hx-indicator="#kanban-spinner"
-        title="Actualizar tablero">
+        hx-indicator="#ai-page-spinner"
+        title="Actualizar">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <polyline points="23 4 23 10 17 10"/>
         <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
@@ -139,35 +139,34 @@
 </button>
 {% endblock %}
 
-{# ── Main content ────────────────────────────────────────── #}
+{# -- Main content ---------------------------------------------------- #}
 {% block content %}
 
-<div id="kanban-container"
-     hx-get="/api/partials/admin-kanban.php"
+<div id="ai-suggestions-root"
+     hx-get="/api/partials/admin-ai-suggestions.php"
      hx-trigger="load"
      hx-swap="innerHTML"
      hx-headers='{"X-Requested-With": "XMLHttpRequest"}'
-     hx-indicator="#kanban-spinner">
+     hx-indicator="#ai-page-spinner">
 
-    <!-- Skeleton board while loading -->
-    <div style="display:flex; gap:var(--pw-space-3); overflow-x:auto; padding:var(--pw-space-1);" aria-busy="true" aria-label="Cargando tablero Kanban">
-        {% for i in range(0, 7) %}
-        <div class="card loading-skeleton" aria-hidden="true" style="width:280px;min-width:280px;flex-shrink:0;min-height:300px;">
-            <div class="card__header" style="padding:var(--pw-space-3);">
-                <span class="skeleton-text" style="width:100px;height:14px;"></span>
-                <span class="skeleton-text" style="width:24px;height:20px;border-radius:var(--pw-radius-full);"></span>
+    <!-- Skeleton while loading -->
+    <div aria-busy="true" aria-label="Cargando modulo AI">
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: var(--pw-space-4); margin-bottom: var(--pw-space-4);">
+            <div style="background: var(--pw-panel); border: 1px solid var(--pw-border); border-radius: var(--pw-radius-lg); padding: var(--pw-space-4);">
+                <span class="skeleton-text" style="width:60%;height:16px;margin-bottom:var(--pw-space-3);"></span>
+                <span class="skeleton-text" style="width:100%;height:36px;margin-bottom:var(--pw-space-2);"></span>
+                <span class="skeleton-text" style="width:100%;height:36px;margin-bottom:var(--pw-space-2);"></span>
+                <span class="skeleton-text" style="width:100%;height:36px;margin-bottom:var(--pw-space-2);"></span>
+                <span class="skeleton-text" style="width:100%;height:38px;border-radius:var(--pw-radius-md);"></span>
             </div>
-            <div style="padding:var(--pw-space-2);display:flex;flex-direction:column;gap:var(--pw-space-2);">
-                {% for j in range(0, 3) %}
-                <div style="background:var(--pw-bg);border:1px solid var(--pw-border);border-radius:var(--pw-radius-md);padding:var(--pw-space-3);">
-                    <span class="skeleton-text" style="width:60px;height:10px;margin-bottom:6px;"></span>
-                    <span class="skeleton-text" style="width:90%;height:14px;margin-bottom:6px;"></span>
-                    <span class="skeleton-text" style="width:70%;height:10px;"></span>
-                </div>
-                {% endfor %}
+            <div style="background: var(--pw-panel); border: 1px solid var(--pw-border); border-radius: var(--pw-radius-lg); padding: var(--pw-space-4);">
+                <span class="skeleton-text" style="width:60%;height:16px;margin-bottom:var(--pw-space-3);"></span>
+                <span class="skeleton-text" style="width:100%;height:36px;margin-bottom:var(--pw-space-2);"></span>
+                <span class="skeleton-text" style="width:100%;height:36px;margin-bottom:var(--pw-space-2);"></span>
+                <span class="skeleton-text" style="width:100%;height:36px;margin-bottom:var(--pw-space-2);"></span>
+                <span class="skeleton-text" style="width:100%;height:38px;border-radius:var(--pw-radius-md);"></span>
             </div>
         </div>
-        {% endfor %}
     </div>
 
 </div>
@@ -179,7 +178,6 @@
     0%, 100% { opacity: 1; }
     50%       { opacity: 0.35; }
 }
-.loading-skeleton { pointer-events: none; animation: pw-skeleton-pulse 1.4s ease-in-out infinite; }
 .skeleton-text {
     display: inline-block;
     height: 14px;
