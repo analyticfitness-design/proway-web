@@ -19,3 +19,4 @@ test-results/
 *.png
 !images/pwa-icon-*.png
 docs/
+api/.env
