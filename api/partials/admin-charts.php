@@ -51,8 +51,17 @@ $statusValuesJson  = json_encode($statusValues);
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 <script>
+/* Chart.js is preloaded in the admin dashboard template */
+if (typeof Chart === 'undefined') {
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js';
+    s.onload = function() { initCharts(); };
+    document.head.appendChild(s);
+} else {
+    initCharts();
+}
+function initCharts() {
 (function() {
     const CYAN  = '#00D9FF';
     const GREEN = '#00FF87';
@@ -160,5 +169,5 @@ $statusValuesJson  = json_encode($statusValues);
             }
         });
     }
-})();
+}
 </script>
