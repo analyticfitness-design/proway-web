@@ -97,10 +97,10 @@ class MonthlyReportService
     public function listAll(): array
     {
         $stmt = $this->db->query(
-            'SELECT r.*, c.nombre AS client_name, c.email AS client_email
+            'SELECT r.*, c.name AS client_name, c.email AS client_email
              FROM monthly_reports r
              JOIN clientes c ON c.id = r.client_id
-             ORDER BY r.year DESC, r.month DESC, c.nombre ASC'
+             ORDER BY r.year DESC, r.month DESC, c.name ASC'
         );
         return $stmt->fetchAll();
     }
@@ -125,7 +125,7 @@ class MonthlyReportService
     public function getById(int $id): ?array
     {
         $stmt = $this->db->prepare(
-            'SELECT r.*, c.nombre AS client_name, c.email AS client_email
+            'SELECT r.*, c.name AS client_name, c.email AS client_email
              FROM monthly_reports r
              JOIN clientes c ON c.id = r.client_id
              WHERE r.id = ?'

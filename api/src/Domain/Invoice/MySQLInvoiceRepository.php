@@ -46,7 +46,7 @@ class MySQLInvoiceRepository implements InvoiceRepository
     public function findAll(): array
     {
         $stmt = $this->db->query(
-            'SELECT i.*, c.nombre AS client_name, c.email AS client_email
+            'SELECT i.*, c.name AS client_name, c.email AS client_email
              FROM invoices i
              LEFT JOIN clients c ON c.id = i.client_id
              ORDER BY i.created_at DESC'

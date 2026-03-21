@@ -67,7 +67,7 @@ class MySQLProjectRepository implements ProjectRepository
     public function findAllWithDates(): array
     {
         $stmt = $this->db->query(
-            'SELECT p.*, c.nombre AS client_name, c.code AS client_code
+            'SELECT p.*, c.name AS client_name, c.code AS client_code
              FROM projects p
              LEFT JOIN clients c ON c.id = p.client_id
              WHERE p.start_date IS NOT NULL OR p.deadline IS NOT NULL
@@ -79,7 +79,7 @@ class MySQLProjectRepository implements ProjectRepository
     public function findAllWithDatesForClient(int $clientId): array
     {
         $stmt = $this->db->prepare(
-            'SELECT p.*, c.nombre AS client_name, c.code AS client_code
+            'SELECT p.*, c.name AS client_name, c.code AS client_code
              FROM projects p
              LEFT JOIN clients c ON c.id = p.client_id
              WHERE p.client_id = ?
@@ -93,7 +93,7 @@ class MySQLProjectRepository implements ProjectRepository
     public function findAll(): array
     {
         $stmt = $this->db->query(
-            'SELECT p.*, c.nombre AS client_name, c.code AS client_code
+            'SELECT p.*, c.name AS client_name, c.code AS client_code
              FROM projects p
              LEFT JOIN clients c ON c.id = p.client_id
              ORDER BY p.created_at DESC'
@@ -122,7 +122,7 @@ class MySQLProjectRepository implements ProjectRepository
     public function findGroupedByStatus(): array
     {
         $stmt = $this->db->query(
-            'SELECT p.*, c.nombre AS client_name, c.code AS client_code
+            'SELECT p.*, c.name AS client_name, c.code AS client_code
              FROM projects p
              LEFT JOIN clients c ON c.id = p.client_id
              ORDER BY p.kanban_order ASC, p.created_at DESC'

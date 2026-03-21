@@ -50,7 +50,7 @@ class MySQLSocialProfileRepository implements SocialProfileRepository
     public function findAllActive(): array
     {
         $stmt = $this->db->query(
-            'SELECT sp.*, c.nombre AS client_name, c.code AS client_code
+            'SELECT sp.*, c.name AS client_name, c.code AS client_code
              FROM social_profiles sp
              LEFT JOIN clients c ON c.id = sp.client_id
              WHERE sp.is_active = 1
